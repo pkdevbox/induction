@@ -23,7 +23,7 @@ public class TestInvoker
       Class oClass = Class.forName( sClassName );
 
       Constructor[] oConstructors = oClass.getConstructors();
-      System.out.println( "invoker-test: constructors: " + Arrays.toString( oConstructors ) );
+      System.out.println( "invoker-test: constructor[0]: " + oConstructors[ 0 ] );
 
       Object oInstance = Invoker.invoke( oConstructors[ 0 ], new Object[]{ "String-Value", new Integer( 2008 ), new Float( 19.1817 ) } );
       System.out.println( "invoker-test: instance: " + oInstance );

@@ -54,7 +54,7 @@ public class URLPathControllerResolver implements ControllerResolver
          if ( sPath.endsWith( "/" ) )
          {
             // no method name specified
-            sClassName  =  sPath.substring( 0, sPath.length() - 1 ).replace( "/", "." );
+            sClassName  =  sPath.substring( 0, sPath.length() - 1 ).replace( '/', '.' );
             sMethodName =  _sDefaultHandlerMethodName;
          }
          else
@@ -70,7 +70,7 @@ public class URLPathControllerResolver implements ControllerResolver
             else
             {
                // ok slash found, so assume what comes after the last slash is a method name
-               sClassName  =  sPath.substring( 0, iIndexOfLastSlash ).replace( "/", "." );
+               sClassName  =  sPath.substring( 0, iIndexOfLastSlash ).replace( '/', '.' );
                sMethodName =  sPath.substring( iIndexOfLastSlash + 1 );
             }
          }

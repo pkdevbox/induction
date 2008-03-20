@@ -40,7 +40,7 @@ public class ModelFactory
       Object   oModel;
 
       // check is this model class has a factory class defined
-      if ( oModelDef.getModelFactoryClassName() == null || oModelDef.getModelFactoryClassName().isEmpty() )
+      if ( oModelDef.hasModelFactoryClassName() )
       {
          // no factory class, then we expect a single public constructor, which we use to
          // instantiate the model via a a direct parameter injected constructor call

@@ -230,6 +230,11 @@ public class Config
             return _sModelFactoryClassName;
          }
 
+         public boolean hasModelFactoryClassName()
+         {
+            return _sModelFactoryClassName != null && _sModelFactoryClassName.trim().length() != 0;
+         }
+
          public boolean isApplicationScope()
          {
             return _bIsApplicationScope;
