@@ -10,7 +10,7 @@ public class HelloArizona
 	{
 		oCompiledClass = new CompiledClass( "HelloArizona.CompiledClass", null );
 
-		//System.out.println( "Hello from HelloArizona(Phoenix) constructor" );
+		System.out.println( "Hello from HelloArizona(Phoenix) constructor" );
       System.out.println( "Hello from HelloArizona(Scottsdale) constructor" );
       System.out.println( "Hello from HelloArizona(Kayenta) constructor" );
 	}
