@@ -1,0 +1,18 @@
+<classloader-chain>
+
+	<java-src-dir>
+		<dir-name>c:/acciente/software/project/demoapp/src/demoapp/controller</dir-name>
+		<pkg-name-prefix>demoapp.controller</pkg-name-prefix>
+	</java-src-dir>
+
+	<java-class-dir>
+		<dir-name>c:/acciente/software/project/demoapp/class/demoapp/controller</dir-name>
+		<pkg-name-prefix>demoapp.controller</pkg-name-prefix>
+	</java-class-dir>
+
+	<java-class-dir>
+		<dir-name>c:/acciente/software/project/demoapp/class</dir-name>
+	</java-class-dir>
+
+	
+</classloader-chain>
