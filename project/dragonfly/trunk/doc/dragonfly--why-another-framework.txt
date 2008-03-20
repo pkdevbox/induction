@@ -1,0 +1,58 @@
+dragonFly - why another framework?
+----------------------------------
+
+design philosophy
+=================
+
+  - power and simplicity can coexist
+  
+  - clear separation of roles
+    - web designer: designs look and feel of site including html templates
+    - web developer: wires everything up, writes controllers, views
+    - application developer: provides business logic and supporting application logic as model objects
+    - content authors: created text and image content
+  
+  - no superfluous XML configuration files
+    (or to quote Jonathan Locke -- author of Apache Wicket, "a refreshing lack of XML")
+
+  - be able to test changes to controllers and views simply by reloading the page on your browser
+
+  - be able to analyze dependencies between controllers, views and models using basic java dependency analysis tools in any IDE
+
+  - declarative control of the lifecyle of model objects
+  
+  - be able to use an model object in controller's method simply by declaring a paramater of the model object's object in the respective method
+  
+  - handling a uploading file should be as simple as handling a string input on a form
+    (would never have thought of mentioning this, until I found out how hard some frameworks make handling uploaded files)    
+
+  - integrated content management system
+  
+  - integrated search engine optimization module
+  
+  - a feature of the framework not being used in project should be nearly invisible to the developer
+    - some examples of this approach can be seen in the content management system integration
+  
+  - be able to provide plug-in replacements to,
+    - templating engine
+    - content management system
+  
+  - to simplify deployment, reduce dependencies outside of servlet container
+  
+  - parameter value injection
+  
+features
+========
+
+  - runtime dynamic compilation of controllers directly from java source
+
+  - sophisticated PHP style form processing, to simpify list and map structures on a form
+
+  - integrated bi-directional rewrite engine
+    - enables transparent reverse-rewrite of internal URLs returned by a controller to public URLs
+
+  - extensibile architecture
+    - pluggable configuration loader
+    - pluggable templating engines, initial support for Freemarker and Velocity
+
+

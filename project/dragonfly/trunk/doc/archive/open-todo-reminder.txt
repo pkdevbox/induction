@@ -1,0 +1,21 @@
+= implement loadClassesAndClassNames
+
+= make compiler use current class path
+  = remove explicit classpath from JavaCompilerManager, JavaCompiler
+
+= dynamic class re-loading, how?
+
+[02/25/2008]
+
+= make Request, Response, Form
+
+= write ReloadingClassLoader
+
+[03/03/2008]
+
+- NEw ideas
+
+  - allow controllers & views to keep state (credit: david nia)
+    - caching architecture, must now cache controller instances, not just controller
+
+  - auto instantiate model objects reference as formal parameters

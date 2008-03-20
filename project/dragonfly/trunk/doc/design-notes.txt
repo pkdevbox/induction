@@ -1,0 +1,21 @@
+The DragonFly Project
+---------------------
+
+Things it does better than Hornet:
+
+- better management of parameters to a dispatcher
+- more structure enforcement in the dispatcher to help with dependency analysis
+
+  class page-name
+  {
+     default( parameter-name-1, parameter-name-2 )
+     {
+     }
+     
+     action-name( parameter-name-1, parameter-name-2 )
+     {
+     }
+  }
+
+
+
