@@ -9,6 +9,10 @@ import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.model.ModelFactory;
 import com.acciente.dragonfly.model.ModelLifeCycleManager;
 import com.acciente.dragonfly.util.ReflectUtils;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
+import com.acciente.dragonfly.util.MethodNotFoundException;
+import com.acciente.dragonfly.controller.Controller;
+import com.acciente.commons.reflect.Invoker;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -26,10 +30,11 @@ import java.lang.reflect.Method;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private ClassLoader           _oClassLoader;
-   private ControllerResolver    _oControllerResolver;
-   private ParamValueResolver    _oParamValueResolver;
-   private Logger _oLogger;
+   private  ClassLoader             _oClassLoader;
+   private  ControllerResolver      _oControllerResolver;
+   private  ControllerPool          _oControllerPool;
+   private  ParamValueResolver      _oParamValueResolver;
+   private  Logger _oLogger;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
@@ -89,6 +94,9 @@ public class HttpDispatcher extends HttpServlet
       catch ( InstantiationException e )
       {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
 
+      // setup a controller pool
+      _oControllerPool = new ControllerPool( _oClassLoader, oServletContext, oServletConfig, _oLogger );
+
       // setup ...
       _oParamValueResolver
          =  new ParamValueResolver( new ModelLifeCycleManager( oConfig.getModelDefs(),
@@ -111,24 +119,41 @@ public class HttpDispatcher extends HttpServlet
       throws IOException
    {
       // ask the resolver what controller should be invoked
-      ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest, oResponse );
+      ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest );
       if ( oResolution == null )
       {
-         _oLogger.log( "dispatch-error: request did not resolve to a controller" );
-         oResponse.sendError( HttpServletResponse.SC_NOT_FOUND, "Request did not resolve to a controller" );
+         logAndRespond( oResponse, "request: did not resolve to a controller", null );
          return;
       }
 
-      // try to load the controller class
-      Class oControllerClass;
+      Controller  oController;
       try
       {
-         oControllerClass = _oClassLoader.loadClass( oResolution.getClassName() );
+         oController = _oControllerPool.getController( oResolution.getClassName() );
       }
       catch ( ClassNotFoundException e )
       {
-         _oLogger.log( "dispatch-error: " + e.getMessage() );
-         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Loading controller failed" );
+         logAndRespond( oResponse, "controller: unable to load definition", e );
+         return;
+      }
+      catch ( ConstructorNotFoundException e )
+      {
+         logAndRespond( oResponse, "controller: unable to find constructor", e );
+         return;
+      }
+      catch ( InstantiationException e )
+      {
+         logAndRespond( oResponse, "controller: instantiate error", e );
+         return;
+      }
+      catch ( InvocationTargetException e )
+      {
+         logAndRespond( oResponse, "controller: constructor or destructor threw exception", e );
+         return;
+      }
+      catch ( IllegalAccessException e )
+      {
+         logAndRespond( oResponse, "controller: access error", e );
          return;
       }
 
@@ -136,22 +161,59 @@ public class HttpDispatcher extends HttpServlet
       Method oControllerMethod;
       try
       {
-         oControllerMethod = ReflectUtils.getSingletonMethod( oControllerClass,
+         oControllerMethod = ReflectUtils.getSingletonMethod( oController.getClass(),
                                                               oResolution.getMethodName(),
                                                               oResolution.isIgnoreMethodNameCase() );
       }
-      catch ( IllegalArgumentException e )
+      catch ( MethodNotFoundException e )
       {
-         _oLogger.log( "dispatch-error: " + e.getMessage() );
-         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage() );
+         logAndRespond( oResponse, "controller: method not found", e );
          return;
       }
 
-      // first see if there is a definition for this model class name that tells us
-      // how to make objects of this model class
+      // ok, we have our controller, what parameters does it need?
+      Class[]  aoParameterTypes  = oControllerMethod.getParameterTypes();
+      Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
+
+      for ( int i = 0; i < aoParameterTypes.length; i++ )
+      {
+         Class oParameterType = aoParameterTypes[ i ];
+
+         aoParameterValues[ i ] = _oParamValueResolver.getParameterValue( oParameterType, oRequest, oResponse );
+      }
+
+      try
+      {
+         oControllerMethod.invoke( oController, aoParameterValues );
+      }
+      catch ( IllegalAccessException e )
+      {
+         logAndRespond( oResponse, "controller: method access error", e );
+         return;
+      }
+      catch ( InvocationTargetException e )
+      {
+         logAndRespond( oResponse, "controller: method threw exception", e );
+         return;
+      }
    }
 
-   public static class ServletLogger implements Logger
+   private void logAndRespond( HttpServletResponse oResponse, String sError, Throwable oError )
+      throws IOException
+   {
+      if ( oError == null )
+      {
+         _oLogger.log( "dispatch-error: " + sError );
+         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError );
+      }
+      else
+      {
+         _oLogger.log( "dispatch-error: " + sError, oError );
+         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError + " (more details in dispatcher log)" );
+      }     
+   }
+
+   private static class ServletLogger implements Logger
    {
       private HttpServlet _oHttpServlet;
 

@@ -2,6 +2,7 @@ package com.acciente.commons.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * This class contains java reflection helper methods  to invoke constructors and
@@ -49,7 +50,43 @@ public class Invoker
    }
 
    /**
-    * This method return the first element in an array that matches the specified type.
+    * This method calls the specified method using the specified args as follows.
+    * Each arg in aoArgs is expected to be of a unique type, if there is more than one value
+    * with the same type the first value is used.
+    *
+    * This method provides a value to each parameter of the method from aoArgs based on
+    * the type of the expected parameter.
+    *
+    * @param oMethod a method object to be invoked
+    * @param oTarget the target object on which the method should be invoked
+    * @param aoArgs an array containing a set of arguments each of a distinct type
+    *
+    * @return the value returned by the called method
+    *
+    * @throws IllegalAccessException propagated from Method.invoke()
+    * @throws InvocationTargetException propagated from Method.invoke()
+    */
+   public static Object invoke( Method oMethod, Object oTarget, Object[] aoArgs )
+      throws InvocationTargetException, IllegalAccessException
+   {
+      Class[]  aoParameterTypes  = oMethod.getParameterTypes();
+      Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
+
+      if ( aoParameterValues.length != 0 )
+      {
+         // build the arg-list to the constructor positioning arg values provided
+         // based matching up the parameter type to the type of the value provided
+         for ( int i = 0; i < aoParameterValues.length; i++ )
+         {
+            aoParameterValues[ i ] = getByType( aoArgs, aoParameterTypes[ i ] );
+         }
+      }
+
+      return oMethod.invoke( oTarget, aoParameterValues );
+   }
+
+   /**
+    * This method returns the first element in the specified array that matches the specified type.
     *
     * @param aoArgs an array of values
     * @param oType the type to search within the array of values

@@ -29,3 +29,24 @@
   = change Configurators to not throw ServletException
   = invokeConstructor -> invoke
   - replace IllegalArgumentException with checked exception more specific to each context
+  
+[03/20/2008]
+
+- was the migration to subversion done right? Recap of the steps taken follows:
+
+  - pre-repository preparation
+    - archived several backup copies of the source on the working directory of the work machine (t:)
+    - archived several backup copies of the source on the flash drive
+    
+  - repository setup
+    - installed subversion on the flash drive
+    - created fsfs repository on the flash drive
+      - imported latest code from 3/19/2008 (AM) from flash drive
+
+  - updated working copies    
+    - deleted working copy of source on work machine (t:), and checked out a new working copy from the repository on the flash drive
+    - upgraded laptop to latest version of Tortoise
+    - deleted working copy of source on laptop (c:), and checked out a new working copy from the repository on the flash drive
+
+  - todos
+    - repository backups
