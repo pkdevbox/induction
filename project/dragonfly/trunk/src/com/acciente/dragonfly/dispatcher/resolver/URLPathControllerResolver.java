@@ -4,7 +4,6 @@ import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
 import com.acciente.dragonfly.init.config.Config;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class implements a controller resolver that maps the path info in the URL
@@ -42,7 +41,7 @@ public class URLPathControllerResolver implements ControllerResolver
       _bIsIgnoreMethodNameCase   = oConfig.isIgnoreMethodNameCase();
    }
 
-   public Resolution resolve( HttpServletRequest oRequest, HttpServletResponse oResponse )
+   public Resolution resolve( HttpServletRequest oRequest )
    {
       Resolution oResolution = null;
       String     sClassName, sMethodName;

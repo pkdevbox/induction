@@ -25,11 +25,10 @@ public interface ControllerResolver
     * to be invoked in response to the specified HTTP request
     *
     * @param oRequest the HTTP request context in which the resolution is requested
-    * @param oResponse the HTTP response context in which the resolution is requested
     * @return  an object containing the class name of the controller to be invoked and
     *          the method name within same
     */
-   Resolution resolve( HttpServletRequest oRequest, HttpServletResponse oResponse );
+   Resolution resolve( HttpServletRequest oRequest );
 
    /**
     * Log
