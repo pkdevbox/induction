@@ -4,10 +4,10 @@ import com.acciente.commons.reflect.Invoker;
 import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
 import com.acciente.dragonfly.dispatcher.resolver.URLPathControllerResolver;
 import com.acciente.dragonfly.init.config.Config;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -19,8 +19,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ControllerResolverInitializer
 {
-   public static ControllerResolver getControllerResolver( Config.ControllerResolver oConfig, ClassLoader oClassLoader, ServletContext oServletContext, ServletConfig oServletConfig, Logger oLogger )
-      throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
+   public static ControllerResolver getControllerResolver( Config.ControllerResolver oConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       ControllerResolver   oControllerResolver;
       String               sControllerResolverClassName = oConfig.getClassName();
@@ -39,8 +39,7 @@ public class ControllerResolverInitializer
          oControllerResolver
             =  ( ControllerResolver )
                Invoker.invoke( ReflectUtils.getSingletonConstructor( oControllerResolverClass ),
-                               new Object[]{ oServletContext,
-                                             oServletConfig,
+                               new Object[]{ oServletConfig,
                                              oConfig
                                            }
                              );

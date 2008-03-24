@@ -6,12 +6,17 @@ package com.acciente.dragonfly.controller;
  * controller by the framework.
  *
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:
- *   - the single constructor should accepts no arguments or
+ * with its formal parameter list observing the following convention:
+ *   - the single constructor should accept no formal parameters
  *   - the single constructor should declare formal parameters using only the
  *     following types,
  *     - javax.servlet.ServletContext
  *     - javax.servlet.ServletConfig
+ *
+ * A class implementing this interface may optionally define a single public method
+ * named init(). If defined this method will be called after the controller is
+ * created using the constructor. The init() method if defined should have its
+ * formal parameter list observe the same convention as the constructor.
  *
  * A class implementing this interface may optionally define a single public method
  * named destroy(). If defined this method will be called when the controller instance is
@@ -23,7 +28,8 @@ package com.acciente.dragonfly.controller;
  */
 public interface Controller
 {
-   public static final String DESTRUCTOR_METHOD_NAME = "destroy";
+   public static final String CONSTRUCTOR_METHOD_NAME = "init";
+   public static final String DESTRUCTOR_METHOD_NAME  = "destroy";
 }
 
 // EOF

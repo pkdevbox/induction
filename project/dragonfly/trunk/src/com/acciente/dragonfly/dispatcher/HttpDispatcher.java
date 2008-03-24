@@ -1,5 +1,6 @@
 package com.acciente.dragonfly.dispatcher;
 
+import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
 import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
@@ -8,14 +9,11 @@ import com.acciente.dragonfly.init.Logger;
 import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.model.ModelFactory;
 import com.acciente.dragonfly.model.ModelLifeCycleManager;
-import com.acciente.dragonfly.util.ReflectUtils;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.MethodNotFoundException;
-import com.acciente.dragonfly.controller.Controller;
-import com.acciente.commons.reflect.Invoker;
+import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +28,6 @@ import java.lang.reflect.Method;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private  ClassLoader             _oClassLoader;
    private  ControllerResolver      _oControllerResolver;
    private  ControllerPool          _oControllerPool;
    private  ParamValueResolver      _oParamValueResolver;
@@ -45,10 +42,8 @@ public class HttpDispatcher extends HttpServlet
    public void init( ServletConfig oServletConfig )
       throws   ServletException
    {
-      ServletContext oServletContext = getServletContext();
-
       // first setup a logger
-      _oLogger = new ServletLogger( this );
+      _oLogger = new ServletLogger( oServletConfig );
 
       Config oConfig;
 
@@ -57,7 +52,7 @@ public class HttpDispatcher extends HttpServlet
       {
          oConfig
          =  ConfigLoaderInitializer
-                  .getConfigLoader( oServletContext, oServletConfig, _oLogger ).getConfig();
+                  .getConfigLoader( oServletConfig, _oLogger ).getConfig();
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
@@ -67,11 +62,14 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
       catch ( InstantiationException e )
       {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
 
       // setup up our classloader
+      ClassLoader oClassLoader;
       try
       {
-         _oClassLoader
+         oClassLoader
          =  ClassLoaderInitializer
                   .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader(), _oLogger );
       }
@@ -83,7 +81,7 @@ public class HttpDispatcher extends HttpServlet
       {
          _oControllerResolver
          =  ControllerResolverInitializer
-                  .getControllerResolver( oConfig.getControllerResolver(), _oClassLoader, oServletContext, oServletConfig, _oLogger );
+                  .getControllerResolver( oConfig.getControllerResolver(), oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
@@ -93,15 +91,16 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
       catch ( InstantiationException e )
       {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
 
       // setup a controller pool
-      _oControllerPool = new ControllerPool( _oClassLoader, oServletContext, oServletConfig, _oLogger );
+      _oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // setup ...
       _oParamValueResolver
          =  new ParamValueResolver( new ModelLifeCycleManager( oConfig.getModelDefs(),
-                                                               new ModelFactory( _oClassLoader,
-                                                                                 oServletContext,
+                                                               new ModelFactory( oClassLoader,
                                                                                  oServletConfig,
                                                                                  _oLogger
                                                                                )
@@ -122,7 +121,7 @@ public class HttpDispatcher extends HttpServlet
       ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest );
       if ( oResolution == null )
       {
-         logAndRespond( oResponse, "request: did not resolve to a controller", null );
+         logAndRespond( oResponse, "dispatch: request did not resolve to a controller", null );
          return;
       }
 
@@ -133,27 +132,27 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( ClassNotFoundException e )
       {
-         logAndRespond( oResponse, "controller: unable to load definition", e );
+         logAndRespond( oResponse, "dispatch: unable to load controller definition", e );
          return;
       }
       catch ( ConstructorNotFoundException e )
       {
-         logAndRespond( oResponse, "controller: unable to find constructor", e );
+         logAndRespond( oResponse, "dispatch: unable to find controller constructor", e );
          return;
       }
       catch ( InstantiationException e )
       {
-         logAndRespond( oResponse, "controller: instantiate error", e );
+         logAndRespond( oResponse, "dispatch: controller instantiate error", e );
          return;
       }
       catch ( InvocationTargetException e )
       {
-         logAndRespond( oResponse, "controller: constructor or destructor threw exception", e );
+         logAndRespond( oResponse, "dispatch: controller constructor or destructor threw an exception", e );
          return;
       }
       catch ( IllegalAccessException e )
       {
-         logAndRespond( oResponse, "controller: access error", e );
+         logAndRespond( oResponse, "dispatch: controller constructor or destructor access error", e );
          return;
       }
 
@@ -167,11 +166,11 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( MethodNotFoundException e )
       {
-         logAndRespond( oResponse, "controller: method not found", e );
+         logAndRespond( oResponse, "dispatch: controller method not found", e );
          return;
       }
 
-      // ok, we have our controller, what parameters does it need?
+      // ok, we have a controller, now compute values for its formal parameter list
       Class[]  aoParameterTypes  = oControllerMethod.getParameterTypes();
       Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
 
@@ -182,18 +181,19 @@ public class HttpDispatcher extends HttpServlet
          aoParameterValues[ i ] = _oParamValueResolver.getParameterValue( oParameterType, oRequest, oResponse );
       }
 
+      // finally call the controller method!
       try
       {
          oControllerMethod.invoke( oController, aoParameterValues );
       }
       catch ( IllegalAccessException e )
       {
-         logAndRespond( oResponse, "controller: method access error", e );
+         logAndRespond( oResponse, "dispatch: method access error", e );
          return;
       }
       catch ( InvocationTargetException e )
       {
-         logAndRespond( oResponse, "controller: method threw exception", e );
+         logAndRespond( oResponse, "dispatch: method threw exception", e );
          return;
       }
    }
@@ -209,27 +209,28 @@ public class HttpDispatcher extends HttpServlet
       else
       {
          _oLogger.log( "dispatch-error: " + sError, oError );
+         oError.printStackTrace();
          oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError + " (more details in dispatcher log)" );
-      }     
+      }
    }
 
    private static class ServletLogger implements Logger
    {
-      private HttpServlet _oHttpServlet;
+      private ServletConfig _oServletConfig;
 
-      private ServletLogger( HttpServlet oHttpServlet )
+      private ServletLogger( ServletConfig oServletConfig )
       {
-         _oHttpServlet = oHttpServlet;
+         _oServletConfig = oServletConfig;
       }
 
       public void log( String sMessage )
       {
-         _oHttpServlet.log( sMessage );
+         _oServletConfig.getServletContext().log( sMessage );
       }
 
       public void log( String sMessage, Throwable oThrowable )
       {
-         _oHttpServlet.log( sMessage );
+         _oServletConfig.getServletContext().log( sMessage );
       }
    }
 }

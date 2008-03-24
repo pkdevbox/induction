@@ -1,12 +1,12 @@
 package com.acciente.dragonfly.model;
 
 import com.acciente.commons.reflect.Invoker;
-import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.init.Logger;
+import com.acciente.dragonfly.init.config.Config;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
@@ -19,15 +19,13 @@ import java.util.Map;
 public class ModelFactory
 {
    private ClassLoader     _oClassLoader;
-   private ServletContext  _oServletContext;
    private ServletConfig   _oServletConfig;
    private Logger          _oLogger;
    private Map             _oFactoryInstanceMap;
 
-   public ModelFactory( ClassLoader oClassLoader, ServletContext oServletContext, ServletConfig oServletConfig, Logger oLogger )
+   public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
    {
       _oClassLoader     = oClassLoader;
-      _oServletContext  = oServletContext;
       _oServletConfig   = oServletConfig;
       _oLogger          = oLogger;
 
@@ -35,7 +33,7 @@ public class ModelFactory
    }
 
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
-      throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
    {
       Object   oModel;
 
@@ -51,8 +49,7 @@ public class ModelFactory
                   .invoke( ReflectUtils
                                        .getSingletonConstructor( _oClassLoader.loadClass( oModelDef.getModelClassName() ) ),
                                     new Object[]
-                                    {  _oServletContext,
-                                       _oServletConfig,
+                                    {  _oServletConfig,
                                        _oLogger
                                     }
                                   );
@@ -97,7 +94,7 @@ public class ModelFactory
    }
 
    private Object getFactoryInstance( String sFactoryClassName )
-      throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
    {
       // first load the class (the class loader caches)
       Class oFactoryClass = _oClassLoader.loadClass( sFactoryClassName );
@@ -117,8 +114,7 @@ public class ModelFactory
                   .invoke( ReflectUtils
                                        .getSingletonConstructor( oFactoryClass ),
                                        new Object[]
-                                       {  _oServletContext,
-                                          _oServletConfig,
+                                       {  _oServletConfig,
                                           _oLogger
                                        }
                                     );

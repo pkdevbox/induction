@@ -11,7 +11,7 @@ public class HttpRequest extends HttpServletRequestWrapper implements Request
 {
    private HttpServletRequest _oRequest;
 
-   HttpRequest( HttpServletRequest oRequest )
+   public HttpRequest( HttpServletRequest oRequest )
    {
       super( oRequest );
       _oRequest = oRequest;

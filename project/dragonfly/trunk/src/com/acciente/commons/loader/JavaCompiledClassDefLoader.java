@@ -22,10 +22,9 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
    public ClassDef getClassDef( String sClassName ) throws ClassNotFoundException
    {
-      // first check if the classname is ok
-      if ( _sPackageNamePrefix != null && sClassName != null && ! sClassName.startsWith( _sPackageNamePrefix ) )
+      if ( sClassName == null )
       {
-         throw new IllegalArgumentException( "Class definition loader is restricted to class names that start with: " + _sPackageNamePrefix );
+         throw new IllegalArgumentException( "Class definition loader requires a classname, none specified!" );
       }
 
       return new JavaCompiledClassDef( sClassName, new File( _oCompiledDirectory, getFileNameFromClassName( sClassName ) ) );
@@ -33,10 +32,29 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
    private String getFileNameFromClassName( String sClassName )
    {
-      return ( _sPackageNamePrefix == null
-               ?  sClassName
-               :  sClassName.substring( _sPackageNamePrefix.length() + 1 )
-             ).replace( '.', '/' ) + ".class";
+      String   sFilename;
+
+      if ( _sPackageNamePrefix == null )
+      {
+         sFilename = sClassName.replace( '.', '/' ) + ".java";
+      }
+      else
+      {
+         // first check if the classname is ok
+         if ( ! sClassName.startsWith( _sPackageNamePrefix ) )
+         {
+            throw new IllegalArgumentException( "Class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix );
+         }
+
+         if ( sClassName.equals( _sPackageNamePrefix ) )
+         {
+            throw new IllegalArgumentException( "Specified classname is identical to package name prefix!" );
+         }
+
+         sFilename = sClassName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) + ".class";
+      }
+
+      return sFilename;
    }
 
    /**

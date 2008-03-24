@@ -13,7 +13,7 @@ public class HttpResponse extends HttpServletResponseWrapper implements Response
 {
    private  HttpServletResponse  _oResponse;
 
-   HttpResponse( HttpServletResponse oResponse )
+   public HttpResponse( HttpServletResponse oResponse )
    {
       super( oResponse );
       _oResponse = oResponse;

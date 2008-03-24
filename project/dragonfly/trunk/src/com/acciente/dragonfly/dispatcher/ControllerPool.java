@@ -8,7 +8,6 @@ import com.acciente.dragonfly.util.MethodNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
@@ -29,13 +28,11 @@ public class ControllerPool
    private Map             _oControllerCache = new Hashtable();
    private Logger          _oLogger;
    private ClassLoader     _oClassLoader;
-   private ServletContext  _oServletContext;
    private ServletConfig   _oServletConfig;
 
-   public ControllerPool( ClassLoader oClassLoader, ServletContext oServletContext, ServletConfig oServletConfig, Logger oLogger )
+   public ControllerPool( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
    {
       _oClassLoader     = oClassLoader;
-      _oServletContext  = oServletContext;
       _oServletConfig   = oServletConfig;
       _oLogger          = oLogger;
    }
@@ -91,12 +88,31 @@ public class ControllerPool
    private Controller createController( Class oControllerClass )
       throws ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
    {
-      return   ( Controller )
-               Invoker.invoke( ReflectUtils.getSingletonConstructor( oControllerClass ),
-                               new Object[]{ _oServletContext,
-                                             _oServletConfig
-                                           }
-                             );
+      Controller  oController;
+
+      oController
+         =  ( Controller )
+            Invoker.invoke( ReflectUtils.getSingletonConstructor( oControllerClass ),
+                            new Object[]{ _oServletConfig }
+                          );
+
+      Method   oConstructorMethod = null;
+      try
+      {
+         oConstructorMethod = ReflectUtils.getSingletonMethod( oController.getClass(), Controller.CONSTRUCTOR_METHOD_NAME );
+      }
+      catch ( MethodNotFoundException e )
+      {
+         // ok if no destructor is defined
+      }
+
+      // if we found a single public method
+      if ( oConstructorMethod != null )
+      {
+         oConstructorMethod.invoke( oController, new Object[]{ _oServletConfig } );
+      }
+
+      return oController;
    }
 
    private void destroyController( Controller oController )

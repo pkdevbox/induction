@@ -2,6 +2,10 @@ package com.acciente.dragonfly.dispatcher;
 
 import com.acciente.dragonfly.controller.Form;
 import com.acciente.dragonfly.controller.HTMLForm;
+import com.acciente.dragonfly.controller.HttpRequest;
+import com.acciente.dragonfly.controller.HttpResponse;
+import com.acciente.dragonfly.controller.Request;
+import com.acciente.dragonfly.controller.Response;
 import com.acciente.dragonfly.model.ModelLifeCycleManager;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +30,13 @@ public class ParamValueResolver
    {
       Object   oParamValue = null;
 
-      if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
+      if ( oParamClass.isAssignableFrom( Request.class ) )
       {
-         oParamValue = oRequest;
+         oParamValue = new HttpRequest( oRequest );
       }
-      else if ( oParamClass.isAssignableFrom( HttpServletResponse.class ) )
+      else if ( oParamClass.isAssignableFrom( Response.class ) )
       {
-         oParamValue = oResponse;
+         oParamValue = new HttpResponse( oResponse );
       }
       else if ( oParamClass.isAssignableFrom( Form.class ) )
       {

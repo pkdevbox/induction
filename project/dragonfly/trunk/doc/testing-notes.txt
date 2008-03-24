@@ -1,0 +1,31 @@
+DragonFly Testing Notes
+=======================
+
+This file was created to keep track of the tested modules and where possible the dependency relations between the modules.
+
+History
+-------
+3/23/2008  created
+
+Tested classes
+--------------
+
+- dragonfly.init
+
+  = ClassLoaderInitializer
+    = ReloadingClassLoader
+      = ByteCodeClassLoader
+      = JavaSourceClassDefLoader
+        = JavaCompilerManager
+          = JavaCompiler
+      = JavaCompiledClassDefLoader
+
+  # ConfigLoaderInitializer
+
+  # ControllerResolverInitializer
+  
+- dragonfly.dispatcher
+
+  * ControllerPool
+  
+  * HttpDispatcher
