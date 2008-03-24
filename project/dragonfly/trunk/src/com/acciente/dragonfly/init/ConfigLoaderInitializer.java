@@ -2,10 +2,10 @@ package com.acciente.dragonfly.init;
 
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.dragonfly.init.config.ConfigLoader;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -42,12 +42,12 @@ public class ConfigLoaderInitializer
     * Loads the configuration parameters used to configure every module in this dispatcher servlet.
     *
     * @param oLogger provides access to the dispatcher's primary logger
-    * @param oServletContext provides access to the dispatcher's servlet context
     * @param oServletConfig provides access to the dispatcher's servlet config
     *
     * @return a container with configuration values
     *
     * @throws ClassNotFoundException propagated exception
+    * @throws ConstructorNotFoundException propagated exception
     * @throws IllegalAccessException propagated exception
     * @throws InstantiationException propagated exception
     * @throws InvocationTargetException propagated exception
@@ -55,11 +55,16 @@ public class ConfigLoaderInitializer
     * Log
     * Mar 15, 2008 APR  -  created
     */
-   public static ConfigLoader getConfigLoader( ServletContext oServletContext, ServletConfig oServletConfig, Logger oLogger )
-      throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
+   public static ConfigLoader getConfigLoader( ServletConfig oServletConfig, Logger oLogger )
+      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       ConfigLoader oConfigLoader;
-      String         sConfigLoaderClassName = oServletConfig.getInitParameter( ConfigLoaderInitializer.CONFIG_LOADER_CLASS );
+      String         sConfigLoaderClassName;
+
+      sConfigLoaderClassName
+         =  oServletConfig.getInitParameter( oServletConfig.getServletName()
+                                             + "."
+                                             + ConfigLoaderInitializer.CONFIG_LOADER_CLASS );
 
       // first check if there is custom config loader defined
       if ( sConfigLoaderClassName == null )
@@ -80,9 +85,7 @@ public class ConfigLoaderInitializer
          oConfigLoader
             =  ( ConfigLoader )
                Invoker.invoke( ReflectUtils.getSingletonConstructor( oConfigLoaderClass ),
-                               new Object[]{ oServletContext,
-                                             oServletConfig
-                                           }
+                               new Object[]{ oServletConfig }
                              );
       }
 

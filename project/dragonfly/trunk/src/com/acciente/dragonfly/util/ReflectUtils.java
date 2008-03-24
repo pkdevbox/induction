@@ -18,8 +18,7 @@ public class ReflectUtils
 {
    /**
     * This method introspects into the specified class and checks if the class has only one public
-    * constructor. If one one constructor is found it is returned otherwise an IllegalArgumentException
-    * is thrown.
+    * constructor. If one one constructor is found it is returned otherwise an exception is thrown.
     *
     * @param oClass the class to introspect into
     * @return the single public constructor
@@ -44,6 +43,46 @@ public class ReflectUtils
       }
 
       return oConstructors[ 0 ];
+   }
+
+   /**
+    * This method introspects into the specified class and checks if the class has a public
+    * constructor with formal parameters (i.e. a no-arg constructor). If found it is returned
+    * otherwise an exception is thrown.
+    *
+    * @param oClass the class to introspect into
+    * @return the no-arg constructor
+    * @throws ConstructorNotFoundException if there are no no-arg constructors
+    */
+   public static Constructor getNoArgConstructor( Class oClass )
+      throws ConstructorNotFoundException
+   {
+      Constructor[] oConstructors = oClass.getConstructors();
+
+      // check if we have at least one public method with the specified name
+      if ( oConstructors.length == 0 )
+      {
+         throw new ConstructorNotFoundException( "class " + oClass.getName() + " has no public constructors" );
+      }
+
+      Constructor oConstructor = null;
+      for ( int i = 0; i < oConstructors.length; i++ )
+      {
+         oConstructor = oConstructors[ i ];
+
+         if ( oConstructor.getParameterTypes().length == 0 )
+         {
+            break;
+         }
+
+      }
+      // check the best case first
+      if ( oConstructor == null )
+      {
+         throw new ConstructorNotFoundException( "class " + oClass.getName() + " has " + oConstructors.length + " public constructors, but none are no-arg constructors" );
+      }
+
+      return oConstructor;
    }
 
    /**

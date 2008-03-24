@@ -1,6 +1,5 @@
 package com.acciente.dragonfly.dispatcher.resolver;
 
-import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
 import com.acciente.dragonfly.init.config.Config;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,17 +47,20 @@ public class URLPathControllerResolver implements ControllerResolver
 
       String   sPath = oRequest.getPathInfo();
 
-      if ( sPath != null )
+      if ( sPath != null && sPath.length() > 1 )
       {
          if ( sPath.endsWith( "/" ) )
          {
             // no method name specified
-            sClassName  =  sPath.substring( 0, sPath.length() - 1 ).replace( '/', '.' );
+            sClassName  =  sPath.substring( 1, sPath.length() - 1 ).replace( '/', '.' );
             sMethodName =  _sDefaultHandlerMethodName;
          }
          else
          {
-            int iIndexOfLastSlash = sPath.lastIndexOf( "/" );
+            int iIndexOfLastSlash;
+
+            // we assume that a path always has a / as the first character
+            iIndexOfLastSlash = sPath.substring( 1 ).lastIndexOf( "/" );
 
             if ( iIndexOfLastSlash == -1 )
             {
@@ -69,8 +71,8 @@ public class URLPathControllerResolver implements ControllerResolver
             else
             {
                // ok slash found, so assume what comes after the last slash is a method name
-               sClassName  =  sPath.substring( 0, iIndexOfLastSlash ).replace( '/', '.' );
-               sMethodName =  sPath.substring( iIndexOfLastSlash + 1 );
+               sClassName  =  sPath.substring( 1, iIndexOfLastSlash + 1 ).replace( '/', '.' );
+               sMethodName =  sPath.substring( iIndexOfLastSlash + 2 );
             }
          }
 
