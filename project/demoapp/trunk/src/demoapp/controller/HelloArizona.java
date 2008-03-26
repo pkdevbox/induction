@@ -8,29 +8,27 @@ import java.io.IOException;
 
 public class HelloArizona implements Controller
 {
-	CompiledClass oCompiledClass;
-
-	public HelloArizona()
+	public void init()
 	{
-		oCompiledClass = new CompiledClass( "HelloArizona.CompiledClass", null );
-
-      System.out.println( "oCompiledClass" + oCompiledClass );
-
-      System.out.println( "Hello from HelloArizona(Phoenix) constructor" );
-      System.out.println( "Hello from HelloArizona(Scottsdale) constructor" );
-      System.out.println( "Hello from HelloArizona(Kayenta) constructor" );
+      System.out.println( "HelloArizona(): init" );
 	}
 
 	public void handler( Response oResponse ) throws IOException
    {
-		oResponse.out().println( "Hello Generic! from handler() in HelloArizona" );
+      oResponse.out().println( "handler( Response oResponse ): hello" );
 	}
 
-   public void john( Response oResponse ) throws IOException
+   public void another( Response oResponse ) throws IOException
    {
+      oResponse.out().println( "another( Response oResponse ): hello" );
       for ( int i = 0; i < 900; i++ )
       {
-         oResponse.out().println( "<br>" + i + ": Hello John! this is the HelloArizona controller" );
+         oResponse.out().println( "<br>" + i + ": random text" );
       }
+   }
+
+   public void destroy()
+   {
+      System.out.println( "HelloArizona(): destroy - 4" );
    }
 }
