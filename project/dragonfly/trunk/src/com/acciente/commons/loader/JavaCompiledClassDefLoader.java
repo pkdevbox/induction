@@ -24,7 +24,7 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
    {
       if ( sClassName == null )
       {
-         throw new IllegalArgumentException( "Class definition loader requires a classname, none specified!" );
+         throw new IllegalArgumentException( "class definition loader requires a classname, none specified!" );
       }
 
       return new JavaCompiledClassDef( sClassName, new File( _oCompiledDirectory, getFileNameFromClassName( sClassName ) ) );
@@ -43,12 +43,12 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
          // first check if the classname is ok
          if ( ! sClassName.startsWith( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "Class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix );
+            throw new IllegalArgumentException( "class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix + ", classname: " + sClassName );
          }
 
          if ( sClassName.equals( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "Specified classname is identical to package name prefix!" );
+            throw new IllegalArgumentException( "specified classname is identical to package name prefix!" );
          }
 
          sFilename = sClassName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) + ".class";
@@ -122,7 +122,7 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
    {
       if ( sPackageNamePrefix != null && sPackageNamePrefix.endsWith( "." ) )
       {
-         throw new IllegalArgumentException( "The package name prefix should be not be terminated by a period" );
+         throw new IllegalArgumentException( "the package name prefix should be not be terminated by a period" );
       }
       _sPackageNamePrefix = sPackageNamePrefix;
    }

@@ -54,7 +54,7 @@ public class ByteCodeClassLoader extends SecureClassLoader
     *
     * @param sClassName the name of the class to load
     * @return a newly loaded Class object representing sClassName
-    * @throws ClassNotFoundException thrown if this method was unable to load a clas corresponding to sClassName 
+    * @throws ClassNotFoundException thrown if this method was unable to load a clas corresponding to sClassName
     */
    protected Class findClass( String sClassName ) throws ClassNotFoundException
    {
