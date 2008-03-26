@@ -1,14 +1,15 @@
 package com.acciente.dragonfly.dispatcher;
 
 import com.acciente.dragonfly.controller.Controller;
-import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
+import com.acciente.dragonfly.resolver.ControllerResolver;
 import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
 import com.acciente.dragonfly.init.ControllerResolverInitializer;
 import com.acciente.dragonfly.init.Logger;
 import com.acciente.dragonfly.init.config.Config;
-import com.acciente.dragonfly.model.ModelFactory;
-import com.acciente.dragonfly.model.ModelLifeCycleManager;
+import com.acciente.dragonfly.dispatcher.model.ModelFactory;
+import com.acciente.dragonfly.dispatcher.model.ModelPool;
+import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.MethodNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
@@ -31,7 +32,7 @@ public class HttpDispatcher extends HttpServlet
    private  ControllerResolver      _oControllerResolver;
    private  ControllerPool          _oControllerPool;
    private  ParamValueResolver      _oParamValueResolver;
-   private  Logger _oLogger;
+   private  Logger                  _oLogger;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
@@ -99,7 +100,7 @@ public class HttpDispatcher extends HttpServlet
 
       // setup ...
       _oParamValueResolver
-         =  new ParamValueResolver( new ModelLifeCycleManager( oConfig.getModelDefs(),
+         =  new ParamValueResolver( new ModelPool( oConfig.getModelDefs(),
                                                                new ModelFactory( oClassLoader,
                                                                                  oServletConfig,
                                                                                  _oLogger

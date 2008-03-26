@@ -7,11 +7,15 @@ History
 -------
 3/23/2008  created
 
-Tested classes
---------------
+Class test tracker
+------------------
 
-- dragonfly.init
+# pending
+= done
+* in progress
 
+
+# dragonfly.init
   = ClassLoaderInitializer
     = ReloadingClassLoader
       = ByteCodeClassLoader
@@ -19,13 +23,9 @@ Tested classes
         = JavaCompilerManager
           = JavaCompiler
       = JavaCompiledClassDefLoader
-
   # ConfigLoaderInitializer
-
   # ControllerResolverInitializer
   
-- dragonfly.dispatcher
-
-  * ControllerPool
-  
+# dragonfly.dispatcher
+  = ControllerPool
   * HttpDispatcher

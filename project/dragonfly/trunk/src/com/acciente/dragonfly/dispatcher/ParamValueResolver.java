@@ -6,10 +6,13 @@ import com.acciente.dragonfly.controller.HttpRequest;
 import com.acciente.dragonfly.controller.HttpResponse;
 import com.acciente.dragonfly.controller.Request;
 import com.acciente.dragonfly.controller.Response;
-import com.acciente.dragonfly.model.ModelLifeCycleManager;
+import com.acciente.dragonfly.dispatcher.model.ModelPool;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
+import com.acciente.dragonfly.util.MethodNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class handles the resolution of parameter values used for injection into controller methods.
@@ -19,14 +22,15 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ParamValueResolver
 {
-   private ModelLifeCycleManager _oModelLifeCycleManager;
+   private ModelPool _oModelPool;
 
-   public ParamValueResolver( ModelLifeCycleManager oModelLifeCycleManager )
+   public ParamValueResolver( ModelPool oModelPool )
    {
-      _oModelLifeCycleManager = oModelLifeCycleManager;
+      _oModelPool = oModelPool;
    }
 
    public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       Object   oParamValue = null;
 
@@ -42,10 +46,18 @@ public class ParamValueResolver
       {
          oParamValue = new HTMLForm( oRequest );
       }
+      else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
+      {
+         oParamValue = oRequest;
+      }
+      else if ( oParamClass.isAssignableFrom( HttpServletResponse.class ) )
+      {
+         oParamValue = oResponse;
+      }
       else
       {
          // check to see if this is a model class
-         oParamValue = _oModelLifeCycleManager.getModel( oParamClass, oRequest );
+         oParamValue = _oModelPool.getModel( oParamClass, oRequest );
       }
 
       return oParamValue;

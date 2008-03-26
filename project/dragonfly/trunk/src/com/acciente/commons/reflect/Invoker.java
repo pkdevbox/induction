@@ -100,7 +100,7 @@ public class Invoker
       {
          for ( int i = 0; i < aoArgs.length; i++ )
          {
-            if ( isAssignableToPrimitive( aoArgs[ i ].getClass(), oType ) )
+            if ( aoArgs[ i ] != null && isAssignableToPrimitive( aoArgs[ i ].getClass(), oType ) )
             {
                oArgMatch = aoArgs[ i ];
                break;
@@ -111,7 +111,7 @@ public class Invoker
       {
          for ( int i = 0; i < aoArgs.length; i++ )
          {
-            if ( ( aoArgs[ i ].getClass().equals( oType ) ) )
+            if ( aoArgs[ i ] != null && aoArgs[ i ].getClass().equals( oType ) )
             {
                oArgMatch = aoArgs[ i ];
                break;

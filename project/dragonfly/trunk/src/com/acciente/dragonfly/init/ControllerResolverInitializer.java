@@ -1,8 +1,8 @@
 package com.acciente.dragonfly.init;
 
 import com.acciente.commons.reflect.Invoker;
-import com.acciente.dragonfly.dispatcher.resolver.ControllerResolver;
-import com.acciente.dragonfly.dispatcher.resolver.URLPathControllerResolver;
+import com.acciente.dragonfly.resolver.ControllerResolver;
+import com.acciente.dragonfly.resolver.URLPathControllerResolver;
 import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;

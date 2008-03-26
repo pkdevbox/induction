@@ -15,22 +15,13 @@ public class TestConfig_DemoApp implements ConfigLoader
    {
       Config   oConfig = new Config();
 
-      // the paths are intended to be relative the project directory
-      /**
+      // the paths are intended try the location(s) on the work and home machines
       oConfig
          .getJavaClassPath()
-            .addSourceDir( new File( "../../../demoapp/subversion/src/demoapp/controller/" ), "demoapp.controller" );
+            .addCompiledDir( new File( "t:/acciente-projects/software/project/demoapp/class/demoapp/controller/" ), "demoapp.controller" );
       oConfig
          .getJavaClassPath()
-            .addCompiledDir( new File( "../../../demoapp/class" ), null );
-
-      oConfig
-         .getTemplatePath()
-            .addTemplateDir( new File( "../../../demoapp/template" ) );
-      **/
-      oConfig
-         .getJavaClassPath()
-            .addCompiledDir( new File( "/acciente/acciente-projects/software/project/demoapp/class/demoapp/controller/" ), "demoapp.controller" );
+            .addCompiledDir( new File( "c:/acciente/acciente-projects/software/project/demoapp/class/demoapp/controller/" ), "demoapp.controller" );
 
       return oConfig;
    }
