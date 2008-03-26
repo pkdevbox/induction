@@ -2,6 +2,7 @@ package demoapp.controller;
 
 import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.controller.Response;
+import demoapp.model.Counter;
 
 import java.io.IOException;
 
@@ -19,13 +20,33 @@ public class Signup implements Controller
       oResponse.out().println( "post( Response oResponse ): hello 1" );
    }
 
-   public void save( Response oResponse ) 
+   public void save( Response oResponse )
       throws IOException
    {
       oResponse.setContentType( "text/plain" );
 
       oResponse.out().println( "save( Response oResponse ): hello 1" );
       oResponse.out().println( "save( Response oResponse ): hello 2" );
+   }
+
+   public void showCounter( Response oResponse, Counter oCounter )
+      throws IOException
+   {
+      oResponse.out().println( "count is: " + oCounter.getCount() );
+   }
+
+   public void incrementCounter( Response oResponse, Counter oCounter )
+      throws IOException
+   {
+      oCounter.increment();
+      oResponse.out().println( "count incremented to: " + oCounter.getCount() );
+   }
+
+   public void decrementCounter( Response oResponse, Counter oCounter )
+      throws IOException
+   {
+      oCounter.decrement();
+      oResponse.out().println( "count decremented to: "  + oCounter.getCount() );
    }
 }
 
