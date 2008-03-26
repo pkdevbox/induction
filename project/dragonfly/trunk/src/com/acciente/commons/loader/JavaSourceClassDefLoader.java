@@ -30,12 +30,12 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
    {
       if ( sClassName == null )
       {
-         throw new IllegalArgumentException( "Class definition loader requires a classname, none specified!" );
+         throw new IllegalArgumentException( "class definition loader requires a classname, none specified!" );
       }
 
       if ( _oJavaCompilerManager == null )
       {
-         throw new IllegalStateException( "No compiler manager defined, unable to load class from source, class: " + sClassName );
+         throw new IllegalStateException( "no compiler manager defined, unable to load class from source, class: " + sClassName );
       }
 
       return new JavaSourceClassDef( sClassName, new File( _oSourceDirectory, getFileNameFromClassName( sClassName ) ), _oJavaCompilerManager );
@@ -54,12 +54,12 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
          // first check if the classname is ok
          if ( ! sClassName.startsWith( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "Class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix );
+            throw new IllegalArgumentException( "class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix + ", classname: " + sClassName );
          }
 
          if ( sClassName.equals( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "Specified classname is identical to package name prefix!" );
+            throw new IllegalArgumentException( "specified classname is identical to package name prefix!" );
          }
 
          sFilename = sClassName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) + ".java";
@@ -133,7 +133,7 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
    {
       if ( sPackageNamePrefix != null && sPackageNamePrefix.endsWith( "." ) )
       {
-         throw new IllegalArgumentException( "The package name prefix should be not be terminated by a period" );
+         throw new IllegalArgumentException( "the package name prefix should be not be terminated by a period" );
       }
       _sPackageNamePrefix = sPackageNamePrefix;
    }

@@ -122,7 +122,7 @@ public class HttpDispatcher extends HttpServlet
       ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest );
       if ( oResolution == null )
       {
-         logAndRespond( oResponse, "dispatch: request did not resolve to a controller", null );
+         logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
          return;
       }
 
@@ -133,27 +133,27 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( ClassNotFoundException e )
       {
-         logAndRespond( oResponse, "dispatch: unable to load controller definition", e );
+         logAndRespond( oResponse, "dispatch-controller: unable to load definition", e );
          return;
       }
       catch ( ConstructorNotFoundException e )
       {
-         logAndRespond( oResponse, "dispatch: unable to find controller constructor", e );
+         logAndRespond( oResponse, "dispatch-controller: unable to find constructor", e );
          return;
       }
       catch ( InstantiationException e )
       {
-         logAndRespond( oResponse, "dispatch: controller instantiate error", e );
+         logAndRespond( oResponse, "dispatch-controller: instantiate error", e );
          return;
       }
       catch ( InvocationTargetException e )
       {
-         logAndRespond( oResponse, "dispatch: controller constructor or destructor threw an exception", e );
+         logAndRespond( oResponse, "dispatch-controller: target exception", e );
          return;
       }
       catch ( IllegalAccessException e )
       {
-         logAndRespond( oResponse, "dispatch: controller constructor or destructor access error", e );
+         logAndRespond( oResponse, "dispatch-controller: access exception", e );
          return;
       }
 
@@ -167,7 +167,7 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( MethodNotFoundException e )
       {
-         logAndRespond( oResponse, "dispatch: controller method not found", e );
+         logAndRespond( oResponse, "dispatch-controller: method not found", e );
          return;
       }
 
@@ -179,12 +179,47 @@ public class HttpDispatcher extends HttpServlet
       {
          Class oParameterType = aoParameterTypes[ i ];
 
-         aoParameterValues[ i ] = _oParamValueResolver.getParameterValue( oParameterType, oRequest, oResponse );
+         try
+         {
+            aoParameterValues[ i ] = _oParamValueResolver.getParameterValue( oParameterType, oRequest, oResponse );
+         }
+         catch ( ClassNotFoundException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: unable to load model definition", e );
+            return;
+         }
+         catch ( ConstructorNotFoundException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: constructor not found", e );
+            return;
+         }
+         catch ( MethodNotFoundException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: method not found", e );
+            return;
+         }
+         catch ( InvocationTargetException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: target exception", e );
+            return;
+         }
+         catch ( IllegalAccessException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: access exception", e );
+            return;
+         }
+         catch ( InstantiationException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: instantiate exception", e );
+            return;
+         }
       }
 
       // finally call the controller method!
       try
       {
+         // todo: currently if any of the model classes reload above this invoke fails
+         // todo: one solution that may work would be to reload the controller 
          oControllerMethod.invoke( oController, aoParameterValues );
       }
       catch ( IllegalAccessException e )

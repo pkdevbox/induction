@@ -108,9 +108,9 @@ public class ReloadingClassLoader extends SecureClassLoader
    {
       ClassDef oClassDef = oClassControlBlock.getClassDef();
 
-      // load the compile class using a new classloader, I am not setting this classloader
-      // as the parent since that would seem to cause a cyclical relationship
-      ByteCodeClassLoader oByteCodeClassLoader = new ByteCodeClassLoader( getParent() );
+      // load the compile class using a new classloader, we set ourself as the parent classloader
+      // so that this new child correctly delegates to us before delegating to our parent classloader
+      ByteCodeClassLoader oByteCodeClassLoader = new ByteCodeClassLoader( this );
 
       // put the definitions in the classloader
       oByteCodeClassLoader.addClassDef( oClassDef.getClassName(), oClassDef.getByteCode() );
@@ -128,7 +128,12 @@ public class ReloadingClassLoader extends SecureClassLoader
 
       // load the main (i.e. public) class defined in the source file using our new classloader
       // and cache the new class in the class control block
-      oClassControlBlock.setLastLoadedClass( oByteCodeClassLoader.loadClass( oClassControlBlock.getClassName() ) );
+
+      // NOTE: it is crucil that use findClass() below instead of loadClass() to load the new class,
+      // since the parent of oByteCodeClassLoader is this classloader instance (set in call to ByteCodeClassLoader
+      // constructor above) so if loadClass() called due to the way it loadClass() always delegates to the parent
+      // we would enter into an infinite recursion
+      oClassControlBlock.setLastLoadedClass( oByteCodeClassLoader.findClass( oClassControlBlock.getClassName() ) );
 
       return oClassControlBlock.getLastLoadedClass();
    }
