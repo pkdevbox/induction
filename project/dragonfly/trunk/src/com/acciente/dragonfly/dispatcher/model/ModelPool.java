@@ -1,25 +1,29 @@
-package com.acciente.dragonfly.model;
+package com.acciente.dragonfly.dispatcher.model;
 
 import com.acciente.dragonfly.init.config.Config;
+import com.acciente.dragonfly.util.MethodNotFoundException;
+import com.acciente.dragonfly.util.ConstructorNotFoundException;
+import com.acciente.dragonfly.util.ObjectFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Hashtable;
 import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
- * This class manages access to the model objects.
+ * This class manages access to the pool model objects
  *
  * Log
  * Mar 16, 2008 APR  -  created
  */
-public class ModelLifeCycleManager
+public class ModelPool
 {
    private Config.ModelDefs   _oModelDefs;
    private Map                _oAppScopeModelMap;
    private ModelFactory       _oModelFactory;
 
-   public ModelLifeCycleManager( Config.ModelDefs oModelDefs, ModelFactory oModelFactory )
+   public ModelPool( Config.ModelDefs oModelDefs, ModelFactory oModelFactory )
    {
       _oModelDefs          = oModelDefs;
       _oModelFactory       = oModelFactory;
@@ -27,6 +31,7 @@ public class ModelLifeCycleManager
    }
 
    public Object getModel( Class oModelClass, HttpServletRequest oRequest )
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       // first find the model definition object for this model class to determine the scope of this model
       Config.ModelDefs.ModelDef oModelDef = _oModelDefs.getModelDef( oModelClass.getName() );
@@ -49,7 +54,7 @@ public class ModelLifeCycleManager
       }
       else if ( oModelDef.isRequestScope() )
       {
-         oModel = getRequestScopeModel( oModelDef );
+         oModel = getRequestScopeModel( oModelDef, oRequest );
       }
       else
       {
@@ -60,54 +65,66 @@ public class ModelLifeCycleManager
    }
 
    private Object getApplicationScopeModel( Config.ModelDefs.ModelDef oModelDef, Class oModelClass )
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
-      String   sInstanceKey;
       Object   oModel;
 
-      // the instance key is intended to be unique for each model instance+class, we add the hashCode() to
-      // so that if the model class is dynamically reloaded the model instance will get recreated
-      sInstanceKey = oModelClass.getName() + oModelClass.hashCode();
-      oModel       = _oAppScopeModelMap.get( sInstanceKey );
+      oModel = _oAppScopeModelMap.get( oModelClass.getName() );
+
+      if ( oModel != null && _oModelFactory.isModelStale( oModelDef, oModel ) )
+      {
+         ObjectFactory.destroyObject( oModel );
+
+         _oAppScopeModelMap.remove( oModelClass.getName() );
+
+         oModel = null;
+      }
 
       if ( oModel == null )
       {
-         // todo: fix call below
+         oModel = _oModelFactory.createModel( oModelDef, null );
 
-         //_oAppScopeModelMap.put( sInstanceKey, _oModelFactory.createModel( oModelDef ) );
+         _oAppScopeModelMap.put( oModelClass.getName(), oModel );
       }
 
       return oModel;
    }
 
    private Object getSessionScopeModel( Config.ModelDefs.ModelDef oModelDef, Class oModelClass, HttpServletRequest oRequest )
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       HttpSession oHttpSession;
-      String      sInstanceKey;
       Object      oModel;
 
       oHttpSession = oRequest.getSession( true );
-      // the instance key is intended to be unique for each model instance+class, we add the hashCode() to
-      // so that if the model class is dynamically reloaded the model instance will get recreated
-      sInstanceKey = oModelClass.getName() + oModelClass.hashCode();
-      oModel       = oHttpSession.getAttribute( sInstanceKey );
+
+      oModel = oHttpSession.getAttribute( oModelClass.getName() );
+
+      if ( oModel != null && _oModelFactory.isModelStale( oModelDef, oModel ) )
+      {
+         ObjectFactory.destroyObject( oModel );
+
+         oHttpSession.removeAttribute( oModelClass.getName() );
+
+         oModel = null;
+      }
 
       if ( oModel == null )
       {
-         // todo: fix call below
-         //oHttpSession.setAttribute( sInstanceKey, _oModelFactory.createModel( oModelDef ) );
+         oModel = _oModelFactory.createModel( oModelDef, null );
+
+         oHttpSession.setAttribute( oModelClass.getName(), oModel );
       }
 
       return oModel;
    }
 
-   private Object getRequestScopeModel( Config.ModelDefs.ModelDef oModelDef )
+   private Object getRequestScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oRequest )
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       // a request scope object essentially only lasts for the duration of the method invocation so
-      // there is no need to cache a copy of the model instance for reuse
-
-      // todo: fix call below
-      //return _oModelFactory.createModel( oModelDef );
-      return null;
+      // there is no need to pool a copy of the model instance for reuse
+      return _oModelFactory.createModel( oModelDef, oRequest );
    }
 }
 

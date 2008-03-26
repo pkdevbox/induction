@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.dispatcher.resolver;
+package com.acciente.dragonfly.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

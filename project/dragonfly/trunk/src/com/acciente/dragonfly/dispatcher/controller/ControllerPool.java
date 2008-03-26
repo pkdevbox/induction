@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.dispatcher;
+package com.acciente.dragonfly.dispatcher.controller;
 
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.dragonfly.controller.Controller;
@@ -6,6 +6,7 @@ import com.acciente.dragonfly.init.Logger;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.MethodNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
+import com.acciente.dragonfly.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -17,8 +18,6 @@ import java.util.Map;
  * This class manages a pool of Controller object instances. If a controller object is in the pool and it's underlying
  * class has not since reloaded the object in the pool is used, otherwise a new controller object is instantiated. There
  * is a single instance of this class per dispatcher servlet.
- *
- * todo: testing pending
  *
  * Log
  * Mar 20, 2008 APR  -  created
@@ -71,7 +70,7 @@ public class ControllerPool
          {
             // yes the class has been reloaded so decommission the previous controller
             // and then create a new controller instance
-            destroyController( oController );
+            ObjectFactory.destroyObject( oController );
 
             // we have to remove the invalid controller from the cache, otherwise if the createController()
             // below throws an exception an invalid controller would be left in the cache
@@ -88,52 +87,7 @@ public class ControllerPool
    private Controller createController( Class oControllerClass )
       throws ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
    {
-      Controller  oController;
-
-      oController
-         =  ( Controller )
-            Invoker.invoke( ReflectUtils.getSingletonConstructor( oControllerClass ),
-                            new Object[]{ _oServletConfig }
-                          );
-
-      Method   oConstructorMethod = null;
-      try
-      {
-         oConstructorMethod = ReflectUtils.getSingletonMethod( oController.getClass(), Controller.CONSTRUCTOR_METHOD_NAME );
-      }
-      catch ( MethodNotFoundException e )
-      {
-         // ok if no destructor is defined
-      }
-
-      // if we found a single public method
-      if ( oConstructorMethod != null )
-      {
-         oConstructorMethod.invoke( oController, new Object[]{ _oServletConfig } );
-      }
-
-      return oController;
-   }
-
-   private void destroyController( Controller oController )
-      throws InvocationTargetException, IllegalAccessException
-   {
-      Method   oDestructorMethod = null;
-
-      try
-      {
-         oDestructorMethod = ReflectUtils.getSingletonMethod( oController.getClass(), Controller.DESTRUCTOR_METHOD_NAME );
-      }
-      catch ( MethodNotFoundException e )
-      {
-         // ok if no destructor is defined
-      }
-
-      // if we found a single public method, use it only it expects no parameters
-      if ( oDestructorMethod != null && oDestructorMethod.getParameterTypes().length == 0 )
-      {
-         oDestructorMethod.invoke( oController, null );
-      }
+      return ( Controller ) ObjectFactory.createObject( oControllerClass, new Object[]{ _oServletConfig } );
    }
 }
 

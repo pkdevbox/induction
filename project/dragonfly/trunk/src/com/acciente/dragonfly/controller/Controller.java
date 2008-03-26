@@ -16,7 +16,7 @@ package com.acciente.dragonfly.controller;
  * A class implementing this interface may optionally define a single public method
  * named init(). If defined this method will be called after the controller is
  * created using the constructor. The init() method if defined should have its
- * formal parameter list observe the same convention as the constructor.
+ * formal parameter list observe the convention described above for the constructor.
  *
  * A class implementing this interface may optionally define a single public method
  * named destroy(). If defined this method will be called when the controller instance is
@@ -28,8 +28,6 @@ package com.acciente.dragonfly.controller;
  */
 public interface Controller
 {
-   public static final String CONSTRUCTOR_METHOD_NAME = "init";
-   public static final String DESTRUCTOR_METHOD_NAME  = "destroy";
 }
 
 // EOF

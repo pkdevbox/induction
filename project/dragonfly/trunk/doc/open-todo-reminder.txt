@@ -54,3 +54,5 @@
 [03/23/2008]    
 
 - Java 6 compiler integration
+
+- find usages of .. and replace with ObjectFactory
