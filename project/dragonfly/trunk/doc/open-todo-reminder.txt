@@ -48,11 +48,23 @@
     - upgraded laptop to latest version of Tortoise
     - deleted working copy of source on laptop (c:), and checked out a new working copy from the repository on the flash drive
 
-  - todos
-    - repository backups
+  = todos
+    = repository backups
     
 [03/23/2008]    
 
 - Java 6 compiler integration
-
 - find usages of .. and replace with ObjectFactory
+
+[03/28/2008]
+
+- plan moving forward
+
+  - complete form processing module except file upload (acciente will write it own upload handler)
+  
+  - complete all other outstanding todos except XML config loader
+  
+  - integrate freemarker templating engine
+  
+  - celebrate :)
+

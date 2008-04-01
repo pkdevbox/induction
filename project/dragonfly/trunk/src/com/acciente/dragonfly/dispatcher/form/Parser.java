@@ -3,6 +3,7 @@ package com.acciente.dragonfly.dispatcher.form;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.StringReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,15 @@ public class Parser
       }
 
       return oForm;
+   }
+
+   public static ParameterSpec parseParameterSpec( String sInput )
+      throws ParserException, IOException
+   {
+      Tokenizer oTokenizer = new Tokenizer( new StringReader( sInput ) );
+
+      // todo: add special handling in parseParameterSpec() when call with only an param spec not trailed by a '=' 
+      return parseParameterSpec( oTokenizer );
    }
 
    private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer )
