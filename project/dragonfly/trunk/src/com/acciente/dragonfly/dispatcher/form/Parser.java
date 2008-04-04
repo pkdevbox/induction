@@ -60,6 +60,9 @@ public class Parser
       ParameterSpec oParameterSpec = null;
 
       // step 1: determine the parameter type and identifier
+
+      // the first token we read is either a parameter type or an identifier name,
+      // in the latter case the parameter type is implied to be string
       sSavedToken = oTokenizer.token().trim().toLowerCase();
       oTokenizer.nextToken(); assertNotEOS( oTokenizer );
 
