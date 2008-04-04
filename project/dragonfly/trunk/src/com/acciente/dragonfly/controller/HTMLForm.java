@@ -84,7 +84,8 @@ public class HTMLForm implements Form
          // check how the POST data has been encoded
          if ( ServletFileUpload.isMultipartContent( oRequest ) )
          {
-            oPOSTParams = parsePOSTMultiPart( oRequest );
+            // todo: integrate param parser
+            // oPOSTParams = parsePOSTMultiPart( oRequest );
          }
          else
          {
@@ -130,7 +131,8 @@ public class HTMLForm implements Form
          // so this allowing the array and map variable syntaxes even in multi-part mode
          if ( oFileItem.isFormField() )
          {
-            Parser.parseParameterSpec(  )
+            // todo: integrate param parser
+            // Parser.parseParameterSpec(  )
          }
       }
    }
