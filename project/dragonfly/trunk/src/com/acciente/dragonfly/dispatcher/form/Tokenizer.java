@@ -43,7 +43,9 @@ public class Tokenizer
          {
             _sCurrentToken = _oStreamTokenizer.sval;
          }
-         else if ( iTokenType == Symbols.CHAR_COLON || iTokenType == Symbols.CHAR_OPEN_BRACKET || iTokenType == Symbols.CHAR_CLOSE_BRACKET )
+         else if ( iTokenType == Symbols.CHAR_COLON
+                     || iTokenType == Symbols.CHAR_OPEN_BRACKET
+                     || iTokenType == Symbols.CHAR_CLOSE_BRACKET )
          {
             _sCurrentToken = String.valueOf( ( char ) iTokenType );
          }

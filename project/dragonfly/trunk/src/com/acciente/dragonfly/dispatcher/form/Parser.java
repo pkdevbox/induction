@@ -3,7 +3,6 @@ package com.acciente.dragonfly.dispatcher.form;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.io.StringReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,92 +18,125 @@ import java.util.Map;
  */
 public class Parser
 {
-   public static Map parse( Reader oInput, boolean bURLEncoded ) throws ParserException, IOException
+   public static Map parseForm( Reader oInput, boolean bURLEncoded ) throws ParserException, IOException
    {
       Tokenizer   oTokenizer = new Tokenizer( oInput );
       Map         oForm      = new HashMap();
 
       if ( oTokenizer.nextToken() )
       {
-         addParameter2Form( oForm, parseParameterSpec( oTokenizer ), parseData( oTokenizer ), bURLEncoded );
+         ParameterSpec  oParameterSpec;
+
+         oParameterSpec = parseParameterSpec( oTokenizer );
+
+         parseEQUALS( oTokenizer, oParameterSpec.getIdentifier() );
+
+         addParameter2Form( oForm, oParameterSpec, parseData( oTokenizer ), bURLEncoded );
 
          while ( oTokenizer.hasMoreTokens() )
          {
-            if ( ! oTokenizer.token().equals( Symbols.TOKEN_AMPERSAND ) )
-            {
-               throw new ParserException( "Syntax error, expected " + Symbols.TOKEN_AMPERSAND + " got: " + oTokenizer.token() );
-            }
-            oTokenizer.nextToken();
+            parseAMPERSAND( oTokenizer );
 
-            addParameter2Form( oForm, parseParameterSpec( oTokenizer ), parseData( oTokenizer ), bURLEncoded );
+            oParameterSpec = parseParameterSpec( oTokenizer );
+
+            parseEQUALS( oTokenizer, oParameterSpec.getIdentifier() );
+
+            addParameter2Form( oForm, oParameterSpec, parseData( oTokenizer ), bURLEncoded );
          }
       }
 
       return oForm;
    }
 
-   public static ParameterSpec parseParameterSpec( String sInput )
+   public static ParameterSpec parseParameterSpec( Reader oReader )
       throws ParserException, IOException
    {
-      Tokenizer oTokenizer = new Tokenizer( new StringReader( sInput ) );
+      Tokenizer oTokenizer = new Tokenizer( oReader );
 
-      // todo: add special handling in parseParameterSpec() when call with only an param spec not trailed by a '=' 
+      oTokenizer.nextToken(); // read the first token
+
+      // todo: add special handling in parseParameterSpec() when call with only an param spec not trailed by a '='
       return parseParameterSpec( oTokenizer );
    }
 
    private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer )
       throws ParserException, IOException
    {
-      String         sSavedToken;
+      String         sTypeOrIdentifier;
       String         sType, sIdentifier;
       ParameterSpec oParameterSpec = null;
 
-      // step 1: determine the parameter type and identifier
+      // -- step 1: determine the parameter type and identifier
+
+      // a parameter spec must have at least one token, the simplest parameter
+      // spec would be a just an identifier
+      assertNotEOS( oTokenizer );
 
       // the first token we read is either a parameter type or an identifier name,
       // in the latter case the parameter type is implied to be string
-      sSavedToken = oTokenizer.token().trim().toLowerCase();
-      oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+      sTypeOrIdentifier = oTokenizer.token().trim();
+      oTokenizer.nextToken();
 
-      if ( oTokenizer.token().equals( Symbols.TOKEN_COLON ) )
+      if ( oTokenizer.hasMoreTokens() && oTokenizer.token().equals( Symbols.TOKEN_COLON ) )
       {
-         sType = sSavedToken;
+         // we see a TOKEN_COLON so sTypeOrIdentifier must be an explicit
+         // type spec for the parameter
+         sType = sTypeOrIdentifier.toLowerCase();
 
-         // the next token should be the identifier
-         oTokenizer.nextToken(); assertNotEOS( oTokenizer );
-         sIdentifier = oTokenizer.token().trim().toLowerCase();
+         // consume TOKEN_COLON
+         oTokenizer.nextToken();
+
+         // if there was a TOKEN_COLON there must be something after it
+         assertNotEOS( oTokenizer );
+
+         // this token should be the identifier
+         sIdentifier = oTokenizer.token().trim();
 
          // consume identifier token
-         oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+         oTokenizer.nextToken();
       }
       else
       {
-         // no type was given, so the saved token is the identifier name
+         // no type was given, so sTypeOrIdentifier contains the identifier name
          // and the type defaults to STRING
-         sIdentifier = sSavedToken;
-         sType = Symbols.TOKEN_VARTYPE_STRING;
+         sIdentifier = sTypeOrIdentifier;
+         sType       = Symbols.TOKEN_VARTYPE_STRING;
       }
 
-      // step 2: proces the list or map parameter syntax, if any
-      if ( oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
+      // -- step 2: process the list or map parameter syntax, if any
+
+      if ( ( ! oTokenizer.hasMoreTokens() ) || oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
       {
          // this is a simple parameter (i.e. neither list nor map)
          oParameterSpec = new ParameterSpec( sIdentifier, sType );
       }
       else
       {
+         // todo: see if the this code before the while below is redundant
+         // todo: consider entering the while right away!
+         
          // this must be a list, map or map-list parameter
          if ( ! oTokenizer.token().equals( Symbols.TOKEN_OPEN_BRACKET ) )
          {
             throw new ParserException( "Syntax error in parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
          }
-         oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+
+         // consume TOKEN_OPEN_BRACKET
+         oTokenizer.nextToken();
+
+         // there must be more at least one more token in the stream
+         assertNotEOS( oTokenizer );
 
          // is this an array parameter?
          if ( oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
          {
+            // we assume that we are done with this parameter spec since the
+            // syntax does not permit anything further for this form (if there is
+            // something further it will be caught by subsequent stages in the parse)
             oParameterSpec = new ParameterSpec( sIdentifier, sType, true );
-            oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+
+            // consume TOKEN_CLOSE_BRACKET
+            oTokenizer.nextToken();
          }
          else
          {
@@ -113,45 +145,66 @@ public class Parser
 
             // store the first map key
             oMapKeys.add( oTokenizer.token() );
-            oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+            oTokenizer.nextToken();
+
+            // there must be more at least one more token in the stream
+            assertNotEOS( oTokenizer );
 
             if ( ! oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
             {
                throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
             }
-            oTokenizer.nextToken(); assertNotEOS( oTokenizer );
 
-            while ( ! oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
+            // consume TOKEN_CLOSE_BRACKET
+            oTokenizer.nextToken();
+
+            while ( oTokenizer.hasMoreTokens() && ! oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
             {
                if ( ! oTokenizer.token().equals( Symbols.TOKEN_OPEN_BRACKET ) )
                {
                   throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
                }
-               oTokenizer.nextToken(); assertNotEOS( oTokenizer );
 
-               // are we done?
+               // consume TOKEN_OPEN_BRACKET
+               oTokenizer.nextToken();
+
+               // there must be more at least one more token in the stream
+               assertNotEOS( oTokenizer );
+
+               // is this an array? then we are done with this parameter spec
                if ( oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
                {
                   // the leaf of this parameter is a list
                   oParameterSpec = new ParameterSpec( sIdentifier, sType, true, oMapKeys );
-                  oTokenizer.nextToken(); assertNotEOS( oTokenizer );
 
-                  // the dragonfly syntax spec only allow arrays to be at a leaf node,
-                  // so we should stop parsing parameter structure
+                  // consume TOKEN_CLOSE_BRACKET
+                  oTokenizer.nextToken();
+
+                  // since the parameter spec syntax only allow arrays to be at a leaf node,
+                  // so we can stop parsing at this point
                   break;
                }
 
+               // the token was not TOKEN_CLOSE_BRACKET so it must be
+               // key in the map variable
                oMapKeys.add( oTokenizer.token() );                            // store subsequent keys
-               oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+
+               // consume map key
+               oTokenizer.nextToken();
+
+               // there must be more at least one more token in the stream
+               assertNotEOS( oTokenizer );
 
                if ( ! oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
                {
                   throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
                }
-               oTokenizer.nextToken(); assertNotEOS( oTokenizer );
+
+               // consume TOKEN_CLOSE_BRACKET
+               oTokenizer.nextToken();
 
                // are we done?
-               if ( oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
+               if ( ( ! oTokenizer.hasMoreTokens() ) || oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
                {
                   // the leaf of this parameter is a map
                   oParameterSpec = new ParameterSpec( sIdentifier, sType, false, oMapKeys );
@@ -160,14 +213,22 @@ public class Parser
          }
       }
 
-      // expecting EQUALS token at this point
+      return oParameterSpec;
+   }
+
+   private static void parseEQUALS( Tokenizer oTokenizer, String sIdentifier ) throws IOException, ParserException
+   {
+      // we expect at least one token to move along
+      assertNotEOS( oTokenizer );
+
+      // and that token must be TOKEN_EQUALS
       if ( ! oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
       {
-         throw new ParserException( "Syntax error in parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
+         throw new ParserException( "Syntax error after parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
       }
-      oTokenizer.nextToken();                                        // consume EQUALS token, ok to hit EOS here
 
-      return oParameterSpec;
+      // consume TOKEN_EQUALS
+      oTokenizer.nextToken();
    }
 
    private static String parseData( Tokenizer oTokenizer ) throws IOException
@@ -180,6 +241,22 @@ public class Parser
          oTokenizer.nextToken();
       }
       return sData;
+   }
+
+   private static void parseAMPERSAND( Tokenizer oTokenizer )
+      throws ParserException, IOException
+   {
+      // we expect at least one token to move along
+      assertNotEOS( oTokenizer );
+
+      // and that token must be TOKEN_AMPERSAND
+      if ( ! oTokenizer.token().equals( Symbols.TOKEN_AMPERSAND ) )
+      {
+         throw new ParserException( "Syntax error, expected " + Symbols.TOKEN_AMPERSAND + " got: " + oTokenizer.token() );
+      }
+
+      // consume TOKEN_AMPERSAND
+      oTokenizer.nextToken();
    }
 
    private static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )

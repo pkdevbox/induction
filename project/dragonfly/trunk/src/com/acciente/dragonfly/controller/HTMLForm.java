@@ -147,7 +147,7 @@ public class HTMLForm implements Form
       {
          oQueryStringReader = new StringReader( oRequest.getQueryString() );
 
-         oGETParams = Parser.parse( oQueryStringReader, true );
+         oGETParams = Parser.parseForm( oQueryStringReader, true );
       }
       finally
       {
@@ -163,7 +163,7 @@ public class HTMLForm implements Form
    private static Map parsePOSTParams( HttpServletRequest oRequest )
       throws ParserException, IOException
    {
-      return Parser.parse( oRequest.getReader(), true );
+      return Parser.parseForm( oRequest.getReader(), true );
    }
 }
 

@@ -1,5 +1,6 @@
 package com.acciente.dragonfly.dispatcher.form;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -71,6 +72,33 @@ public class ParameterSpec
    public boolean isMap()
    {
       return _oMapKeys != null;
+   }
+
+   public String toString()
+   {
+      StringBuffer oPSpecAsString = new StringBuffer();
+
+      oPSpecAsString.append( _sDataType );
+      oPSpecAsString.append( ":" );
+      oPSpecAsString.append( _sIdentifier );
+
+      if ( _oMapKeys != null )
+      {
+         for ( Iterator oIter = _oMapKeys.iterator(); oIter.hasNext(); )
+         {
+            oPSpecAsString.append( "[" );
+            oPSpecAsString.append( oIter.next() );
+            oPSpecAsString.append( "]" );
+         }
+      }
+
+      if ( _bIsList )
+      {
+         oPSpecAsString.append( "[" );
+         oPSpecAsString.append( "]" );
+      }
+
+      return oPSpecAsString.toString();
    }
 
    private void validateIdentifierAndDataType( String sIdentifier, String sDataType ) throws ParserException

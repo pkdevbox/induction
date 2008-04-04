@@ -2,22 +2,20 @@ package com.acciente.test.dragonfly.form;
 
 import com.acciente.dragonfly.dispatcher.form.Parser;
 import com.acciente.dragonfly.dispatcher.form.ParserException;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.net.URLEncoder;
-
-import org.junit.*;
-import static org.junit.matchers.IsCollectionContaining.hasItem;
-import static org.junit.Assert.*;
+import java.util.Map;
 
 /**
  * Log
  * Feb 12, 2008 APR  -  created
  */
-public class Test_Parser
+public class Test_Parser_Form
 {
    private static int      PARAM_NAME = 0;
    private static int      PARAM_VALUE = 1;
@@ -75,7 +73,7 @@ public class Test_Parser
       Object[][]  aaExpected
          =  {  { "name",         "Jack and Jill", null, PARAM_ENCTYPE_URL_ENCODE },
                { "poem_type",    "Nursery  rhymes", null, PARAM_ENCTYPE_URL_ENCODE },
-               { "age",          new Integer( 10 ), "int" },
+               { "age",          new Integer( 10 ), "int" }
             };
 
       verifyResults( aaExpected, parseForm( createForm( aaExpected ) ) );
@@ -99,7 +97,7 @@ public class Test_Parser
       throws ParserException, IOException
    {
       System.out.println( "parsing form: " + sForm );
-      return Parser.parse( new StringReader( sForm ), true );
+      return Parser.parseForm( new StringReader( sForm ), true );
    }
 
    private static String createForm( Object[][] aaFormVars ) throws UnsupportedEncodingException
