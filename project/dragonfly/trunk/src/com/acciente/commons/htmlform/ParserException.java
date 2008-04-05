@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.dispatcher.form;
+package com.acciente.commons.htmlform;
 
 /**
  * This is parser that parses the variables submitted in an HTML form

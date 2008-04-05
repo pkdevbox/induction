@@ -1,6 +1,6 @@
 package com.acciente.dragonfly.controller;
 
-import com.acciente.dragonfly.dispatcher.form.File;
+import com.acciente.commons.htmlform.File;
 
 /**
  * This interface provides access to all parameters submitted as part of the request. Both GET and

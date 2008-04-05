@@ -1,6 +1,6 @@
 package com.acciente.test.dragonfly.form;
 
-import com.acciente.dragonfly.dispatcher.form.Tokenizer;
+import com.acciente.commons.htmlform.Tokenizer;
 
 import java.io.IOException;
 import java.io.StringReader;

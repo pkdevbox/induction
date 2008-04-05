@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.dispatcher.form;
+package com.acciente.commons.htmlform;
 
 import java.util.Iterator;
 import java.util.List;
