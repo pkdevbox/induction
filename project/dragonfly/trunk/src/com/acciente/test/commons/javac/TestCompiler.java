@@ -3,7 +3,7 @@ package com.acciente.test.commons.javac;
 import com.acciente.commons.javac.CompiledClass;
 import com.acciente.commons.javac.JavaCompiler;
 import com.acciente.commons.javac.JavaCompilerManager;
-import com.acciente.dragonfly.dispatcher.form.ParserException;
+import com.acciente.commons.htmlform.ParserException;
 
 import java.io.File;
 import java.io.FileOutputStream;

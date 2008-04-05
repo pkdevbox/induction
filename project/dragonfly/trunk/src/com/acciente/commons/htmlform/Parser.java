@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.dispatcher.form;
+package com.acciente.commons.htmlform;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -15,9 +15,21 @@ import java.util.Map;
  *
  * Log
  * Feb 12, 2008 APR  -  created
+ * Apr 04, 2008 APR  -  refactoring
  */
 public class Parser
 {
+   /**
+    * This method parses a character stream containing an HTML form encoded using the application/x-www-form-urlencoded scheme.
+    * This parser does not handle multi-part data streams
+    *
+    * @param oInput the character stream containg the encoded HTML form
+    * @param bURLEncoded if true the data value in the form are assumed to be URL encoded and the parser will
+    * decoded the values
+    * @return a map with a key for each form parameter with respective map value containing the data value of the parameter
+    * @throws ParserException if there was an error parsing the HTML form
+    * @throws IOException if there was an error reading the input character stream
+    */
    public static Map parseForm( Reader oInput, boolean bURLEncoded ) throws ParserException, IOException
    {
       Tokenizer   oTokenizer = new Tokenizer( oInput );
@@ -48,6 +60,19 @@ public class Parser
       return oForm;
    }
 
+   /**
+    * This method is not typicaly used by applications. It is used to parse out the structure of the
+    * parameter name according to the supported syntax. One use of this method is to process the
+    * parameter names in a multi-part stream to enable the full parameter syntax supported by this
+    * parser for multi-part datastream that is being processed using a separate multi-part parser such as the
+    * Apache's FileUpload mutli-part parser.
+    *
+    * @param oReader a character stream containing the parameter, this stream will read until either
+    * the end of the stream is reached or until a TOKEN_EQUALS is encountered
+    * @return a ParameterSpec structure describing the structure of the parameter
+    * @throws ParserException if there was an error parsing the HTML form
+    * @throws IOException  if there was an error reading the input character stream
+    */
    public static ParameterSpec parseParameterSpec( Reader oReader )
       throws ParserException, IOException
    {
@@ -55,9 +80,55 @@ public class Parser
 
       oTokenizer.nextToken(); // read the first token
 
-      // todo: add special handling in parseParameterSpec() when call with only an param spec not trailed by a '='
       return parseParameterSpec( oTokenizer );
    }
+
+   /**
+    * This method is not a typical entry point into the parser. It is provided for use in conjunction with
+    * parseParameterSpec() to store a data value into a java map based on the structure in a ParameterSpec
+    * object
+    *
+    * @param oForm a Map into which the data should be stored
+    * @param oParameterSpec the parameter spec according to which the data value will be stored in the map
+    * @param sData the data value to be stored in the map
+    * @param bURLEncoded true if the data value is in URL encoded form and needs to be decoded before storing into the map
+    * @throws ParserException thrown if the parameter spec will cause an overwrite of an existing value or if the
+    *         parameter spec is in an unexpected format
+    * @throws UnsupportedEncodingException if there was an exception thrown during any URL decoding that was attempted
+    */
+   public static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
+      throws ParserException, UnsupportedEncodingException
+   {
+      Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
+
+      if ( ! oParameterSpec.isStructured() )
+      {
+         // we complain if a form has more than one value for an unstructured parameter
+         if ( oDataAtIdentifier != null )
+         {
+            throw new ParserException( "Duplicate use of parameter : " + oParameterSpec.getIdentifier() );
+         }
+         oForm.put( oParameterSpec.getIdentifier(), convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+      }
+      else
+      {
+         // handle lists and maps
+         if ( oParameterSpec.isMap() )
+         {
+            addMapParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
+         }
+         else if ( oParameterSpec.isList() )
+         {
+            addListParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
+         }
+         else
+         {
+            throw new ParserException( "Internal error, structured parameter neither list nor map!" );
+         }
+      }
+   }
+
+   // private methods
 
    private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer )
       throws ParserException, IOException
@@ -111,40 +182,42 @@ public class Parser
          oParameterSpec = new ParameterSpec( sIdentifier, sType );
       }
       else
-      {
-         // todo: see if the this code before the while below is redundant
-         // todo: consider entering the while right away!
-         
-         // this must be a list, map or map-list parameter
-         if ( ! oTokenizer.token().equals( Symbols.TOKEN_OPEN_BRACKET ) )
+      {         
+         List  oMapKeys = new ArrayList();
+
+         while ( true )
          {
-            throw new ParserException( "Syntax error in parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
-         }
+            if ( ! oTokenizer.token().equals( Symbols.TOKEN_OPEN_BRACKET ) )
+            {
+               throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
+            }
 
-         // consume TOKEN_OPEN_BRACKET
-         oTokenizer.nextToken();
-
-         // there must be more at least one more token in the stream
-         assertNotEOS( oTokenizer );
-
-         // is this an array parameter?
-         if ( oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
-         {
-            // we assume that we are done with this parameter spec since the
-            // syntax does not permit anything further for this form (if there is
-            // something further it will be caught by subsequent stages in the parse)
-            oParameterSpec = new ParameterSpec( sIdentifier, sType, true );
-
-            // consume TOKEN_CLOSE_BRACKET
+            // consume TOKEN_OPEN_BRACKET
             oTokenizer.nextToken();
-         }
-         else
-         {
-            // assume that this is a map parameter
-            List  oMapKeys = new ArrayList();
 
-            // store the first map key
-            oMapKeys.add( oTokenizer.token() );
+            // there must be more at least one more token in the stream
+            assertNotEOS( oTokenizer );
+
+            // is this an array? then we are done with this parameter spec
+            if ( oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
+            {
+               // the leaf of this parameter is a list, not that oMapKeys may be null if
+               // this is encountered on the first loop iteration, and this is a valid case
+               oParameterSpec = new ParameterSpec( sIdentifier, sType, true, oMapKeys );
+
+               // consume TOKEN_CLOSE_BRACKET
+               oTokenizer.nextToken();
+
+               // since the parameter spec syntax only allow arrays to be at a leaf node,
+               // so we can stop parsing at this point
+               break;
+            }
+
+            // the token was not TOKEN_CLOSE_BRACKET so it must be
+            // key in the map variable
+            oMapKeys.add( oTokenizer.token() );                            // store subsequent keys
+
+            // consume map key
             oTokenizer.nextToken();
 
             // there must be more at least one more token in the stream
@@ -158,57 +231,14 @@ public class Parser
             // consume TOKEN_CLOSE_BRACKET
             oTokenizer.nextToken();
 
-            while ( oTokenizer.hasMoreTokens() && ! oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
+            // are we done?
+            if ( ( ! oTokenizer.hasMoreTokens() ) || oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
             {
-               if ( ! oTokenizer.token().equals( Symbols.TOKEN_OPEN_BRACKET ) )
-               {
-                  throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
-               }
+               // yes, and the leaf of this parameter is a map
+               oParameterSpec = new ParameterSpec( sIdentifier, sType, false, oMapKeys );
 
-               // consume TOKEN_OPEN_BRACKET
-               oTokenizer.nextToken();
-
-               // there must be more at least one more token in the stream
-               assertNotEOS( oTokenizer );
-
-               // is this an array? then we are done with this parameter spec
-               if ( oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
-               {
-                  // the leaf of this parameter is a list
-                  oParameterSpec = new ParameterSpec( sIdentifier, sType, true, oMapKeys );
-
-                  // consume TOKEN_CLOSE_BRACKET
-                  oTokenizer.nextToken();
-
-                  // since the parameter spec syntax only allow arrays to be at a leaf node,
-                  // so we can stop parsing at this point
-                  break;
-               }
-
-               // the token was not TOKEN_CLOSE_BRACKET so it must be
-               // key in the map variable
-               oMapKeys.add( oTokenizer.token() );                            // store subsequent keys
-
-               // consume map key
-               oTokenizer.nextToken();
-
-               // there must be more at least one more token in the stream
-               assertNotEOS( oTokenizer );
-
-               if ( ! oTokenizer.token().equals( Symbols.TOKEN_CLOSE_BRACKET ) )
-               {
-                  throw new ParserException( "Syntax error in map parameter: " + sIdentifier + ", unexpected token: " + oTokenizer.token() );
-               }
-
-               // consume TOKEN_CLOSE_BRACKET
-               oTokenizer.nextToken();
-
-               // are we done?
-               if ( ( ! oTokenizer.hasMoreTokens() ) || oTokenizer.token().equals( Symbols.TOKEN_EQUALS ) )
-               {
-                  // the leaf of this parameter is a map
-                  oParameterSpec = new ParameterSpec( sIdentifier, sType, false, oMapKeys );
-               }
+               // we either reached the end of the token stream or hit TOKEN_EQUALS so we are done
+               break;
             }
          }
       }
@@ -257,38 +287,6 @@ public class Parser
 
       // consume TOKEN_AMPERSAND
       oTokenizer.nextToken();
-   }
-
-   private static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
-      throws ParserException, UnsupportedEncodingException
-   {
-      Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
-
-      if ( ! oParameterSpec.isStructured() )
-      {
-         // we complain if a form has more than one value for an unstructured parameter
-         if ( oDataAtIdentifier != null )
-         {
-            throw new ParserException( "Duplicate use of parameter : " + oParameterSpec.getIdentifier() );
-         }
-         oForm.put( oParameterSpec.getIdentifier(), convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
-      }
-      else
-      {
-         // handle lists and maps
-         if ( oParameterSpec.isMap() )
-         {
-            addMapParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
-         }
-         else if ( oParameterSpec.isList() )
-         {
-            addListParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
-         }
-         else
-         {
-            throw new ParserException( "Internal error, structured parameter neither list nor map!" );
-         }
-      }
    }
 
    private static void addMapParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )

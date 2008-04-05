@@ -1,7 +1,7 @@
-package com.acciente.test.dragonfly.form;
+package com.acciente.commons_junit.htmlform;
 
-import com.acciente.dragonfly.dispatcher.form.Parser;
-import com.acciente.dragonfly.dispatcher.form.ParserException;
+import com.acciente.commons.htmlform.Parser;
+import com.acciente.commons.htmlform.ParserException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

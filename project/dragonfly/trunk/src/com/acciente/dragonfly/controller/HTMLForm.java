@@ -1,17 +1,21 @@
 package com.acciente.dragonfly.controller;
 
-import com.acciente.dragonfly.dispatcher.form.File;
-import com.acciente.dragonfly.dispatcher.form.Parser;
-import com.acciente.dragonfly.dispatcher.form.ParserException;
+import com.acciente.commons.htmlform.File;
+import com.acciente.commons.htmlform.Parser;
+import com.acciente.commons.htmlform.ParserException;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Log
@@ -116,8 +120,10 @@ public class HTMLForm implements Form
    }
 
    private static void parsePOSTMultiPart( HttpServletRequest oRequest )
-      throws FileUploadException, IOException
+      throws FileUploadException, IOException, ParserException
    {
+      Map   oMultipartParams = new HashMap();
+
       // we have multi-part content, we currently process it with apache-commons-fileupload
       ServletFileUpload oMultipartParser = new ServletFileUpload();
 
@@ -129,10 +135,34 @@ public class HTMLForm implements Form
 
          // we allow the variable name to use the full syntax allowed in non-multipart forms
          // so this allowing the array and map variable syntaxes even in multi-part mode
+
+         // todo: integrate param parser
+
          if ( oFileItem.isFormField() )
          {
-            // todo: integrate param parser
-            // Parser.parseParameterSpec(  )
+            Reader oParamNameReader = null;
+
+            try
+            {
+               oParamNameReader = new StringReader( oFileItem.getName() );
+               
+               Parser.addParameter2Form( oMultipartParams,
+                                         Parser.parseParameterSpec( oParamNameReader ),
+                                         Streams.asString( oFileItem.openStream() ),
+                                         false
+                                       );
+            }
+            finally
+            {
+               if ( oParamNameReader != null )
+               {
+                  oParamNameReader.close();
+               }
+            }
+         }
+         else
+         {
+            // todo: handle the file object
          }
       }
    }
