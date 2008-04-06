@@ -1,6 +1,6 @@
 package com.acciente.dragonfly.controller;
 
-import com.acciente.commons.htmlform.File;
+import com.acciente.commons.htmlform.FileHandle;
 
 /**
  * This interface provides access to all parameters submitted as part of the request. Both GET and
@@ -12,17 +12,17 @@ import com.acciente.commons.htmlform.File;
  */
 public interface Form
 {
-   String   getString( String sParamName );
+   String      getString( String sParamName );
 
-   int      getInteger( String sParamName );
+   int         getInteger( String sParamName );
 
-   float    getFloat( String sParamName );
+   float       getFloat( String sParamName );
 
-   long     getLong( String sParamName );
+   long        getLong( String sParamName );
 
-   boolean  getBoolean( String sParamName );
+   boolean     getBoolean( String sParamName );
 
-   File     getFile( String sParamName );
+   FileHandle  getFile( String sParamName );
 }
 
 // EOF

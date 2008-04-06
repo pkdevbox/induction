@@ -22,6 +22,7 @@ public class Config
    private TemplatePath          _oTemplatePath       = new TemplatePath();
    private ModelDefs             _oModelDefs          = new ModelDefs();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
+   private FileUpload            _oFileUpload         = new FileUpload();
 
    /**
     * Defined the classpath to be used for loading java class files. The classpath is
@@ -69,8 +70,74 @@ public class Config
    }
 
    /**
+    * This method is used to access config parameters that control file uploads
+    *
+    * @return an object reference that keeps the file upload settings
+    */
+   public FileUpload getFileUpload()
+   {
+      return _oFileUpload;
+   }
+
+   /**
     * Inner classes used to structure the configuration information follows
     */
+   public static class FileUpload
+   {
+      private static final int _1_KB = 1024;
+      private static final int _1_MB = 1024 * 1024;
+
+      private int    _iMaxUploadSizeInBytes              = 10 * _1_MB;  // by default files larger than 10 megabytes are not allowed
+      private int    _iStoreFileOnDiskThresholdInBytes   = 10 * _1_KB;  // by default files larger than 10 kilobytes are stored on disk instead of memory
+      private File   _oUploadedFileStorageDir            = null;
+
+      public void setUploadedFileStorageDir( File oUploadedFileStorageDir )
+      {
+         _oUploadedFileStorageDir = oUploadedFileStorageDir;
+      }
+
+      /**
+       * Returns the path to which uploaded files that are too large to be kept in memory
+       * should be written, if no directory is specified all files are kept in memory
+       *
+       * @return a File object representing a path to which the uploaded files should be saved
+       */
+      public File getUploadedFileStorageDir()
+      {
+         return _oUploadedFileStorageDir;
+      }
+
+      public int getMaxUploadSizeInBytes()
+      {
+         return _iMaxUploadSizeInBytes;
+      }
+
+      /**
+       * Sets the maximum upload file size in bytes will be accepted
+       *
+       * @param iMaxUploadSizeInBytes a file size in bytes
+       */
+      public void setMaxUploadSizeInBytes( int iMaxUploadSizeInBytes )
+      {
+         _iMaxUploadSizeInBytes = iMaxUploadSizeInBytes;
+      }
+
+      public int getStoreOnDiskThresholdInBytes()
+      {
+         return _iStoreFileOnDiskThresholdInBytes;
+      }
+
+      /**
+       * Set a file size in bytes above which the uploaded file will be stored on disk
+       *
+       * @param iStoreOnDiskThresholdInBytes a file size in bytes
+       */
+      public void setStoreOnDiskThresholdInBytes( int iStoreOnDiskThresholdInBytes )
+      {
+         _iStoreFileOnDiskThresholdInBytes = iStoreOnDiskThresholdInBytes;
+      }
+   }
+
    public static class ControllerResolver
    {
       private String    _sClassName;
