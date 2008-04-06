@@ -1,11 +1,20 @@
 package com.acciente.commons.htmlform;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +29,167 @@ import java.util.Map;
 public class Parser
 {
    /**
-    * This method parses a character stream containing an HTML form encoded using the application/x-www-form-urlencoded scheme.
-    * This parser does not handle multi-part data streams
+    * This method parses all the parameters contained in the http servlet request, in particular it parses and
+    * merges parameters from the sources listed below. If a parameter is defined in more than on source the higher
+    * numbered source below prevails.
+    *
+    *    1  - parameters in the URL's query query string (GET params)
+    *    2  - parameters submitted using POST including multi-part parameters such as fileuploads
+    *
+    * @param oRequest a http servlet request object
+    * @param iStoreFileOnDiskThresholdInBytes a file size in bytes above which the uploaded file will be stored on disk
+    * @param oUploadedFileStorageDir a File object representing a path to which the uploaded files should be saved,
+    * if null is specified a temporary directory is created in the java system temp directory path
+    *
+    * @return a map containing the paramater names and values, the paramter names are keys in the map
+    *
+    * @throws ParserException thrown if there is an error parsing the parameter data
+    * @throws IOException thrown if there is an I/O error
+    * @throws FileUploadException thrown if there is an error processing the multi-part data
+    */
+   public static Map parseForm( HttpServletRequest oRequest,
+                                int                iStoreFileOnDiskThresholdInBytes,
+                                File               oUploadedFileStorageDir
+                              )
+      throws ParserException, IOException, FileUploadException
+   {
+      Map oGETParams = null;
+
+      // first process the GET parameters (if any)
+      if ( oRequest.getQueryString() != null )
+      {
+         oGETParams = parseGETParams( oRequest );
+      }
+
+      Map oPOSTParams = null;
+
+      // next process POST parameters
+      if ( "post".equals( oRequest.getMethod().toLowerCase() ) )
+      {
+         // check how the POST data has been encoded
+         if ( ServletFileUpload.isMultipartContent( oRequest ) )
+         {
+            oPOSTParams = parsePOSTMultiPart( oRequest, iStoreFileOnDiskThresholdInBytes, oUploadedFileStorageDir );
+         }
+         else
+         {
+            // we have plain text
+            oPOSTParams = parsePOSTParams( oRequest );
+         }
+      }
+
+      Map oMergedParams;
+
+      // merge the GET and POST parameters
+      if ( oGETParams != null )
+      {
+         oMergedParams = oGETParams;
+
+         if ( oPOSTParams != null )
+         {
+            oMergedParams.putAll( oPOSTParams );
+         }
+      }
+      else
+      {
+         // we know that the oGETParams must be null
+         oMergedParams = oPOSTParams;
+      }
+
+      return oMergedParams;
+   }
+
+   private static Map parsePOSTMultiPart( HttpServletRequest oRequest, int iStoreFileOnDiskThresholdInBytes, File oUploadedFileStorageDir )
+      throws FileUploadException, IOException, ParserException
+   {
+      Map   oMultipartParams = new HashMap();
+
+      // we have multi-part content, we process it with apache-commons-fileupload
+
+      ServletFileUpload
+         oMultipartParser = new ServletFileUpload( new DiskFileItemFactory( iStoreFileOnDiskThresholdInBytes,
+                                                                            oUploadedFileStorageDir
+                                                                          )
+                                                 );
+
+      List oFileItemList = oMultipartParser.parseRequest( oRequest );
+
+      for ( Iterator oIter = oFileItemList.iterator(); oIter.hasNext(); )
+      {
+         FileItem oFileItem = ( FileItem ) oIter.next();
+
+         // we support the variable name to use the full syntax allowed in non-multipart forms
+         // so we use parseParameterSpec() to support array and map variable syntaxes in multi-part mode
+         Reader         oParamNameReader = null;
+         ParameterSpec  oParameterSpec   = null;
+
+         try
+         {
+            oParamNameReader = new StringReader( oFileItem.getName() );
+
+            oParameterSpec = Parser.parseParameterSpec( oParamNameReader );
+         }
+         finally
+         {
+            if ( oParamNameReader != null )
+            {
+               oParamNameReader.close();
+            }
+         }
+
+         if ( oFileItem.isFormField() )
+         {
+            Parser.addParameter2Form( oMultipartParams,
+                                      oParameterSpec,
+                                      oFileItem.getString(),
+                                      false
+                                    );
+         }
+         else
+         {
+            Parser.addParameter2Form( oMultipartParams,
+                                      oParameterSpec,
+                                      oFileItem
+                                    );
+         }
+      }
+
+      return oMultipartParams;
+   }
+
+   private static Map parseGETParams( HttpServletRequest oRequest )
+      throws ParserException, IOException
+   {
+      Map            oGETParams;
+      StringReader   oQueryStringReader = null;
+
+      try
+      {
+         oQueryStringReader = new StringReader( oRequest.getQueryString() );
+
+         oGETParams = Parser.parseForm( oQueryStringReader, true );
+      }
+      finally
+      {
+         if ( oQueryStringReader != null )
+         {
+            oQueryStringReader.close();
+         }
+      }
+
+      return oGETParams;
+   }
+
+   private static Map parsePOSTParams( HttpServletRequest oRequest )
+      throws ParserException, IOException
+   {
+      return Parser.parseForm( oRequest.getReader(), true );
+   }
+
+   /**
+    * This method parses a character stream containing an HTML form encoded using the
+    * application/x-www-form-urlencoded scheme. This parser does not handle multi-part
+    * data streams
     *
     * @param oInput the character stream containg the encoded HTML form
     * @param bURLEncoded if true the data value in the form are assumed to be URL encoded and the parser will
@@ -83,59 +251,12 @@ public class Parser
       return parseParameterSpec( oTokenizer );
    }
 
-   /**
-    * This method is not a typical entry point into the parser. It is provided for use in conjunction with
-    * parseParameterSpec() to store a data value into a java map based on the structure in a ParameterSpec
-    * object
-    *
-    * @param oForm a Map into which the data should be stored
-    * @param oParameterSpec the parameter spec according to which the data value will be stored in the map
-    * @param sData the data value to be stored in the map
-    * @param bURLEncoded true if the data value is in URL encoded form and needs to be decoded before storing into the map
-    * @throws ParserException thrown if the parameter spec will cause an overwrite of an existing value or if the
-    *         parameter spec is in an unexpected format
-    * @throws UnsupportedEncodingException if there was an exception thrown during any URL decoding that was attempted
-    */
-   public static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
-      throws ParserException, UnsupportedEncodingException
-   {
-      Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
-
-      if ( ! oParameterSpec.isStructured() )
-      {
-         // we complain if a form has more than one value for an unstructured parameter
-         if ( oDataAtIdentifier != null )
-         {
-            throw new ParserException( "Duplicate use of parameter : " + oParameterSpec.getIdentifier() );
-         }
-         oForm.put( oParameterSpec.getIdentifier(), convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
-      }
-      else
-      {
-         // handle lists and maps
-         if ( oParameterSpec.isMap() )
-         {
-            addMapParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
-         }
-         else if ( oParameterSpec.isList() )
-         {
-            addListParameter2Form( oForm, oParameterSpec, sData, bURLEncoded );
-         }
-         else
-         {
-            throw new ParserException( "Internal error, structured parameter neither list nor map!" );
-         }
-      }
-   }
-
-   // private methods
-
    private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer )
       throws ParserException, IOException
    {
       String         sTypeOrIdentifier;
       String         sType, sIdentifier;
-      ParameterSpec oParameterSpec = null;
+      ParameterSpec oParameterSpec;
 
       // -- step 1: determine the parameter type and identifier
 
@@ -182,7 +303,7 @@ public class Parser
          oParameterSpec = new ParameterSpec( sIdentifier, sType );
       }
       else
-      {         
+      {
          List  oMapKeys = new ArrayList();
 
          while ( true )
@@ -289,7 +410,96 @@ public class Parser
       oTokenizer.nextToken();
    }
 
-   private static void addMapParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
+   /**
+    * This method is not a typical entry point into the parser. It is provided for use in conjunction with
+    * parseParameterSpec() to store a data value into a java map based on the structure in a ParameterSpec
+    * object
+    *
+    * @param oForm a Map into which the data should be stored
+    * @param oParameterSpec the parameter spec according to which the data value will be stored in the map
+    * @param sData the data value to be stored in the map
+    * @param bURLEncoded true if the data value is in URL encoded form and needs to be decoded before storing into the map
+    * @throws ParserException thrown if the parameter spec will cause an overwrite of an existing value or if the
+    *         parameter spec is in an unexpected format
+    * @throws UnsupportedEncodingException if there was an exception thrown during any URL decoding that was attempted
+    */
+   public static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
+      throws ParserException, UnsupportedEncodingException
+   {
+      Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
+
+      if ( ! oParameterSpec.isStructured() )
+      {
+         // we complain if a form has more than one value for an unstructured parameter
+         if ( oDataAtIdentifier != null )
+         {
+            throw new ParserException( "Duplicate use of parameter: " + oParameterSpec.getIdentifier() );
+         }
+         oForm.put( oParameterSpec.getIdentifier(), convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+      }
+      else
+      {
+         // handle lists and maps
+         if ( oParameterSpec.isMap() )
+         {
+            addMapParameter2Form( oForm, oParameterSpec, convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+         }
+         else if ( oParameterSpec.isList() )
+         {
+            addListParameter2Form( oForm, oParameterSpec, convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+         }
+         else
+         {
+            throw new ParserException( "Internal error, structured parameter neither list nor map!" );
+         }
+      }
+   }
+
+   /**
+    * This method is not a typical entry point into the parser. It is provided for use in conjunction with
+    * parseParameterSpec() to store a data value into a java map based on the structure in a ParameterSpec
+    * object
+    *
+    * @param oForm a Map into which the data should be stored
+    * @param oParameterSpec the parameter spec according to which the data value will be stored in the map
+    * @param oFileItem an uploaded file containing the data to be stored in the map
+    * @throws ParserException thrown if the parameter spec will cause an overwrite of an existing value or if the
+    *         parameter spec is in an unexpected format
+    * @throws UnsupportedEncodingException if there was an exception thrown during any URL decoding that was attempted
+    */
+   public static void addParameter2Form( Map oForm, ParameterSpec oParameterSpec, FileItem oFileItem )
+      throws ParserException, UnsupportedEncodingException
+   {
+      Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
+
+      if ( ! oParameterSpec.isStructured() )
+      {
+         // we complain if a form has more than one value for an unstructured parameter
+         if ( oDataAtIdentifier != null )
+         {
+            throw new ParserException( "Duplicate use of parameter: " + oParameterSpec.getIdentifier() );
+         }
+         oForm.put( oParameterSpec.getIdentifier(), convertData( oFileItem, oParameterSpec.getDataType() ) );
+      }
+      else
+      {
+         // handle lists and maps
+         if ( oParameterSpec.isMap() )
+         {
+            addMapParameter2Form( oForm, oParameterSpec, convertData( oFileItem, oParameterSpec.getDataType() ) );
+         }
+         else if ( oParameterSpec.isList() )
+         {
+            addListParameter2Form( oForm, oParameterSpec, convertData( oFileItem, oParameterSpec.getDataType() ) );
+         }
+         else
+         {
+            throw new ParserException( "Internal error, structured parameter neither list nor map!" );
+         }
+      }
+   }
+
+   private static void addMapParameter2Form( Map oForm, ParameterSpec oParameterSpec, Object oData )
       throws ParserException, UnsupportedEncodingException
    {
       Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
@@ -304,7 +514,7 @@ public class Parser
          // verify that this is a Map
          if ( ! ( oDataAtIdentifier instanceof Map ) )
          {
-            throw new ParserException( "Invalid reuse of non-map parameter: " + oParameterSpec.getIdentifier() + " as map, map key(s): " + oParameterSpec.getMapKeys() + ", new value: " + sData );
+            throw new ParserException( "Invalid reuse of non-map parameter: " + oParameterSpec.getIdentifier() + " as map, map key(s): " + oParameterSpec.getMapKeys() + ", new value: " + oData );
          }
          oNestedMap = ( Map ) oDataAtIdentifier;
       }
@@ -333,17 +543,17 @@ public class Parser
                }
                else
                {
-                  throw new ParserException( "Map-list parameter: " + oParameterSpec.getIdentifier() + " attempt to use non-list value at key: " + oMapKeys.toString() + " as a list, value: " + oDataAtKey + " new value: " + sData );
+                  throw new ParserException( "Map-list parameter: " + oParameterSpec.getIdentifier() + " attempt to use non-list value at key: " + oMapKeys.toString() + " as a list, value: " + oDataAtKey + " new value: " + oData );
                }
-               oList.add( sData );
+               oList.add( oData );
             }
             else
             {
                if ( oDataAtKey != null )
                {
-                  throw new ParserException( "Map parameter: " + oParameterSpec.getIdentifier() + " value overwrite at key: " + oMapKeys.toString() + " has value: " + oDataAtKey + " new value: " + sData );
+                  throw new ParserException( "Map parameter: " + oParameterSpec.getIdentifier() + " value overwrite at key: " + oMapKeys.toString() + " has value: " + oDataAtKey + " new value: " + oData );
                }
-               oNestedMap.put( sKey, convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+               oNestedMap.put( sKey, oData );
             }
          }
          else
@@ -365,7 +575,7 @@ public class Parser
       }
    }
 
-   private static void addListParameter2Form( Map oForm, ParameterSpec oParameterSpec, String sData, boolean bURLEncoded )
+   private static void addListParameter2Form( Map oForm, ParameterSpec oParameterSpec, Object oData )
       throws ParserException, UnsupportedEncodingException
    {
       Object   oDataAtIdentifier = oForm.get( oParameterSpec.getIdentifier() );
@@ -381,19 +591,19 @@ public class Parser
       }
       else
       {
-         throw new ParserException( "List parameter: " + oParameterSpec.getIdentifier() + " attempt to use non-list value as a list, value: " + oDataAtIdentifier + " new value: " + sData );
+         throw new ParserException( "List parameter: " + oParameterSpec.getIdentifier() + " attempt to use non-list value as a list, value: " + oDataAtIdentifier + " new value: " + oData );
       }
-      oList.add( convertData( sData, oParameterSpec.getDataType(), bURLEncoded ) );
+      oList.add( oData );
    }
 
    private static Object convertData( String sData, String sDataType, boolean bURLEncoded )
       throws ParserException, UnsupportedEncodingException
    {
-      Object oData = null;
+      Object oData;
 
       if ( bURLEncoded )
       {
-         sData = URLDecoder.decode( sData,  "UTF-8");
+          sData = URLDecoder.decode( sData,  "UTF-8" );
       }
 
       if ( Symbols.TOKEN_VARTYPE_STRING.equals( sDataType ) )
@@ -414,12 +624,46 @@ public class Parser
       }
       else if ( Symbols.TOKEN_VARTYPE_FILE.equals( sDataType ) )
       {
-         throw new ParserException( "Parameters of type \"file\" are not currently supported" );
+         throw new ParserException( "Parameters of type \"file\" are not supported in this context (use multi-part encoding)" );
       }
       else
       {
-         throw new ParserException( "Internal error, unrecognized parameter type: " + sData );
+         throw new ParserException( "Internal error, unrecognized parameter type: " + sDataType  );
       }
+
+      return oData;
+   }
+
+   private static Object convertData( FileItem oFileItem, String sDataType )
+      throws ParserException, UnsupportedEncodingException
+   {
+      Object oData;
+
+      if ( Symbols.TOKEN_VARTYPE_STRING.equals( sDataType ) )
+      {
+         oData = oFileItem.getString();
+      }
+      else if ( Symbols.TOKEN_VARTYPE_INT.equals( sDataType ) )
+      {
+         oData = new Integer( oFileItem.getString() );
+      }
+      else if ( Symbols.TOKEN_VARTYPE_FLOAT.equals( sDataType ) )
+      {
+         oData = new Float( oFileItem.getString() );
+      }
+      else if ( Symbols.TOKEN_VARTYPE_BOOLEAN.equals( sDataType ) )
+      {
+         oData = Boolean.valueOf( oFileItem.getString() );
+      }
+      else if ( Symbols.TOKEN_VARTYPE_FILE.equals( sDataType ) )
+      {
+         oData = new FileHandle( oFileItem );
+      }
+      else
+      {
+         throw new ParserException( "Internal error, unrecognized parameter type: " + sDataType  );
+      }
+
       return oData;
    }
 
