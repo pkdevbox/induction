@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is parser that parses the parameters submitted in an HTML form
+ * This class implements a parser that parses the parameters submitted in an HTML form
  * and populates a Map with the form data.
  *
  * Log
