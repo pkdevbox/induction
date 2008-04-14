@@ -1,6 +1,11 @@
 package com.acciente.dragonfly.controller;
 
 import com.acciente.commons.htmlform.FileHandle;
+import com.acciente.commons.htmlform.ParserException;
+
+import java.io.IOException;
+
+import org.apache.commons.fileupload.FileUploadException;
 
 /**
  * This interface provides access to all parameters submitted as part of the request. Both GET and
@@ -12,17 +17,17 @@ import com.acciente.commons.htmlform.FileHandle;
  */
 public interface Form
 {
-   String      getString( String sParamName );
+   String      getString( String sParamName ) throws IOException, FileUploadException, ParserException;
 
-   int         getInteger( String sParamName );
+   int         getInteger( String sParamName ) throws IOException, FileUploadException, ParserException;
 
-   float       getFloat( String sParamName );
+   float       getFloat( String sParamName ) throws IOException, FileUploadException, ParserException;
 
-   long        getLong( String sParamName );
+   long        getLong( String sParamName ) throws IOException, FileUploadException, ParserException;
 
-   boolean     getBoolean( String sParamName );
+   boolean     getBoolean( String sParamName ) throws IOException, FileUploadException, ParserException;
 
-   FileHandle  getFile( String sParamName );
+   FileHandle  getFile( String sParamName ) throws IOException, FileUploadException, ParserException;
 }
 
 // EOF

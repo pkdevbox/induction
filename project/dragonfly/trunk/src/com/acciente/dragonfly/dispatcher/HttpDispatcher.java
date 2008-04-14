@@ -101,11 +101,12 @@ public class HttpDispatcher extends HttpServlet
       // setup ...
       _oParamValueResolver
          =  new ParamValueResolver( new ModelPool( oConfig.getModelDefs(),
-                                                               new ModelFactory( oClassLoader,
-                                                                                 oServletConfig,
-                                                                                 _oLogger
-                                                                               )
-                                                             )
+                                                   new ModelFactory( oClassLoader,
+                                                                     oServletConfig,
+                                                                     _oLogger
+                                                                   )
+                                                 ),
+                                    oConfig.getFileUpload()
                                   );
    }
 
@@ -219,7 +220,7 @@ public class HttpDispatcher extends HttpServlet
       try
       {
          // todo: currently if any of the model classes reload above this invoke fails
-         // todo: one solution that may work would be to reload the controller 
+         // todo: one solution that may work would be to reload the controller
          oControllerMethod.invoke( oController, aoParameterValues );
       }
       catch ( IllegalAccessException e )

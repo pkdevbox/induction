@@ -7,6 +7,7 @@ import com.acciente.dragonfly.controller.HttpResponse;
 import com.acciente.dragonfly.controller.Request;
 import com.acciente.dragonfly.controller.Response;
 import com.acciente.dragonfly.dispatcher.model.ModelPool;
+import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.MethodNotFoundException;
 
@@ -22,11 +23,13 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ParamValueResolver
 {
-   private ModelPool _oModelPool;
+   private ModelPool          _oModelPool;
+   private Config.FileUpload  _oFileUploadConfig;
 
-   public ParamValueResolver( ModelPool oModelPool )
+   public ParamValueResolver( ModelPool oModelPool, Config.FileUpload oFileUploadConfig )
    {
-      _oModelPool = oModelPool;
+      _oModelPool          = oModelPool;
+      _oFileUploadConfig   = oFileUploadConfig;
    }
 
    public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse )
@@ -44,7 +47,10 @@ public class ParamValueResolver
       }
       else if ( oParamClass.isAssignableFrom( Form.class ) )
       {
-         oParamValue = new HTMLForm( oRequest );
+         // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
+         // are resolved before controller invocation, and become local variables in the
+         // controller for the duration of the request
+         oParamValue = new HTMLForm( oRequest, _oFileUploadConfig );
       }
       else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
       {
@@ -58,6 +64,11 @@ public class ParamValueResolver
       {
          // check to see if this is a model class
          oParamValue = _oModelPool.getModel( oParamClass, oRequest );
+      }
+
+      if ( oParamValue == null )
+      {
+         // todo: should we throw an exception here?  
       }
 
       return oParamValue;
