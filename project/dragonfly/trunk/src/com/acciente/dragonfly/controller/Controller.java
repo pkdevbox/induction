@@ -7,7 +7,7 @@ package com.acciente.dragonfly.controller;
  *
  * A class implementing this interface is expected to have a single public contructor
  * with its formal parameter list observing the following convention:
- *   - the single constructor should accept no formal parameters
+ *   - the single constructor should accept no formal parameters or
  *   - the single constructor should declare formal parameters using only the
  *     following types,
  *     - javax.servlet.ServletContext
