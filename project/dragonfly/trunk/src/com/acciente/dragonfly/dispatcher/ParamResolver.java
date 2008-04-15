@@ -21,19 +21,19 @@ import java.lang.reflect.InvocationTargetException;
  * Log
  * Mar 16, 2008 APR  -  created
  */
-public class ParamValueResolver
+public class ParamResolver
 {
    private ModelPool          _oModelPool;
    private Config.FileUpload  _oFileUploadConfig;
 
-   public ParamValueResolver( ModelPool oModelPool, Config.FileUpload oFileUploadConfig )
+   public ParamResolver( ModelPool oModelPool, Config.FileUpload oFileUploadConfig )
    {
       _oModelPool          = oModelPool;
       _oFileUploadConfig   = oFileUploadConfig;
    }
 
    public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse )
-      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
+      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException, ParamResolverException
    {
       Object   oParamValue = null;
 
@@ -68,7 +68,7 @@ public class ParamValueResolver
 
       if ( oParamValue == null )
       {
-         // todo: should we throw an exception here?  
+         throw ( new ParamResolverException( "Value resolution yielded no value for paramter type: " + oParamClass.getName() ) );
       }
 
       return oParamValue;

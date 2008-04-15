@@ -24,7 +24,6 @@ public class TestConfig_DemoApp implements ConfigLoader
          .getJavaClassPath()
             .addCompiledDir( new File( "c:/acciente/acciente-projects/software/project/demoapp/class/demoapp" ), "demoapp" );
 
-
       oConfig
          .getModelDefs()
             .addModelDef( "demoapp.model.Counter", null, false, true, false );
