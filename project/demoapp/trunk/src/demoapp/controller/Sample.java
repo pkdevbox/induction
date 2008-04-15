@@ -1,6 +1,7 @@
 package demoapp.controller;
 
 import com.acciente.commons.htmlform.ParserException;
+import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.controller.Form;
 import com.acciente.dragonfly.controller.Request;
 import com.acciente.dragonfly.controller.Response;
@@ -8,20 +9,17 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
 
-public class Sample
+public class Sample implements Controller
 {
    // http://samples.com/cgi/helloworld/message_2
-
-   // http://10.100.1.32:8080/biz/cgi/helloworld.hd?name=John
-   // http://10.100.1.32:8080/biz/cgi/HelloWorld/message_2?name=John
-   // http://10.100.1.32:8080/biz/cgi/demoapp/controller/HelloWorld/message_2?name=John
 
    public void action_1( Response response ) throws IOException
    {
       response.out().println( "Hello World!" );
    }
 
-   public void action_2( Form form, Response response ) throws IOException, FileUploadException, ParserException
+   public void action_2( Form form, Response response )
+      throws IOException, FileUploadException, ParserException
    {
       response.out().println( "Hello " + form.getString( "name" ) + " using dragonFly form support" );
    }
