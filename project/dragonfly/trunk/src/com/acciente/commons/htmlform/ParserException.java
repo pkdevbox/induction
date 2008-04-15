@@ -7,7 +7,7 @@ package com.acciente.commons.htmlform;
  * Log
  * Feb 16, 2008 APR  -  created
  */
-public class ParserException extends Throwable
+public class ParserException extends Exception
 {
    public ParserException( String s )
    {

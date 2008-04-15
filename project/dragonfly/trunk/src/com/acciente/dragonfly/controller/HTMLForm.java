@@ -19,11 +19,13 @@ public class HTMLForm implements Form
    private HttpServletRequest _oServletRequest;
    private Map                _oFormParams;
    private Config.FileUpload  _oFileUploadConfig;
+   private boolean            _bFormParsed;
 
    public HTMLForm( HttpServletRequest oHttpServletRequest, Config.FileUpload oFileUploadConfig )
    {
       _oServletRequest     = oHttpServletRequest;
       _oFileUploadConfig   = oFileUploadConfig;
+      _bFormParsed         = false;
    }
 
    public String getString( String sParamName ) throws IOException, FileUploadException, ParserException
@@ -59,15 +61,16 @@ public class HTMLForm implements Form
    private Object getParamValue( String sParamName )
       throws IOException, FileUploadException, ParserException
    {
-      if ( _oFormParams == null )
+      if ( ! _bFormParsed )
       {
          _oFormParams
             =  Parser.parseForm( _oServletRequest,
                                  _oFileUploadConfig.getStoreOnDiskThresholdInBytes(),
                                  _oFileUploadConfig.getUploadedFileStorageDir() );
+         _bFormParsed = true;
       }
 
-      return _oFormParams.get( sParamName );
+      return _oFormParams != null ?  _oFormParams.get( sParamName ) : null;
    }
 }
 

@@ -129,7 +129,7 @@ public class ReloadingClassLoader extends SecureClassLoader
       // load the main (i.e. public) class defined in the source file using our new classloader
       // and cache the new class in the class control block
 
-      // NOTE: it is crucil that use findClass() below instead of loadClass() to load the new class,
+      // NOTE: it is crucial that we use findClass() below instead of loadClass() to load the new class,
       // since the parent of oByteCodeClassLoader is this classloader instance (set in call to ByteCodeClassLoader
       // constructor above) so if loadClass() called due to the way it loadClass() always delegates to the parent
       // we would enter into an infinite recursion

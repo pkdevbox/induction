@@ -31,7 +31,7 @@ public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver      _oControllerResolver;
    private  ControllerPool          _oControllerPool;
-   private  ParamValueResolver      _oParamValueResolver;
+   private  ParamResolver           _oParamResolver;
    private  Logger                  _oLogger;
 
    /**
@@ -56,15 +56,15 @@ public class HttpDispatcher extends HttpServlet
                   .getConfigLoader( oServletConfig, _oLogger ).getConfig();
       }
       catch ( ClassNotFoundException e )
-      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( InvocationTargetException e )
-      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( IllegalAccessException e )
-      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( InstantiationException e )
-      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( ConstructorNotFoundException e )
-      {  throw new ServletException( "init-error: ConfigLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
 
       // setup up our classloader
       ClassLoader oClassLoader;
@@ -75,7 +75,7 @@ public class HttpDispatcher extends HttpServlet
                   .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader(), _oLogger );
       }
       catch ( ClassNotFoundException e )
-      {  throw new ServletException( "init-error: ClassLoaderInitializer", e );    }
+      {  throw new ServletException( "init-error: class-loader-initializer", e );    }
 
       // setup a resolver that maps a request to a controller
       try
@@ -85,22 +85,22 @@ public class HttpDispatcher extends HttpServlet
                   .getControllerResolver( oConfig.getControllerResolver(), oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
-      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( InvocationTargetException e )
-      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( IllegalAccessException e )
-      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( InstantiationException e )
-      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( ConstructorNotFoundException e )
-      {  throw new ServletException( "init-error: ControllerResolverInitializer", e ); }
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
       // setup a controller pool
       _oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // setup ...
-      _oParamValueResolver
-         =  new ParamValueResolver( new ModelPool( oConfig.getModelDefs(),
+      _oParamResolver
+         =  new ParamResolver( new ModelPool( oConfig.getModelDefs(),
                                                    new ModelFactory( oClassLoader,
                                                                      oServletConfig,
                                                                      _oLogger
@@ -182,7 +182,7 @@ public class HttpDispatcher extends HttpServlet
 
          try
          {
-            aoParameterValues[ i ] = _oParamValueResolver.getParameterValue( oParameterType, oRequest, oResponse );
+            aoParameterValues[ i ] = _oParamResolver.getParameterValue( oParameterType, oRequest, oResponse );
          }
          catch ( ClassNotFoundException e )
          {
@@ -212,6 +212,11 @@ public class HttpDispatcher extends HttpServlet
          catch ( InstantiationException e )
          {
             logAndRespond( oResponse, "dispatch-model: instantiate exception", e );
+            return;
+         }
+         catch ( ParamResolverException e )
+         {
+            logAndRespond( oResponse, "dispatch-model: parameter resolution exception", e );
             return;
          }
       }
