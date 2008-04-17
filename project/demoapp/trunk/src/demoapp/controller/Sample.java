@@ -5,6 +5,7 @@ import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.controller.Form;
 import com.acciente.dragonfly.controller.Request;
 import com.acciente.dragonfly.controller.Response;
+import com.acciente.dragonfly.controller.HTMLFormException;
 import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Sample implements Controller
    }
 
    public void action_2( Form form, Response response )
-      throws IOException, FileUploadException, ParserException
+      throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       response.out().println( "Hello " + form.getString( "name" ) + " using dragonFly form support" );
    }
