@@ -125,9 +125,12 @@ public class Parser
 
          try
          {
-            oParamNameReader = new StringReader( oFileItem.getName() );
+            oParamNameReader = new StringReader( oFileItem.getFieldName() );
 
-            oParameterSpec = Parser.parseParameterSpec( oParamNameReader );
+            oParameterSpec = Parser.parseParameterSpec( oParamNameReader,
+                                                        oFileItem.isFormField()
+                                                        ? Symbols.TOKEN_VARTYPE_STRING
+                                                        : Symbols.TOKEN_VARTYPE_FILE );
          }
          finally
          {
@@ -207,7 +210,7 @@ public class Parser
       {
          ParameterSpec  oParameterSpec;
 
-         oParameterSpec = parseParameterSpec( oTokenizer );
+         oParameterSpec = parseParameterSpec( oTokenizer, null );
 
          parseEQUALS( oTokenizer, oParameterSpec.getIdentifier() );
 
@@ -217,7 +220,7 @@ public class Parser
          {
             parseAMPERSAND( oTokenizer );
 
-            oParameterSpec = parseParameterSpec( oTokenizer );
+            oParameterSpec = parseParameterSpec( oTokenizer, null );
 
             parseEQUALS( oTokenizer, oParameterSpec.getIdentifier() );
 
@@ -248,10 +251,37 @@ public class Parser
 
       oTokenizer.nextToken(); // read the first token
 
-      return parseParameterSpec( oTokenizer );
+      return parseParameterSpec( oTokenizer, null );
    }
 
-   private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer )
+   /**
+    * This method is not typicaly used by applications. It is used to parse out the structure of the
+    * parameter name according to the supported syntax. One use of this method is to process the
+    * parameter names in a multi-part stream to enable the full parameter syntax supported by this
+    * parser for multi-part datastream that is being processed using a separate multi-part parser such as the
+    * Apache's FileUpload mutli-part parser.
+    *
+    * @param oReader a character stream containing the parameter, this stream will read until either
+    * the end of the stream is reached or until a TOKEN_EQUALS is encountered
+    * @param sDefaultType specifies the parameter type that the parser should assume in the absence of a explicit
+    * parameter type in the paramater spec's string definition (read via the passed in oReader), the value must
+    * be null or one of the following values: string, int, float, boolean, file (the most current set is defined in
+    * com.acciente.commons.htmlform.Symbols). If null is specified the string type is assumed 
+    * @return a ParameterSpec structure describing the structure of the parameter
+    * @throws ParserException if there was an error parsing the HTML form
+    * @throws IOException  if there was an error reading the input character stream
+    */
+   public static ParameterSpec parseParameterSpec( Reader oReader, String sDefaultType )
+      throws ParserException, IOException
+   {
+      Tokenizer oTokenizer = new Tokenizer( oReader );
+
+      oTokenizer.nextToken(); // read the first token
+
+      return parseParameterSpec( oTokenizer, sDefaultType );
+   }
+
+   private static ParameterSpec parseParameterSpec( Tokenizer oTokenizer, String sDefaultType )
       throws ParserException, IOException
    {
       String         sTypeOrIdentifier;
@@ -290,9 +320,9 @@ public class Parser
       else
       {
          // no type was given, so sTypeOrIdentifier contains the identifier name
-         // and the type defaults to STRING
+         // and the type defaults to sDefaultType or STRING
          sIdentifier = sTypeOrIdentifier;
-         sType       = Symbols.TOKEN_VARTYPE_STRING;
+         sType       = sDefaultType == null ? Symbols.TOKEN_VARTYPE_STRING : sDefaultType;
       }
 
       // -- step 2: process the list or map parameter syntax, if any

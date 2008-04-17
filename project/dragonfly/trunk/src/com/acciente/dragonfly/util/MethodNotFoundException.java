@@ -18,3 +18,5 @@ public class MethodNotFoundException extends Exception
       super( sMessage, oCause );
    }
 }
+
+// EOF
