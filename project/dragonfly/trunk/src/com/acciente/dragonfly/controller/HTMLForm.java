@@ -9,6 +9,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Log
@@ -28,38 +30,49 @@ public class HTMLForm implements Form
       _bFormParsed         = false;
    }
 
-   public String getString( String sParamName ) throws IOException, FileUploadException, ParserException
+   public Object getObject( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   {
+      return getParamValue( sParamName );
+   }
+
+   public String getString( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( String ) getParamValue( sParamName );
    }
 
-   public int getInteger( String sParamName ) throws IOException, FileUploadException, ParserException
+   public int getInteger( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( ( Integer ) getParamValue( sParamName ) ).intValue();
    }
 
-   public float getFloat( String sParamName ) throws IOException, FileUploadException, ParserException
+   public float getFloat( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( ( Float ) getParamValue( sParamName ) ).floatValue();
    }
 
-   public long getLong( String sParamName ) throws IOException, FileUploadException, ParserException
+   public long getLong( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( ( Long ) getParamValue( sParamName ) ).longValue();
    }
 
-   public boolean getBoolean( String sParamName ) throws IOException, FileUploadException, ParserException
+   public boolean getBoolean( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( ( Boolean ) getParamValue( sParamName ) ).booleanValue();
    }
 
-   public FileHandle getFile( String sParamName ) throws IOException, FileUploadException, ParserException
+   public FileHandle getFile( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       return ( FileHandle ) getParamValue( sParamName );
    }
 
+   public Set getParamNames()
+   {
+      // todo: implement parseForm() method
+      return _oFormParams.keySet();
+   }
+
    private Object getParamValue( String sParamName )
-      throws IOException, FileUploadException, ParserException
+      throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       if ( ! _bFormParsed )
       {
@@ -70,7 +83,17 @@ public class HTMLForm implements Form
          _bFormParsed = true;
       }
 
-      return _oFormParams != null ?  _oFormParams.get( sParamName ) : null;
+      if ( _oFormParams != null )
+      {
+         if ( ! _oFormParams.containsKey( sParamName ) )
+         {
+            throw ( new HTMLFormException( "Attempt to access undefined HTML form parameter: " + sParamName ) );
+         }
+
+         return _oFormParams.get( sParamName );
+      }
+
+      return null;
    }
 }
 
