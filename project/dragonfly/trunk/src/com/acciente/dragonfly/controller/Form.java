@@ -101,7 +101,7 @@ public interface Form
     * Returns a list of the parameter names in the HTML form
     * @return a list containing strings, each string being a parameter name
     */
-   Set getParamNames();
+   Set getParamNames() throws IOException, FileUploadException, ParserException;
 }
 
 // EOF

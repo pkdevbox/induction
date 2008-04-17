@@ -1,15 +1,14 @@
 package com.acciente.dragonfly.controller;
 
 import com.acciente.commons.htmlform.FileHandle;
-import com.acciente.commons.htmlform.Parser;
 import com.acciente.commons.htmlform.ParserException;
+import com.acciente.commons.htmlform.Parser;
 import com.acciente.dragonfly.init.config.Config;
 import org.apache.commons.fileupload.FileUploadException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -65,23 +64,17 @@ public class HTMLForm implements Form
       return ( FileHandle ) getParamValue( sParamName );
    }
 
-   public Set getParamNames()
+   public Set getParamNames() throws IOException, FileUploadException, ParserException
    {
-      // todo: implement parseForm() method
+      parseForm();
+
       return _oFormParams.keySet();
    }
 
    private Object getParamValue( String sParamName )
       throws IOException, FileUploadException, ParserException, HTMLFormException
    {
-      if ( ! _bFormParsed )
-      {
-         _oFormParams
-            =  Parser.parseForm( _oServletRequest,
-                                 _oFileUploadConfig.getStoreOnDiskThresholdInBytes(),
-                                 _oFileUploadConfig.getUploadedFileStorageDir() );
-         _bFormParsed = true;
-      }
+      parseForm();
 
       if ( _oFormParams != null )
       {
@@ -94,6 +87,18 @@ public class HTMLForm implements Form
       }
 
       return null;
+   }
+
+   private void parseForm() throws IOException, FileUploadException, ParserException
+   {
+      if ( ! _bFormParsed )
+      {
+         _oFormParams
+            =  Parser.parseForm( _oServletRequest,
+                                 _oFileUploadConfig.getStoreOnDiskThresholdInBytes(),
+                                 _oFileUploadConfig.getUploadedFileStorageDir() );
+         _bFormParsed = true;
+      }
    }
 }
 
