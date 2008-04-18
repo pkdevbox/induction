@@ -16,9 +16,9 @@ public class TestConfig_DemoApp implements ConfigLoader
       Config   oConfig = new Config();
 
       // the paths are intended try the location(s) on the work and home machines
-//      oConfig
-//         .getJavaClassPath()
-//            .addCompiledDir( new File( "t:/acciente-projects/software/project/demoapp/class/demoapp" ), "demoapp" );
+      oConfig
+         .getJavaClassPath()
+            .addCompiledDir( new File( "t:/acciente-projects/software/project/demoapp/class/demoapp" ), "demoapp" );
 
       oConfig
          .getJavaClassPath()

@@ -1,6 +1,5 @@
 package com.acciente.dragonfly.dispatcher;
 
-import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.resolver.ControllerResolver;
 import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
@@ -10,9 +9,10 @@ import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.dispatcher.model.ModelFactory;
 import com.acciente.dragonfly.dispatcher.model.ModelPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
+import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
+import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
+import com.acciente.dragonfly.dispatcher.controller.ViewProcessor;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
-import com.acciente.dragonfly.util.MethodNotFoundException;
-import com.acciente.dragonfly.util.ReflectUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Log
@@ -29,10 +28,9 @@ import java.lang.reflect.Method;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private  ControllerResolver      _oControllerResolver;
-   private  ControllerPool          _oControllerPool;
-   private  ParamResolver           _oParamResolver;
-   private  Logger                  _oLogger;
+   private  ControllerResolver   _oControllerResolver;
+   private  ControllerExecutor   _oControllerExecutor;
+   private  Logger               _oLogger;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
@@ -81,7 +79,7 @@ public class HttpDispatcher extends HttpServlet
       try
       {
          _oControllerResolver
-         =  ControllerResolverInitializer
+            =  ControllerResolverInitializer
                   .getControllerResolver( oConfig.getControllerResolver(), oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
@@ -96,18 +94,20 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
       // setup a controller pool
-      _oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
+      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // setup ...
-      _oParamResolver
+      ParamResolver oParamResolver
          =  new ParamResolver( new ModelPool( oConfig.getModelDefs(),
-                                                   new ModelFactory( oClassLoader,
-                                                                     oServletConfig,
-                                                                     _oLogger
-                                                                   )
-                                                 ),
-                                    oConfig.getFileUpload()
-                                  );
+                                              new ModelFactory( oClassLoader,
+                                                                oServletConfig,
+                                                                _oLogger
+                                                              )
+                                            ),
+                               oConfig.getFileUpload()
+                             );
+
+      _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
@@ -124,119 +124,22 @@ public class HttpDispatcher extends HttpServlet
       if ( oResolution == null )
       {
          logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
-         return;
       }
 
-      Controller  oController;
+      Object   oControllerReturnValue = null;
       try
       {
-         oController = _oControllerPool.getController( oResolution.getClassName() );
+         oControllerReturnValue = _oControllerExecutor.execute( oResolution, oRequest, oResponse );
       }
-      catch ( ClassNotFoundException e )
+      catch ( ControllerExecutorException e )
       {
-         logAndRespond( oResponse, "dispatch-controller: unable to load definition", e );
-         return;
-      }
-      catch ( ConstructorNotFoundException e )
-      {
-         logAndRespond( oResponse, "dispatch-controller: unable to find constructor", e );
-         return;
-      }
-      catch ( InstantiationException e )
-      {
-         logAndRespond( oResponse, "dispatch-controller: instantiate error", e );
-         return;
-      }
-      catch ( InvocationTargetException e )
-      {
-         logAndRespond( oResponse, "dispatch-controller: target exception", e );
-         return;
-      }
-      catch ( IllegalAccessException e )
-      {
-         logAndRespond( oResponse, "dispatch-controller: access exception", e );
-         return;
+         logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
       }
 
-      // use performance enhanced reflection to determine the methods in the controller with the specified name
-      Method oControllerMethod;
-      try
+      if ( oControllerReturnValue != null )
       {
-         oControllerMethod = ReflectUtils.getSingletonMethod( oController.getClass(),
-                                                              oResolution.getMethodName(),
-                                                              oResolution.isIgnoreMethodNameCase() );
-      }
-      catch ( MethodNotFoundException e )
-      {
-         logAndRespond( oResponse, "dispatch-controller: method not found", e );
-         return;
-      }
-
-      // ok, we have a controller, now compute values for its formal parameter list
-      Class[]  aoParameterTypes  = oControllerMethod.getParameterTypes();
-      Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
-
-      for ( int i = 0; i < aoParameterTypes.length; i++ )
-      {
-         Class oParameterType = aoParameterTypes[ i ];
-
-         try
-         {
-            aoParameterValues[ i ] = _oParamResolver.getParameterValue( oParameterType, oRequest, oResponse );
-         }
-         catch ( ClassNotFoundException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: unable to load model definition", e );
-            return;
-         }
-         catch ( ConstructorNotFoundException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: constructor not found", e );
-            return;
-         }
-         catch ( MethodNotFoundException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: method not found", e );
-            return;
-         }
-         catch ( InvocationTargetException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: target exception", e );
-            return;
-         }
-         catch ( IllegalAccessException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: access exception", e );
-            return;
-         }
-         catch ( InstantiationException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: instantiate exception", e );
-            return;
-         }
-         catch ( ParamResolverException e )
-         {
-            logAndRespond( oResponse, "dispatch-model: parameter resolution exception", e );
-            return;
-         }
-      }
-
-      // finally call the controller method!
-      try
-      {
-         // todo: currently if any of the model classes reload above this invoke fails
-         // todo: one solution that may work would be to reload the controller
-         oControllerMethod.invoke( oController, aoParameterValues );
-      }
-      catch ( IllegalAccessException e )
-      {
-         logAndRespond( oResponse, "dispatch: method access error", e );
-         return;
-      }
-      catch ( InvocationTargetException e )
-      {
-         logAndRespond( oResponse, "dispatch: method threw exception", e );
-         return;
+         // todo: implement
+         //ViewProcessor.process( oControllerReturnValue, oResponse );
       }
    }
 
