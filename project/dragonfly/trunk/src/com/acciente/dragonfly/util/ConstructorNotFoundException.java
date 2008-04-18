@@ -18,3 +18,4 @@ public class ConstructorNotFoundException extends Exception
       super( sMessage, oCause );
    }
 }
+// EOF
