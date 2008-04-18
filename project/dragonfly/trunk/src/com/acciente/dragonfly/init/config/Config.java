@@ -19,7 +19,7 @@ import java.util.Map;
 public class Config
 {
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private TemplatePath          _oTemplatePath       = new TemplatePath();
+   private Template              _oTemplate           = new Template();
    private ModelDefs             _oModelDefs          = new ModelDefs();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
@@ -43,9 +43,9 @@ public class Config
     *
     * @return a template path definition
     */
-   public TemplatePath getTemplatePath()
+   public Template getTemplatePath()
    {
-      return _oTemplatePath;
+      return _oTemplate;
    }
 
    /**
@@ -319,38 +319,121 @@ public class Config
       }
    }
 
-   public static class TemplatePath
+   public static class Template
    {
-      private  List  _oDirList = new ArrayList();
+      private  LoaderPath  _oLoaderPath = new LoaderPath();
 
-      /**
-       * Adds a directory to the list of directories in which the dispatcher
-       * look for a template.
-       *
-       * @param oDir a File object representing a directory
-       */
-      public void addTemplateDir( File oDir )
+      public LoaderPath getLoaderPath()
       {
-         _oDirList.add( new TemplateDir( oDir ) );
+         return _oLoaderPath;
       }
 
-      public List getDirList()
+      public static class LoaderPath
       {
-         return _oDirList;
-      }
+         private  List _oLoaderPath = new ArrayList();
 
-      public static class TemplateDir
-      {
-         private  File     _oDir;
-
-         private TemplateDir( File oDir )
+         /**
+          * Adds a directory to the list of locations in which a template will be searched
+          *
+          * @param oDir a File object representing a directory
+          */
+         public void addDirForLoading( File oDir )
          {
-            _oDir =  oDir;
+            _oLoaderPath.add( new DirForLoading( oDir ) );
          }
 
-         public File getDir()
+         /**
+          * Adds a class to the list of locations in which a template will be searched,
+          * this setting will only be used by a templating engine that supports it (e.g: Freemarker)
+          * in these cases the templating engine will call the getResource() method on the specified
+          * class to retrieve a template
+          *
+          * @param oClass a class object
+          * @param sPackageNamePrefix a prefix to append to the template name before attempting
+          * to passing the name to getResource()
+          */
+         public void addClassForLoading( Class oClass, String sPackageNamePrefix )
          {
-            return _oDir;
+            _oLoaderPath.add( new ClassForLoading( oClass, sPackageNamePrefix ) );
+         }
+
+         /**
+          * Adds a web application path to the list of locations in which a template will be searched,
+          * this setting will only be used by a templating engine that supports it (e.g: Freemarker)
+          * in these cases the templating engine will call the Servlet context's getResource() method
+          *
+          * to passing the name to getResource()
+          * @param sRelativePath a path of the web application root (the parent of the WEB-INF folder)
+          */
+         public void addServeletContextForLoading( String sRelativePath )
+         {
+            _oLoaderPath.add( new ServletContextForLoading( sRelativePath ) );
+         }
+
+         /**
+          * Returns the list of items added to this path
+          * @return a list, each element in the list is one of the following types:
+          * DirForLoading, ClassForLoading or ServletContextForLoading
+          */
+         public List getList()
+         {
+            return _oLoaderPath;
+         }
+
+         public static class DirForLoading
+         {
+            private  File     _oDir;
+
+            private DirForLoading( File oDir )
+            {
+               _oDir = oDir;
+            }
+
+            public File getDir()
+            {
+               return _oDir;
+            }
+         }
+
+         public static class ClassForLoading
+         {
+            private  Class    _oClass;
+            private  String   _sPackageNamePrefix;
+
+            private ClassForLoading( Class oClass, String sPackageNamePrefix )
+            {
+               _oClass              = oClass;
+               _sPackageNamePrefix  = sPackageNamePrefix;
+            }
+
+            public Class getLoaderClass()
+            {
+               return _oClass;
+            }
+
+            public String getPackageNamePrefix()
+            {
+               return _sPackageNamePrefix;
+            }
+         }
+
+         public static class ServletContextForLoading
+         {
+            private String _sRelativePath;
+
+            public ServletContextForLoading( String sRelativePath )
+            {
+               _sRelativePath = sRelativePath;
+            }
+
+            /**
+             * This path is relative to the parent of the WEB-INF directory of the web application
+             * @return a string path
+             */
+            public String getRelativePath()
+            {
+               return _sRelativePath;
+            }
          }
       }
    }
