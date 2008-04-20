@@ -1,7 +1,6 @@
 package com.acciente.dragonfly.resolver;
 
 import com.acciente.dragonfly.init.config.Config;
-import com.acciente.dragonfly.resolver.ControllerResolver;
 
 import javax.servlet.http.HttpServletRequest;
 

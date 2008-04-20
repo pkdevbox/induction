@@ -1,14 +1,12 @@
-package com.acciente.dragonfly.dispatcher.controller;
+package com.acciente.dragonfly.dispatcher.view;
 
-import com.acciente.dragonfly.view.Text;
 import com.acciente.dragonfly.view.Image;
 import com.acciente.dragonfly.view.ImageStream;
 import com.acciente.dragonfly.view.Template;
+import com.acciente.dragonfly.view.Text;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
 
 /**
  * This class ...

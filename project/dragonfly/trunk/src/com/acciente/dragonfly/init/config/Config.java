@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -39,11 +40,11 @@ public class Config
    }
 
    /**
-    * A list of directories from which the view templating engine will load templates.
+    * This method provides access to the configuration of the template engine.
     *
-    * @return a template path definition
+    * @return a configuration object
     */
-   public Template getTemplatePath()
+   public Template getTemplate()
    {
       return _oTemplate;
    }
@@ -321,25 +322,36 @@ public class Config
 
    public static class Template
    {
-      private  LoaderPath  _oLoaderPath = new LoaderPath();
+      private TemplatePath _oTemplatePath = new TemplatePath();
+      private Locale       _oLocale;
 
-      public LoaderPath getLoaderPath()
+      public TemplatePath getTemplatePath()
       {
-         return _oLoaderPath;
+         return _oTemplatePath;
       }
 
-      public static class LoaderPath
+      public Locale getLocale()
       {
-         private  List _oLoaderPath = new ArrayList();
+         return _oLocale;
+      }
+
+      public void setLocale( Locale oLocale )
+      {
+         _oLocale = oLocale;
+      }
+
+      public static class TemplatePath
+      {
+         private  List _oTemplatePath = new ArrayList();
 
          /**
           * Adds a directory to the list of locations in which a template will be searched
           *
           * @param oDir a File object representing a directory
           */
-         public void addDirForLoading( File oDir )
+         public void addDir( File oDir )
          {
-            _oLoaderPath.add( new DirForLoading( oDir ) );
+            _oTemplatePath.add( new Dir( oDir ) );
          }
 
          /**
@@ -352,9 +364,9 @@ public class Config
           * @param sPackageNamePrefix a prefix to append to the template name before attempting
           * to passing the name to getResource()
           */
-         public void addClassForLoading( Class oClass, String sPackageNamePrefix )
+         public void addClass( java.lang.Class oClass, String sPackageNamePrefix )
          {
-            _oLoaderPath.add( new ClassForLoading( oClass, sPackageNamePrefix ) );
+            _oTemplatePath.add( new Class( oClass, sPackageNamePrefix ) );
          }
 
          /**
@@ -365,26 +377,26 @@ public class Config
           * to passing the name to getResource()
           * @param sRelativePath a path of the web application root (the parent of the WEB-INF folder)
           */
-         public void addServeletContextForLoading( String sRelativePath )
+         public void addWebappPath( String sRelativePath )
          {
-            _oLoaderPath.add( new ServletContextForLoading( sRelativePath ) );
+            _oTemplatePath.add( new WebappPath( sRelativePath ) );
          }
 
          /**
           * Returns the list of items added to this path
           * @return a list, each element in the list is one of the following types:
-          * DirForLoading, ClassForLoading or ServletContextForLoading
+          * Dir, Class or WebappPath
           */
          public List getList()
          {
-            return _oLoaderPath;
+            return _oTemplatePath;
          }
 
-         public static class DirForLoading
+         public static class Dir
          {
             private  File     _oDir;
 
-            private DirForLoading( File oDir )
+            private Dir( File oDir )
             {
                _oDir = oDir;
             }
@@ -395,18 +407,18 @@ public class Config
             }
          }
 
-         public static class ClassForLoading
+         public static class Class
          {
-            private  Class    _oClass;
-            private  String   _sPackageNamePrefix;
+            private  java.lang.Class   _oClass;
+            private  String            _sPackageNamePrefix;
 
-            private ClassForLoading( Class oClass, String sPackageNamePrefix )
+            private Class( java.lang.Class oClass, String sPackageNamePrefix )
             {
                _oClass              = oClass;
                _sPackageNamePrefix  = sPackageNamePrefix;
             }
 
-            public Class getLoaderClass()
+            public java.lang.Class getLoaderClass()
             {
                return _oClass;
             }
@@ -417,22 +429,22 @@ public class Config
             }
          }
 
-         public static class ServletContextForLoading
+         public static class WebappPath
          {
-            private String _sRelativePath;
+            private String _sPath;
 
-            public ServletContextForLoading( String sRelativePath )
+            public WebappPath( String sPath )
             {
-               _sRelativePath = sRelativePath;
+               _sPath = sPath;
             }
 
             /**
              * This path is relative to the parent of the WEB-INF directory of the web application
              * @return a string path
              */
-            public String getRelativePath()
+            public String getPath()
             {
-               return _sRelativePath;
+               return _sPath;
             }
          }
       }

@@ -1,7 +1,6 @@
 package com.acciente.dragonfly.resolver;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * This interface is used to abstract the algorithm used to map a HTTP request to a specific
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  *   - the single constructor should declare formal parameters using only the
  *     following types,
  *     - javax.servlet.ServletContext
- *     - javax.servlet.ServletConfig
+ *     - com.acciente.dragonfly.init.config.Config.ControllerResolver
  *
  * Log
  * Mar 14, 2008 APR  -  created
