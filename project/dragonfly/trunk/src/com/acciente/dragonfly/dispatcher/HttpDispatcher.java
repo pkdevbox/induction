@@ -11,7 +11,6 @@ import com.acciente.dragonfly.dispatcher.model.ModelPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
-import com.acciente.dragonfly.dispatcher.controller.ViewProcessor;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
