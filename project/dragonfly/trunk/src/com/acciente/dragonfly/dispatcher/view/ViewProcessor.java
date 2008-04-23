@@ -1,11 +1,15 @@
 package com.acciente.dragonfly.dispatcher.view;
 
+import com.acciente.dragonfly.template.TemplatingEngine;
 import com.acciente.dragonfly.view.Image;
 import com.acciente.dragonfly.view.ImageStream;
 import com.acciente.dragonfly.view.Template;
 import com.acciente.dragonfly.view.Text;
+import freemarker.template.TemplateException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
@@ -16,9 +20,14 @@ import java.io.IOException;
  */
 public class ViewProcessor
 {
-   // todo: complete implementation
+   private TemplatingEngine _oTemplatingEngine;
 
-   public void process( Object oControllerReturnValue, HttpServletResponse oResponse ) throws IOException
+   public ViewProcessor( TemplatingEngine oTemplatingEngine )
+   {
+      _oTemplatingEngine = oTemplatingEngine;
+   }
+
+   public void process( Object oControllerReturnValue, HttpServletResponse oResponse ) throws IOException, TemplateException
    {
       if ( oControllerReturnValue != null )
       {
@@ -49,7 +58,16 @@ public class ViewProcessor
    private void processText( HttpServletResponse oResponse, Text oText ) throws IOException
    {
       oResponse.setContentType( oText.getMimeType() == null ? "text/plain": oText.getMimeType() );
-      oResponse.getWriter().print( oText.getText() );
+
+      BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+      try
+      {
+         oWriter.write( oText.getText() );
+      }
+      finally
+      {
+         oWriter.flush();
+      }
    }
 
    private void processImage( HttpServletResponse oResponse, Image oImage ) throws IOException
@@ -65,7 +83,16 @@ public class ViewProcessor
       }
 
       oResponse.setContentType( oImage.getMimeType() );
-      oResponse.getOutputStream().write( oImage.getImage() );
+
+      BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
+      try
+      {
+         oStream.write( oImage.getImage() );
+      }
+      finally
+      {
+         oStream.flush();
+      }
    }
 
    private void processImageStream( HttpServletResponse oResponse, ImageStream oImageStream ) throws IOException
@@ -81,12 +108,29 @@ public class ViewProcessor
       }
 
       oResponse.setContentType( oImageStream.getMimeType() );
-      oImageStream.writeImage( oResponse.getOutputStream() );
+
+      BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
+      try
+      {
+         oImageStream.writeImage( oStream );
+      }
+      finally
+      {
+         oStream.flush();
+      }
    }
 
-   private void processTemplate( HttpServletResponse oResponse, Template oTemplate )
+   private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws IOException, TemplateException
    {
-      // todo: implement
+      BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+      try
+      {
+         _oTemplatingEngine.process( oTemplate, oWriter );
+      }
+      finally
+      {
+         oWriter.flush();
+      }
    }
 }
 
