@@ -15,7 +15,7 @@ import com.acciente.dragonfly.init.config.Config;
  */
 public class ClassLoaderInitializer
 {
-   public static ClassLoader getClassLoader( Config.JavaClassPath oConfig, ClassLoader oParentClassLoader, Logger oLogger )
+   public static ClassLoader getClassLoader( Config.JavaClassPath oJavaClassPathConfig, ClassLoader oParentClassLoader, Logger oLogger )
       throws ClassNotFoundException
    {
       // we start with the parent classloader, if no other class loader config are defined
@@ -23,14 +23,14 @@ public class ClassLoaderInitializer
       // configured classloaders to this one
       ClassLoader oClassLoader = oParentClassLoader;
 
-      if ( oConfig.getDirList().size() != 0 )
+      if ( oJavaClassPathConfig.getDirList().size() != 0 )
       {
          // if there is a classpath defined setup a reloading classloader to handle the specified directories
-         for ( int i = 0; i < oConfig.getDirList().size(); i++ )
+         for ( int i = 0; i < oJavaClassPathConfig.getDirList().size(); i++ )
          {
-            if ( oConfig.getDirList().get( i ) instanceof Config.JavaClassPath.CompiledDir )
+            if ( oJavaClassPathConfig.getDirList().get( i ) instanceof Config.JavaClassPath.CompiledDir )
             {
-               Config.JavaClassPath.CompiledDir oCompiledDir = ( Config.JavaClassPath.CompiledDir ) oConfig.getDirList().get( i );
+               Config.JavaClassPath.CompiledDir oCompiledDir = ( Config.JavaClassPath.CompiledDir ) oJavaClassPathConfig.getDirList().get( i );
 
                oLogger.log( "configuring reloading classloader for compiled classes in: " + oCompiledDir.getDir() );
 
@@ -42,16 +42,16 @@ public class ClassLoaderInitializer
                // chain in the new classloader
                oClassLoader = new ReloadingClassLoader( oJavaCompiledClassDefLoader, oClassLoader );
             }
-            else if ( oConfig.getDirList().get( i ) instanceof Config.JavaClassPath.SourceDir )
+            else if ( oJavaClassPathConfig.getDirList().get( i ) instanceof Config.JavaClassPath.SourceDir )
             {
-               Config.JavaClassPath.SourceDir oSourceDir = ( Config.JavaClassPath.SourceDir ) oConfig.getDirList().get( i );
+               Config.JavaClassPath.SourceDir oSourceDir = ( Config.JavaClassPath.SourceDir ) oJavaClassPathConfig.getDirList().get( i );
 
                oLogger.log( "configuring reloading classloader for source classes in  : " + oSourceDir.getDir() );
 
                // set up a source class definition loader
                JavaSourceClassDefLoader oJavaSourceClassDefLoader = new JavaSourceClassDefLoader();
 
-               oJavaSourceClassDefLoader.setJavaCompilerManager( new JavaCompilerManager( oConfig.getJavaCompiler().getJavaCompilerClassName() ) );
+               oJavaSourceClassDefLoader.setJavaCompilerManager( new JavaCompilerManager( oJavaClassPathConfig.getJavaCompiler().getJavaCompilerClassName() ) );
                oJavaSourceClassDefLoader.setSourceDirectory( oSourceDir.getDir() );
                oJavaSourceClassDefLoader.setPackageNamePrefix( oSourceDir.getPackageNamePrefix() );
 

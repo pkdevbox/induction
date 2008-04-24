@@ -1,5 +1,7 @@
 package com.acciente.dragonfly.init.config;
 
+import com.acciente.dragonfly.template.TemplatingEngine;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -322,12 +324,18 @@ public class Config
 
    public static class Template
    {
-      private TemplatePath _oTemplatePath = new TemplatePath();
-      private Locale       _oLocale;
+      private TemplatingEngineProvider _oTemplatingEngineProvider = new TemplatingEngineProvider();
+      private TemplatePath             _oTemplatePath             = new TemplatePath();
+      private Locale                   _oLocale;
 
       public TemplatePath getTemplatePath()
       {
          return _oTemplatePath;
+      }
+
+      public TemplatingEngineProvider getTemplatingEngineProvider()
+      {
+         return _oTemplatingEngineProvider;
       }
 
       public Locale getLocale()
@@ -338,6 +346,32 @@ public class Config
       public void setLocale( Locale oLocale )
       {
          _oLocale = oLocale;
+      }
+
+      public static class TemplatingEngineProvider
+      {
+         private String    _sClassName;
+
+         /**
+          * Used to set a fully qualified class name that implements the templating engine interface
+          * (the templating engine interface is com.acciente.dragonfly.template.TemplatingEngine)
+          *
+          * @param sClassName a string representing fully qualified classname or null to use the default templating engine
+          */
+         public void setClassName( String sClassName )
+         {
+            _sClassName = sClassName;
+         }
+
+         /**
+          * Returns the name of the templating engine class configured or null if no value was provided
+          *
+          * @return a string representing a fully qualified class name
+          */
+         public String getClassName()
+         {
+            return _sClassName;
+         }
       }
 
       public static class TemplatePath
