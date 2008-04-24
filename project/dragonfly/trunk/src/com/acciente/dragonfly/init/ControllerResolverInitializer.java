@@ -6,6 +6,7 @@ import com.acciente.dragonfly.resolver.URLPathControllerResolver;
 import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
+import com.acciente.dragonfly.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -19,15 +20,15 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ControllerResolverInitializer
 {
-   public static ControllerResolver getControllerResolver( Config.ControllerResolver oConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+   public static ControllerResolver getControllerResolver( Config.ControllerResolver oControllerResolverConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
       throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
    {
       ControllerResolver   oControllerResolver;
-      String               sControllerResolverClassName = oConfig.getClassName();
+      String               sControllerResolverClassName = oControllerResolverConfig.getClassName();
 
       if ( sControllerResolverClassName == null )
       {
-         oControllerResolver = new URLPathControllerResolver( oConfig );
+         oControllerResolver = new URLPathControllerResolver( oControllerResolverConfig );
       }
       else
       {
@@ -38,11 +39,9 @@ public class ControllerResolverInitializer
          // attempt to find and call the single public constructor
          oControllerResolver
             =  ( ControllerResolver )
-               Invoker.invoke( ReflectUtils.getSingletonConstructor( oControllerResolverClass ),
-                               new Object[]{ oServletConfig,
-                                             oConfig
-                                           }
-                             );
+               ObjectFactory.createObject( oControllerResolverClass,
+                                           new Object[]{ oServletConfig,
+                                                         oControllerResolverConfig } );
       }
 
       return oControllerResolver;

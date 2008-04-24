@@ -5,12 +5,14 @@ import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
 import com.acciente.dragonfly.init.ControllerResolverInitializer;
 import com.acciente.dragonfly.init.Logger;
+import com.acciente.dragonfly.init.ViewProcessorInitializer;
 import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.dispatcher.model.ModelFactory;
 import com.acciente.dragonfly.dispatcher.model.ModelPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
+import com.acciente.dragonfly.dispatcher.view.ViewProcessor;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
@@ -21,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import freemarker.template.TemplateException;
+
 /**
  * Log
  * Feb 29, 2008 APR  -  created
@@ -29,6 +33,7 @@ public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver   _oControllerResolver;
    private  ControllerExecutor   _oControllerExecutor;
+   private  ViewProcessor        _oViewProcessor;
    private  Logger               _oLogger;
 
    /**
@@ -92,10 +97,10 @@ public class HttpDispatcher extends HttpServlet
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
-      // setup a controller pool
+      // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
-      // setup ...
+      // the ParamResolver manages resolution of parameter values based on the parameter type
       ParamResolver oParamResolver
          =  new ParamResolver( new ModelPool( oConfig.getModelDefs(),
                                               new ModelFactory( oClassLoader,
@@ -106,7 +111,28 @@ public class HttpDispatcher extends HttpServlet
                                oConfig.getFileUpload()
                              );
 
+      // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
+
+      // the ViewProcessor manages the processing any view returned by a controller
+      try
+      {
+         _oViewProcessor
+            =  ViewProcessorInitializer
+                  .getViewProcessor( oConfig.getTemplate(), oClassLoader, oServletConfig, _oLogger );
+      }
+      catch ( IOException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
@@ -137,8 +163,14 @@ public class HttpDispatcher extends HttpServlet
 
       if ( oControllerReturnValue != null )
       {
-         // todo: implement
-         //ViewProcessor.process( oControllerReturnValue, oResponse );
+         try
+         {
+            _oViewProcessor.process( oControllerReturnValue, oResponse );
+         }
+         catch ( TemplateException e )
+         {
+            logAndRespond( oResponse, "view-processor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+         }
       }
    }
 

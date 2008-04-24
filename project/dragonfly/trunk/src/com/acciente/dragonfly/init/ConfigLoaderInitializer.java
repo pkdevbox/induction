@@ -4,6 +4,7 @@ import com.acciente.commons.reflect.Invoker;
 import com.acciente.dragonfly.init.config.ConfigLoader;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ReflectUtils;
+import com.acciente.dragonfly.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -83,10 +84,7 @@ public class ConfigLoaderInitializer
 
          // attempt to find and call the single public constructor
          oConfigLoader
-            =  ( ConfigLoader )
-               Invoker.invoke( ReflectUtils.getSingletonConstructor( oConfigLoaderClass ),
-                               new Object[]{ oServletConfig }
-                             );
+            =  ( ConfigLoader ) ObjectFactory.createObject( oConfigLoaderClass, new Object[]{ oServletConfig } );
       }
 
       return oConfigLoader;
