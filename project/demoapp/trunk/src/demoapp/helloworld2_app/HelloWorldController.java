@@ -1,15 +1,14 @@
-package demoapp.controller;
+package demoapp.helloworld2_app;
 
 import com.acciente.dragonfly.controller.Controller;
-import demoapp.view.HelloWorldView;
 
 /**
- * A really simple controller
+ * A simple controller that uses a Text view to display hello world
  *
  * Log
  * Apr 23, 2008 APR  -  created
  */
-public class HelloWorldDemo implements Controller
+public class HelloWorldController implements Controller
 {
    public HelloWorldView handler()
    {
