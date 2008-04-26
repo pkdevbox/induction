@@ -18,16 +18,18 @@ import java.io.IOException;
  * Log
  * Apr 17, 2008 APR  -  created
  */
-public class ViewProcessor
+public class ViewExecutor
 {
+   // todo: consider refactoring handling each view type into a separate class
+   
    private TemplatingEngine _oTemplatingEngine;
 
-   public ViewProcessor( TemplatingEngine oTemplatingEngine )
+   public ViewExecutor( TemplatingEngine oTemplatingEngine )
    {
       _oTemplatingEngine = oTemplatingEngine;
    }
 
-   public void process( Object oControllerReturnValue, HttpServletResponse oResponse ) throws IOException, TemplateException
+   public void execute( Object oControllerReturnValue, HttpServletResponse oResponse ) throws IOException, TemplateException
    {
       if ( oControllerReturnValue != null )
       {
