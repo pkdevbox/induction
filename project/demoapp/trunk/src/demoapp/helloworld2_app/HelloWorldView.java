@@ -1,4 +1,4 @@
-package demoapp.view;
+package demoapp.helloworld2_app;
 
 import com.acciente.dragonfly.view.Text;
 
@@ -6,7 +6,7 @@ public class HelloWorldView implements Text
 {
    public String getText()
    {
-      return "A new kind of Hello World!!";
+      return "Hello World, using a Text view";
    }
 
    public String getMimeType()

@@ -1,4 +1,4 @@
-package demoapp.controller;
+package demoapp.concepts_app;
 
 import com.acciente.commons.htmlform.ParserException;
 import com.acciente.dragonfly.controller.Controller;
@@ -10,7 +10,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
 
-public class ActionDemo implements Controller
+public class MultiActionDemoController implements Controller
 {
    // http://samples.com/cgi/helloworld/message_2
 

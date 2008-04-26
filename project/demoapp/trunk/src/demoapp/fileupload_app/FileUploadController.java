@@ -1,4 +1,4 @@
-package demoapp.controller;
+package demoapp.fileupload_app;
 
 import com.acciente.dragonfly.controller.Response;
 import com.acciente.dragonfly.controller.Controller;
@@ -17,7 +17,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * Log
  * Apr 16, 2008 APR  -  created
  */
-public class FileUploadDemo implements Controller
+public class FileUploadController implements Controller
 {
    public void handler( Response oResponse, Form oForm ) throws Exception, FileUploadException, ParserException
    {

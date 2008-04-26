@@ -1,4 +1,4 @@
-package demoapp.model;
+package demoapp.counter_app;
 
 /**
  * Log

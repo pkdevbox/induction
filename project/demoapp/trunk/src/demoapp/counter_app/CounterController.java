@@ -1,11 +1,11 @@
-package demoapp.controller;
+package demoapp.counter_app;
 
 import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.controller.Response;
 
 import java.io.IOException;
 
-import demoapp.model.Counter;
+import demoapp.counter_app.Counter;
 
 /**
  * This class ...
@@ -13,7 +13,7 @@ import demoapp.model.Counter;
  * Log
  * Mar 25, 2008 APR  -  created
  */
-public class CounterDemo implements Controller
+public class CounterController implements Controller
 {
    public void post( Response oResponse )
       throws IOException
