@@ -5,14 +5,14 @@ import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
 import com.acciente.dragonfly.init.ControllerResolverInitializer;
 import com.acciente.dragonfly.init.Logger;
-import com.acciente.dragonfly.init.ViewProcessorInitializer;
+import com.acciente.dragonfly.init.TemplatingEngineInitializer;
 import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.dispatcher.model.ModelFactory;
 import com.acciente.dragonfly.dispatcher.model.ModelPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
 import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
-import com.acciente.dragonfly.dispatcher.view.ViewProcessor;
+import com.acciente.dragonfly.dispatcher.view.ViewExecutor;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
@@ -33,7 +33,7 @@ public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver   _oControllerResolver;
    private  ControllerExecutor   _oControllerExecutor;
-   private  ViewProcessor        _oViewProcessor;
+   private ViewExecutor _oViewExecutor;
    private  Logger               _oLogger;
 
    /**
@@ -114,12 +114,15 @@ public class HttpDispatcher extends HttpServlet
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
 
-      // the ViewProcessor manages the processing any view returned by a controller
+      // the ViewExecutor manages the processing any view returned by a controller
       try
       {
-         _oViewProcessor
-            =  ViewProcessorInitializer
-                  .getViewProcessor( oConfig.getTemplate(), oClassLoader, oServletConfig, _oLogger );
+         _oViewExecutor
+            =  new ViewExecutor( TemplatingEngineInitializer
+                                    .getTemplatingEngine( oConfig.getTemplate(),
+                                                          oClassLoader,
+                                                          oServletConfig,
+                                                          _oLogger ) );
       }
       catch ( IOException e )
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
@@ -165,7 +168,7 @@ public class HttpDispatcher extends HttpServlet
       {
          try
          {
-            _oViewProcessor.process( oControllerReturnValue, oResponse );
+            _oViewExecutor.execute( oControllerReturnValue, oResponse );
          }
          catch ( TemplateException e )
          {
