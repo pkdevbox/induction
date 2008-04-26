@@ -10,7 +10,7 @@ import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
 
-public class Sample implements Controller
+public class ActionDemo implements Controller
 {
    // http://samples.com/cgi/helloworld/message_2
 
