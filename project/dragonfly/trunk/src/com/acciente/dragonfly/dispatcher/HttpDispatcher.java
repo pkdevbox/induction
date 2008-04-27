@@ -1,18 +1,20 @@
 package com.acciente.dragonfly.dispatcher;
 
-import com.acciente.dragonfly.resolver.ControllerResolver;
+import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
+import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
+import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
+import com.acciente.dragonfly.dispatcher.model.ModelFactory;
+import com.acciente.dragonfly.dispatcher.model.ModelPool;
+import com.acciente.dragonfly.dispatcher.view.ViewExecutor;
+import com.acciente.dragonfly.dispatcher.view.ViewExecutorException;
 import com.acciente.dragonfly.init.ClassLoaderInitializer;
 import com.acciente.dragonfly.init.ConfigLoaderInitializer;
 import com.acciente.dragonfly.init.ControllerResolverInitializer;
 import com.acciente.dragonfly.init.Logger;
 import com.acciente.dragonfly.init.TemplatingEngineInitializer;
 import com.acciente.dragonfly.init.config.Config;
-import com.acciente.dragonfly.dispatcher.model.ModelFactory;
-import com.acciente.dragonfly.dispatcher.model.ModelPool;
-import com.acciente.dragonfly.dispatcher.controller.ControllerPool;
-import com.acciente.dragonfly.dispatcher.controller.ControllerExecutor;
-import com.acciente.dragonfly.dispatcher.controller.ControllerExecutorException;
-import com.acciente.dragonfly.dispatcher.view.ViewExecutor;
+import com.acciente.dragonfly.init.config.ConfigLoaderException;
+import com.acciente.dragonfly.resolver.ControllerResolver;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
@@ -23,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import freemarker.template.TemplateException;
-
 /**
  * Log
  * Feb 29, 2008 APR  -  created
@@ -33,7 +33,7 @@ public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver   _oControllerResolver;
    private  ControllerExecutor   _oControllerExecutor;
-   private ViewExecutor _oViewExecutor;
+   private  ViewExecutor         _oViewExecutor;
    private  Logger               _oLogger;
 
    /**
@@ -66,6 +66,8 @@ public class HttpDispatcher extends HttpServlet
       catch ( InstantiationException e )
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
+      catch ( ConfigLoaderException e )
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
 
       // setup up our classloader
@@ -149,31 +151,33 @@ public class HttpDispatcher extends HttpServlet
    {
       // ask the resolver what controller should be invoked
       ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest );
-      if ( oResolution == null )
+      if ( oResolution != null )
       {
-         logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
-      }
-
-      Object   oControllerReturnValue = null;
-      try
-      {
-         oControllerReturnValue = _oControllerExecutor.execute( oResolution, oRequest, oResponse );
-      }
-      catch ( ControllerExecutorException e )
-      {
-         logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-      }
-
-      if ( oControllerReturnValue != null )
-      {
+         Object   oControllerReturnValue = null;
          try
          {
-            _oViewExecutor.execute( oControllerReturnValue, oResponse );
+            oControllerReturnValue = _oControllerExecutor.execute( oResolution, oRequest, oResponse );
          }
-         catch ( TemplateException e )
+         catch ( ControllerExecutorException e )
          {
-            logAndRespond( oResponse, "view-processor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
          }
+
+         if ( oControllerReturnValue != null )
+         {
+            try
+            {
+               _oViewExecutor.execute( oControllerReturnValue, oResponse );
+            }
+            catch ( ViewExecutorException e )
+            {
+               logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            }
+         }
+      }
+      else
+      {
+         logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
       }
    }
 

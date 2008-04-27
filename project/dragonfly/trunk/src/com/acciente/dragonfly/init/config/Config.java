@@ -1,7 +1,5 @@
 package com.acciente.dragonfly.init.config;
 
-import com.acciente.dragonfly.template.TemplatingEngine;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -21,7 +21,7 @@ import java.io.IOException;
 public class ViewExecutor
 {
    // todo: consider refactoring handling each view type into a separate class
-   
+
    private TemplatingEngine _oTemplatingEngine;
 
    public ViewExecutor( TemplatingEngine oTemplatingEngine )
@@ -29,30 +29,41 @@ public class ViewExecutor
       _oTemplatingEngine = oTemplatingEngine;
    }
 
-   public void execute( Object oControllerReturnValue, HttpServletResponse oResponse ) throws IOException, TemplateException
+   public void execute( Object oControllerReturnValue, HttpServletResponse oResponse ) throws ViewExecutorException
    {
       if ( oControllerReturnValue != null )
       {
-         if ( oControllerReturnValue instanceof Text )
+         try
          {
-            processText( oResponse, ( Text ) oControllerReturnValue );
+            if ( oControllerReturnValue instanceof Text )
+            {
+               processText( oResponse, ( Text ) oControllerReturnValue );
+            }
+            else if ( oControllerReturnValue instanceof Image )
+            {
+               processImage( oResponse, ( Image ) oControllerReturnValue );
+            }
+            else if ( oControllerReturnValue instanceof ImageStream )
+            {
+               processImageStream( oResponse, ( ImageStream ) oControllerReturnValue );
+            }
+            else if ( oControllerReturnValue instanceof Template )
+            {
+               processTemplate( oResponse, ( Template ) oControllerReturnValue );
+            }
+            else
+            {
+               // just print the object to the response
+               oResponse.getWriter().print( oControllerReturnValue );
+            }
          }
-         else if ( oControllerReturnValue instanceof Image )
+         catch ( IOException e )
          {
-            processImage( oResponse, ( Image ) oControllerReturnValue );
+            throw new ViewExecutorException( "exec: unable to load definition", e );
          }
-         else if ( oControllerReturnValue instanceof ImageStream )
+         catch ( TemplateException e )
          {
-            processImageStream( oResponse, ( ImageStream ) oControllerReturnValue );
-         }
-         else if ( oControllerReturnValue instanceof Template )
-         {
-            processTemplate( oResponse, ( Template ) oControllerReturnValue );
-         }
-         else
-         {
-            // just print the object to the response
-            oResponse.getWriter().print( oControllerReturnValue );
+            throw new ViewExecutorException( "exec: template exception", e );
          }
       }
    }

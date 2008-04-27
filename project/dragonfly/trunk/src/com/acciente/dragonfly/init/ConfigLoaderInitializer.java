@@ -1,9 +1,8 @@
 package com.acciente.dragonfly.init;
 
-import com.acciente.commons.reflect.Invoker;
 import com.acciente.dragonfly.init.config.ConfigLoader;
+import com.acciente.dragonfly.init.config.XMLConfigLoader;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
-import com.acciente.dragonfly.util.ReflectUtils;
 import com.acciente.dragonfly.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
@@ -70,9 +69,8 @@ public class ConfigLoaderInitializer
       // first check if there is custom config loader defined
       if ( sConfigLoaderClassName == null )
       {
-         // no, this is the most typical case
-         // todo: implement a XML configuration loader
-         oConfigLoader = null;
+         // no custom loader defined, use the default XML loader (this is the typical case)
+         oConfigLoader = new XMLConfigLoader( oServletConfig );
       }
       else
       {
