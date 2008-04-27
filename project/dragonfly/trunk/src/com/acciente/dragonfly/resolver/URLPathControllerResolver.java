@@ -65,7 +65,7 @@ public class URLPathControllerResolver implements ControllerResolver
             if ( iIndexOfLastSlash == -1 )
             {
                // no slashes found in the path, so assume no method name specified
-               sClassName  =  sPath;
+               sClassName  =  sPath.substring( 1 ).replace( '/', '.' );
                sMethodName =  _sDefaultHandlerMethodName;
             }
             else

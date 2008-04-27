@@ -15,7 +15,7 @@ public class TestConfig_DemoApp implements ConfigLoader
    {
       Config   oConfig = new Config();
 
-      // the paths are intended try the location(s) on the work and home machines
+      // java classpath - the 2 paths are intended try the location(s) on the work and home machines
       oConfig
          .getJavaClassPath()
             .addCompiledDir( new File( "t:/acciente-projects/software/project/demoapp/class/demoapp" ), "demoapp" );
@@ -24,9 +24,16 @@ public class TestConfig_DemoApp implements ConfigLoader
          .getJavaClassPath()
             .addCompiledDir( new File( "c:/acciente/acciente-projects/software/project/demoapp/class/demoapp" ), "demoapp" );
 
+      // model config
       oConfig
          .getModelDefs()
             .addModelDef( "demoapp.model.Counter", null, false, true, false );
+
+      // template config
+      oConfig
+         .getTemplate()
+            .getTemplatePath()
+               .addDir( new File( "c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app" ) );
 
       return oConfig;
    }

@@ -17,5 +17,7 @@ package com.acciente.dragonfly.init.config;
  */
 public interface ConfigLoader
 {
-   Config getConfig();
+   Config getConfig() throws ConfigLoaderException;
 }
+
+// EOF
