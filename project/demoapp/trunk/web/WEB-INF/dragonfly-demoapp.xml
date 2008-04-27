@@ -1,0 +1,28 @@
+
+<dragonfly-config>
+
+	<java-classpath>
+		<compiled-directory>
+			<directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
+			<package-name-prefix>demoapp</package-name-prefix>
+		</compiled-directory>
+		<compiled-directory>
+			<directory>t:/acciente-projects/software/project/demoapp/class/demoapp</directory>
+			<package-name-prefix>demoapp</package-name-prefix>
+		</compiled-directory>
+	</java-classpath>
+
+	<model-defs>
+		<model-def>
+			<model-class-name>demoapp.model.counter</model-class-name>
+			<scope>session</scope>
+		</model-def>
+	</model-defs>
+
+	<template>
+		<template-path>
+			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
+		</template-path>
+	</template>
+
+</dragonfly-config> 

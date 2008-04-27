@@ -13,10 +13,12 @@
        <display-name>DemoApp</display-name>
        <servlet-name>demoapp</servlet-name>
        <servlet-class>com.acciente.dragonfly.dispatcher.HttpDispatcher</servlet-class>
+<!--
        <init-param>
            <param-name>demoapp.config-loader-class</param-name>
            <param-value>com.acciente.test.dragonfly.config.TestConfig_DemoApp</param-value>
        </init-param>
+-->
        <load-on-startup>0</load-on-startup>
    </servlet>
 
