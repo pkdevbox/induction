@@ -1,5 +1,6 @@
 package demoapp.helloworld1_app;
 
+import com.acciente.dragonfly.controller.Controller;
 import com.acciente.dragonfly.controller.Response;
 
 import java.io.IOException;
@@ -10,12 +11,13 @@ import java.io.IOException;
  * Log
  * Apr 26, 2008 APR  -  created
  */
-public class HelloWorldController
+public class HelloWorldController implements Controller
 {
    public void handler( Response oReponse ) throws IOException
    {
       oReponse.setContentType( "text/plain" );
-      oReponse.out().println( "Hello World!!" );
-      oReponse.out().println( "(from probably the simplest controller you could write!)" );
+      oReponse.out().println( "Hello World, using a simple println()" );
    }
 }
+
+// EOF
