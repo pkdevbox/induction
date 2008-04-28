@@ -121,7 +121,7 @@ public class HttpDispatcher extends HttpServlet
       {
          _oViewExecutor
             =  new ViewExecutor( TemplatingEngineInitializer
-                                    .getTemplatingEngine( oConfig.getTemplate(),
+                                    .getTemplatingEngine( oConfig.getTemplating(),
                                                           oClassLoader,
                                                           oServletConfig,
                                                           _oLogger ) );

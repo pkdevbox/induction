@@ -16,7 +16,7 @@ import freemarker.template.TemplateException;
  *   - the single constructor should declare formal parameters using only the
  *     following types,
  *     - javax.servlet.ServletConfig
- *     - com.acciente.dragonfly.init.config.Config.Template
+ *     - com.acciente.dragonfly.init.config.Config.Templating
  *
  * Log
  * Apr 17, 2008 APR  -  created

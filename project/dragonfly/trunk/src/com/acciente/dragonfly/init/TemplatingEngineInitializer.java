@@ -19,23 +19,23 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class TemplatingEngineInitializer
 {
-   public static TemplatingEngine getTemplatingEngine( Config.Template oTemplateConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+   public static TemplatingEngine getTemplatingEngine( Config.Templating oTemplatingConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
       throws IOException, ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, IllegalAccessException, InstantiationException
    {
       TemplatingEngine  oTemplatingEngine;
 
-      if ( Strings.isEmpty( oTemplateConfig.getTemplatingEngineProvider().getClassName() ) )
+      if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngineProvider().getClassName() ) )
       {
          // if no templating engine is configured use the freemarker engine as the default
-         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplateConfig, oServletConfig, oLogger );
+         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oServletConfig, oLogger );
       }
       else
       {
-         Class oTemplatingEngineClass = oClassLoader.loadClass( oTemplateConfig.getTemplatingEngineProvider().getClassName() );
+         Class oTemplatingEngineClass = oClassLoader.loadClass( oTemplatingConfig.getTemplatingEngineProvider().getClassName() );
 
          oTemplatingEngine
             =  ( TemplatingEngine )
-               ObjectFactory.createObject( oTemplatingEngineClass, new Object[]{ oServletConfig, oTemplateConfig } );
+               ObjectFactory.createObject( oTemplatingEngineClass, new Object[]{ oServletConfig, oTemplatingConfig} );
       }
 
       return oTemplatingEngine;
