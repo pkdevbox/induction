@@ -1,133 +1,228 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<TITLE></TITLE>
-<META NAME="Generator" CONTENT="TextPad 4.6">
-<META NAME="Author" CONTENT="Adinath Raveendra Raj - Accient, LLC">
-<META NAME="Keywords" CONTENT="dragonFly, java web application framework, MVC">
-<META NAME="Description" CONTENT="dragonFly MVC - a Java(tm) Web Application Framework">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.2  (Win32)">
+	<META NAME="CREATED" CONTENT="20080426;243601">
+	<META NAME="CHANGEDBY" CONTENT="Adinath Raveendra Raj">
+	<META NAME="CHANGED" CONTENT="20080426;565835">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { size: 8.5in 11in }
+		P { color: #000000 }
+		H2 { color: #000000 }
+		H3 { color: #000000 }
+		A:link { color: #0000ff }
+		A:visited { color: #000080 }
+	-->
+	</STYLE>
 </HEAD>
-
-<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#000080" ALINK="#3F00FF" BACKGROUND="?">
-
-<H2>dragonFly MVC -- official project home</h2>
-
+<BODY TEXT="#000000" LINK="#0000ff" VLINK="#000080" BGCOLOR="#ffffff" DIR="LTR">
+<H2>dragonFly MVC -- Official Website</H2>
 <H3>What is dragonFly MVC?</H3>
-
-dragonFly MVC is a Java(tm) web application development framework. The goal of dragonFly is to simplify the development of high-performance, maintainable web applications using Java(tm). dragonFly MVC is a 100% pure Java(tm) implementation that runs inside a servlet container.
-<P>
-Other popular web applications frameworks for Java that are may be compared to dragonFly include Spring MVC, Struts, Tapestry, WebWork and JPublish.
-
+<P STYLE="margin-bottom: 0in">dragonfly MVC is a Java(tm) web
+application development framework. The goal of dragonFly is to
+simplify the development of high-performance, maintainable web
+applications using Java(tm). dragonFly MVC is a 100% pure Java(tm)
+implementation that runs inside a servlet container. 
+</P>
+<P STYLE="margin-bottom: 0in">Other popular web applications
+frameworks for Java that may be compared to dragonFly include Spring
+MVC, Struts, Tapestry, WebWork and JPublish. 
+</P>
 <H3>What motivated dragonFly MVC?</H3>
-
-There is already a large number of web application frameworks for Java, so why another Java web application framework? Very simply, it was felt that there is still room for significant improvement.
-<P>
-Following are some of the specific motivations for dragonFly:
+<P STYLE="margin-bottom: 0in">There is already a large number of web
+application frameworks for Java, so why another Java web application
+framework? Very simply, it was felt that there is still room for
+significant improvement. 
+</P>
+<P STYLE="margin-bottom: 0in">Following are some of the specific
+motivations for dragonFly: 
+</P>
 <UL>
-	<LI> It should not be necessary to redeploy an application every time Java code is changed. It should be possible to simply recompile the changed source (hopefully using your favorite IDE) and simply reload the respective web page.
-	<P>
-	<LI> It should be possible to use mature Java dependency analysis tools in an IDE to analyze the dependencies between models, views and controllers (For example: Which controllers use this model object? What controllers will be impacted if I edit this template?)
-	<P>
-	<LI> An application should not be cluttered by superfluous XML configuration files.
+	<LI><P STYLE="margin-bottom: 0in">It should not be necessary to
+	redeploy an application every time Java code is changed. It should
+	be possible to simply recompile the changed source (hopefully using
+	your favorite IDE) and simply reload the respective web page. 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">It should be possible to use
+	mature Java dependency analysis tools in an IDE to analyze the
+	dependencies between models, views and controllers (For example:
+	Which controllers use this model object? What controllers will be
+	impacted if I edit this template?) 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">An application should not be
+	cluttered by superfluous XML configuration files. 
+	</P>
 </UL>
-<P>
-The measure of improvement is perhaps ultimately subjective, and there are many perspectives to a problem, so feedback from the community at large is greatly appreciated.
-
+<P STYLE="margin-bottom: 0in">The measure of improvement is perhaps
+ultimately subjective, and there are many perspectives to a problem,
+so feedback from the community at large is greatly appreciated. 
+</P>
 <H3>dragonFly MVC quick user guide</H3>
-dragonFly MVC advocates the use of the Model-View-Controller (MVC) paradigm to web application development. Following is a brief of the summary of how dragonFly MVC supports models, views and controllers.
-<P>
-In dragonFly MVC you will write the important types of classes you will write are controllers, views and models. A very simple application may only use controllers, but most applications will use controllers, views and models.
+<P STYLE="margin-bottom: 0in">dragonFly MVC advocates the use of the
+Model-View-Controller (MVC) paradigm to web application development.
+Following is a brief of the summary of how dragonFly MVC supports
+models, views and controllers. 
+</P>
+<P STYLE="margin-bottom: 0in">In dragonFly MVC you will write the
+important types of classes you will write are controllers, views and
+models. A very simple application may only use controllers, but most
+applications will use controllers, views and models. 
+</P>
 <UL>
-	<LI> Controllers
+	<LI><P STYLE="margin-bottom: 0in"><B>Controllers</B> 
+	</P>
 	<UL>
-		<LI> All requests are processed by a controller
-		<P>
-		<LI> A controller is a POJO which implements the Controller marker interface (the Controller interface just marks a class as a controller, and does not enforce any methods)
-		<P>
-		<LI> A model object or environment object (such as the Request, Response or Form) is accessible in a controller by simply declaring a parameter of the model object's type in the controler's respective method (this is referred to "parameter injection" in dragonFly)
-		<P>
-		<LI> A controller may have a method for each distint task that it performs
-			<UL>
-				<LI> The default URL to controller mapper, allows specifying the controller class and method name in the path to invoke a controller, e.g: http://www.dragonflymvc.org/myapp/controller/Signup/save, where the controller class is myapp.controller.Signup and a method named "save" should be invoked on the class
-				<LI> Omitting the method cause an assumed (configurable) method name to be called
-			</UL>
-		<P>
-		<LI> The type of the return value of a controller is significant, each possible type and their meaning is given below:
-			<UL>
-				<LI> Template: processes and return the content of the specified template object to the client
-				<LI> Text: returns the text contents to the client
-				<LI> Image/ImageStream: returns the image contents to the client
-			</UL>
+		<LI><P STYLE="margin-bottom: 0in">All requests are processed by a
+		controller 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">A controller is a POJO which
+		implements the Controller marker interface (the Controller
+		interface just marks a class as a controller, and does not enforce
+		any methods) 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">A model object or environment
+		object (such as the Request, Response or Form) is accessible in a
+		controller by simply declaring a parameter of the model object's
+		type in the controler's respective method (this is referred to
+		&quot;parameter injection&quot; in dragonFly) 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">A controller may have a method
+		for each distint task that it performs 
+		</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">The default URL to controller
+			mapper, allows specifying the controller class and method name in
+			the path to invoke a controller, e.g:
+			http://www.dragonflymvc.org/myapp/controller/Signup/save, where
+			the controller class is myapp.controller.Signup and a method named
+			&quot;save&quot; should be invoked on the class 
+			</P>
+			<LI><P STYLE="margin-bottom: 0in">Omitting the method cause an
+			assumed (configurable) method name to be called 
+			</P>
+		</UL>
+		<LI><P STYLE="margin-bottom: 0in">The type of the return value of a
+		controller is significant, each possible type and their meaning is
+		given below: 
+		</P>
+		<UL>
+			<LI><P STYLE="margin-bottom: 0in">Template: processes and return
+			the content of the specified template object to the client 
+			</P>
+			<LI><P STYLE="margin-bottom: 0in">Text: returns the text contents
+			to the client 
+			</P>
+			<LI><P STYLE="margin-bottom: 0in">Image/ImageStream: returns the
+			image contents to the client 
+			</P>
+		</UL>
 	</UL>
-
-	<LI> Views
-	<LI> Models
+	<LI><P STYLE="margin-bottom: 0in">Views 
+	</P>
+	<LI><P STYLE="margin-bottom: 0in">Models</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">Pure application logic,
+		completely independent of views and controllers 
+		</P>
+		<LI><P></P>
+	</UL>
 </UL>
-
-
-- views
-  - a view class is a POJO that implements one of the following interfaces (based on the type of view):
-    - Template
-    - Image
-    - Text
-    - ImageStreamer
-  - a class, say C1, that implements the Template interface uses one of the integrated template engines
-    - when processing the template the only data passed to the template is an instance of the class C1
-    - so C1 serves as the bean that defines clearly what data is uses by the associated template
-
-- models
-  - a model is any user defined class
-  - a configurable factory may be provided for each model class
-  - declarative control of the lifecyle of each model class
-    - application: a model object is created for the life of the application
-    - session: a model object is created for each browser session
-    - local: a model object is created for each controller invocation
-
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">- views - a view class is a POJO that
+implements one of the following interfaces (based on the type of
+view): - Template - Image - Text - ImageStreamer - a class, say C1,
+that implements the Template interface uses one of the integrated
+template engines - when processing the template the only data passed
+to the template is an instance of the class C1 - so C1 serves as the
+bean that defines clearly what data is uses by the associated
+template - models - a model is any user defined class - a
+configurable factory may be provided for each model class -
+declarative control of the lifecyle of each model class -
+application: a model object is created for the life of the
+application - session: a model object is created for each browser
+session - local: a model object is created for each controller
+invocation 
+</P>
 <H3>dragonFly MVC technical overview</H3>
-
 <UL>
-	<LI> General
+	<LI><P STYLE="margin-bottom: 0in">General 
+	</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">Runtime class reloading for
+		controllers, views and models (no more redeploy/restart) 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">Ability to analyze dependencies
+		between controllers, views and models using basic java dependency
+		analysis tools in any IDE 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">Extensibile architecture 
+		</P>
 		<UL>
-			<LI> Runtime class reloading for controllers, views and models (no more redeploy/restart)
-			<P>
-			<LI> Ability to analyze dependencies between controllers, views and models using basic java dependency analysis tools in any IDE
-			<P>
-			<LI> Extensibile architecture
-				<UL>
-					<LI>Pluggable configuration loader
-					<LI>Pluggable URL to controller mapper
-					<LI>Pluggable templating engines (initial support for Freemarker, adding other templating engines should be very easy, Velocity is likely to be next)
-				</UL>
+			<LI><P STYLE="margin-bottom: 0in">Pluggable configuration loader 
+			</P>
+			<LI><P STYLE="margin-bottom: 0in">Pluggable URL to controller
+			mapper 
+			</P>
+			<LI><P STYLE="margin-bottom: 0in">Pluggable templating engines
+			(initial support for Freemarker, adding other templating engines
+			should be very easy, Velocity is likely to be next) 
+			</P>
 		</UL>
-	<P>
-	<LI> Controller
-		<UL>
-			<LI> Parameter injection: a model object is accessible in a controller by simply declaring a parameter of the model object's type in the controler's respective method
-			<P>
-			<LI> Sophisticated form parameter processing, to simpify using list and map structures in an HTML form
-			<P>
-			<LI> Handling an uploaded file should be as simple as handling a string input on a form
-			(this would not have been mentioned expect for how hard some frameworks make handling uploaded files)
-		</UL>
-	<P>
-	<LI> View
-		<UL>
-			<LI> Integrated support for templating engines (initial support for Freemarker)
-			<P>
-			<LI> Each template view is represented by a class that encapuslates all the data the template depends on, enabling powerful Java based dependency analysis when template changes need to be made to text-based HTML templates
-		</UL>
-	<P>
-	<LI> Model
-		<UL>
-			<LI> Declarative control of the lifecyle of model objects
-		</UL>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">Controller 
+	</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">Parameter injection: a model
+		object is accessible in a controller by simply declaring a
+		parameter of the model object's type in the controler's respective
+		method 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">Sophisticated form parameter
+		processing, to simpify using list and map structures in an HTML
+		form 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">Handling an uploaded file should
+		be as simple as handling a string input on a form (this would not
+		have been mentioned expect for how hard some frameworks make
+		handling uploaded files) 
+		</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">View 
+	</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">Integrated support for templating
+		engines (initial support for Freemarker) 
+		</P>
+		<LI><P STYLE="margin-bottom: 0in">Each template view is represented
+		by a class that encapuslates all the data the template depends on,
+		enabling powerful Java based dependency analysis when template
+		changes need to be made to text-based HTML templates 
+		</P>
+	</UL>
+	<LI><P STYLE="margin-bottom: 0in">Model 
+	</P>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in">Declarative control of the
+		lifecyle of model objects 
+		</P>
+	</UL>
 </UL>
-
 <H3>How much does dragonFly MVC cost?</H3>
-dragonFly is available for use free-of-charge. dragonFly MVC is released by <A HREF="http://www.acciente.com">Acciente, LLC</A> as open-source software licensed under the commercial friendly Apache 2.0 license.
-
+<P STYLE="margin-bottom: 0in">dragonFly is available for use
+free-of-charge. dragonFly MVC is released by <A HREF="http://www.acciente.com/">Acciente,
+LLC</A> as open-source software licensed under the commercial
+friendly Apache 2.0 license. 
+</P>
 <H3>Who is responsible for dragonFly development?</H3>
-The dragonFly MVC project is sponsored by <A HREF="http://www.acciente.com">Acciente, LLC</A>. Acciente is a software company located in Scottsdale, Arizona specializing in systems architecture and software design for medium to large scale projects.
-
+<P STYLE="margin-bottom: 0in">The dragonFly MVC project is sponsored
+by <A HREF="http://www.acciente.com/">Acciente, LLC</A>. Acciente is
+a software company located in Scottsdale, Arizona specializing in
+systems architecture and software design for medium to large scale
+projects. 
+</P>
 </BODY>
 </HTML>
