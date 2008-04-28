@@ -1,28 +1,49 @@
 
-<dragonfly-config>
+<!-- this file contains the configuration for the dragonFly dispatcher -->
+<dispatcher-config>
 
-	<java-classpath>
+	<!-- The following section allows you to specify locations from which
+	dragonFly will automatically reload a class if the file has changed -->
+	<java-class-path>
 		<compiled-directory>
 			<directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
-			<package-name-prefix>demoapp</package-name-prefix>
+			<package-prefix>demoapp</package-prefix>
 		</compiled-directory>
 		<compiled-directory>
 			<directory>t:/acciente-projects/software/project/demoapp/class/demoapp</directory>
-			<package-name-prefix>demoapp</package-name-prefix>
+			<package-prefix>demoapp</package-prefix>
 		</compiled-directory>
-	</java-classpath>
+	</java-class-path>
 
+	<!-- The following section allows you define the models used your application.
+	A model definition must specify a <class> and a <scope>. The <class> specifies
+	the name of the model class. The value specified for the <class> must a fully 
+	qualified classname. 
+	
+	If a model class implements an interface and it is desired that references 
+	to the model in the controllers be via the model interface then the interface 
+	name must be specified as the <class> here, instead of the actual implemention 
+	class name. The scope must contain one of the following values: application, 
+	session, request (case insignificant).
+	
+	For most real-life applications, each model class will have a factory class 
+	specified. The model's factory class will be used by dragonFly to instantiate 
+	objects of the respective model class. If no factory class is defined dragonFly 
+	will expect the model class to have a single public constructor, which dragonFly 
+	will call with parameter injection semantics.
+	-->
 	<model-defs>
 		<model-def>
-			<model-class-name>demoapp.model.counter</model-class-name>
+			<class>demoapp.model.Counter</class>
 			<scope>session</scope>
 		</model-def>
 	</model-defs>
 
-	<template>
+	<!-- The following section configures the templating engine -->
+	<templating>
 		<template-path>
 			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
 		</template-path>
-	</template>
+	</templating>
 
-</dragonfly-config> 
+</dispatcher-config> 
