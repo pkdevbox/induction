@@ -31,7 +31,7 @@ public class TestConfig_DemoApp implements ConfigLoader
 
       // template config
       oConfig
-         .getTemplate()
+         .getTemplating()
             .getTemplatePath()
                .addDir( new File( "c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app" ) );
 

@@ -20,7 +20,7 @@ import java.util.Map;
 public class Config
 {
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private Template              _oTemplate           = new Template();
+   private Templating            _oTemplating         = new Templating();
    private ModelDefs             _oModelDefs          = new ModelDefs();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
@@ -44,9 +44,9 @@ public class Config
     *
     * @return a configuration object
     */
-   public Template getTemplate()
+   public Templating getTemplating()
    {
-      return _oTemplate;
+      return _oTemplating;
    }
 
    /**
@@ -320,7 +320,7 @@ public class Config
       }
    }
 
-   public static class Template
+   public static class Templating
    {
       private TemplatingEngineProvider _oTemplatingEngineProvider = new TemplatingEngineProvider();
       private TemplatePath             _oTemplatePath             = new TemplatePath();
