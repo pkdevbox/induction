@@ -1,13 +1,9 @@
 package com.acciente.dragonfly.init.config;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +15,7 @@ import java.io.InputStream;
 public class XMLConfigLoader implements ConfigLoader
 {
    private  ServletConfig  _oServletConfig;
-   private File            _oConfigFile;
+   private  File           _oConfigFile;
 
    public XMLConfigLoader( ServletConfig oServletConfig )
    {
@@ -39,22 +35,7 @@ public class XMLConfigLoader implements ConfigLoader
 
    public Config getConfig() throws ConfigLoaderException
    {
-      DocumentBuilder oXMLDocumentBuilder;
-
-      try
-      {
-         // instantiate a DOM XML parser
-         oXMLDocumentBuilder
-            =  DocumentBuilderFactory
-               .newInstance()
-                  .newDocumentBuilder();
-      }
-      catch ( ParserConfigurationException e )
-      {
-         throw new ConfigLoaderException( "config-load: XML parser configuration error", e );
-      }
-
-      Document    oXMLDocument;
+      Config   oConfig;
 
       try
       {
@@ -63,20 +44,20 @@ public class XMLConfigLoader implements ConfigLoader
             // first compute the expected name of config file name
             String   sConfigFileName = "/WEB-INF/dragonfly-" + _oServletConfig.getServletName() + ".xml";
 
-            InputStream oXMLConfigFile;
+            InputStream oConfigStream;
 
-            oXMLConfigFile = _oServletConfig.getServletContext().getResourceAsStream( sConfigFileName );
+            oConfigStream = _oServletConfig.getServletContext().getResourceAsStream( sConfigFileName );
 
-            if ( oXMLConfigFile == null )
+            if ( oConfigStream == null )
             {
                throw new ConfigLoaderException( "config-load: error opening: " + sConfigFileName );
             }
 
-            oXMLDocument =  oXMLDocumentBuilder.parse( oXMLConfigFile );
+            oConfig = digestConfigFile( oConfigStream );
          }
          else if ( _oConfigFile != null )
          {
-            oXMLDocument =  oXMLDocumentBuilder.parse( _oConfigFile );
+            oConfig = digestConfigFile( _oConfigFile );
          }
          else
          {
@@ -92,21 +73,56 @@ public class XMLConfigLoader implements ConfigLoader
          throw new ConfigLoaderException( "config-load: XML parse error", e );
       }
 
-      return XML2Config( oXMLDocument );
+      return oConfig;
    }
 
-   private Config XML2Config( Document oXMLDocument )
+   private Config digestConfigFile( InputStream oConfigStream ) throws IOException, SAXException
    {
       Config   oConfig = new Config();
 
-      NodeList oJavaClassPath = oXMLDocument.getElementsByTagName( XMLTagName.JAVA_CLASS_PATH );
-
-      for ( int i = 0; i < oJavaClassPath.getLength(); i++ )
-      {
-         System.out.println( oJavaClassPath.item( i ) );
-      }
+      getConfigFileDigester( oConfig ).parse( oConfigStream );
 
       return oConfig;
+   }
+
+   private Config digestConfigFile( File oConfigFile ) throws IOException, SAXException
+   {
+      Config   oConfig = new Config();
+
+      getConfigFileDigester( oConfig ).parse( oConfigFile );
+
+      return oConfig;
+   }
+
+   /**
+    * Some constants for naming the stacks on the digester
+    */
+   private static interface DigesterStack
+   {
+      static final String ControllerResolver    = "stack:ControllerResolver";
+      static final String FileUpload            = "stack:FileUpload";
+      static final String JavaClassPath         = "stack:JavaClassPath";
+      static final String ModelDefs             = "stack:ModelDefs";
+      static final String Templating            = "stack:Templating";
+   }
+
+   private Digester getConfigFileDigester( Config oConfig )
+   {
+      Digester oDigester = new Digester();
+
+      oDigester.push( DigesterStack.ControllerResolver,  oConfig.getControllerResolver() );
+      oDigester.push( DigesterStack.FileUpload,          oConfig.getFileUpload() );
+      oDigester.push( DigesterStack.JavaClassPath,       oConfig.getJavaClassPath() );
+      oDigester.push( DigesterStack.ModelDefs,           oConfig.getModelDefs() );
+      oDigester.push( DigesterStack.Templating,          oConfig.getTemplating() );
+
+      oDigester.addCallMethod(      "dispatcher-config/java-class-path/compiled-directory",                 "addCompiledDir", 2,  );
+      oDigester.addCallParam(       "dispatcher-config/java-class-path/compiled-directory/directory",       0 );
+      oDigester.addCallParam(       "dispatcher-config/java-class-path/compiled-directory/package-prefix",  1 );
+
+      //oDigester.addSetTop(  );
+
+      return oDigester;
    }
 }
 
