@@ -1,4 +1,4 @@
-package com.acciente.dragonfly.init.config;
+package com.acciente.dragonfly.init.configloader;
 
 /**
  * Log
