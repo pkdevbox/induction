@@ -1,0 +1,64 @@
+<!-- dragonfly-complete-sample-config.xml
+The purpose of this file is to demonstrate all the possible parameters that may used to configure
+dragonFly. It should be noted that typically most dragonFly configurations will not use all the parameters
+shown here. -->
+<dispatcher-config>
+	<!-- The java-clasc-path section allows you to specify locations from which
+	dragonFly will automatically reload classes -->
+	<java-class-path>
+		<!-- It is possible to override the default java compiler used by dragonFly
+		to compile source files on the fly. A java compiler is only used if
+		source-directory entries are defined below. -->
+		<java-compiler>
+			<class>class_name_that_implements_the_dragonfly_compiler_interface</class>
+		</java-compiler>
+		<compiled-directory>
+			<directory>/a/directory/with/class/files/to/be/reloaded/dynamically</directory>
+			<!-- If the above directory points to a subfolder of the folder where the package
+			folder structure begins, then specify package represented by the subfolder -->
+			<package-prefix>a.package.name</package-prefix>
+		</compiled-directory>
+		<compiled-directory>
+			<directory>/another/directory/with/class/files/to/be/reloaded/dynamically</directory>
+			<package-prefix>a.package.name</package-prefix>
+		</compiled-directory>
+		<source-directory>
+			<directory>/a/directory/with/java/source/files/to/be/compiled/dynamically</directory>
+			<!-- If the above directory points to a subfolder of the folder where the package
+			folder structure begins, then specify package represented by the subfolder -->
+			<package-prefix>a.package.name</package-prefix>
+		</source-directory>
+	</java-class-path>
+
+	<!-- The following section allows you define the models used your application.
+	A model definition must specify a <class> and a <scope>. The <class> specifies
+	the name of the model class. The value specified for the <class> must be a fully
+	qualified classname.
+
+	If a model class implements an interface and it is desired that references to
+	the model (in the controllers) be via the model interface, then the interface
+	name implemented by the model must be specified as the <class> here, instead
+	of the name of model implemention class. The scope must contain one of the
+	following values: application, session, request (case insignificant).
+
+	For most real-life applications, each model class will have a factory class
+	specified. The model's factory class will be used by dragonFly to instantiate
+	objects of the respective model class. If no factory class is defined dragonFly
+	will expect the model class to have a single public constructor, which dragonFly
+	will call with parameter injection semantics. -->
+	<model-defs>
+		<model-def>
+			<class>the/name/of/the/model/class/or/an/interface/that/it/implements</class>
+			<factory-class>the/name/of/the/factory/class/for/the/model</factory-class>
+			<scope>session</scope>
+		</model-def>
+	</model-defs>
+
+	<!-- The following section configures the templating engine -->
+	<templating>
+		<template-path>
+			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
+		</template-path>
+	</templating>
+
+</dispatcher-config>
