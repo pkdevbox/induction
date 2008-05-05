@@ -20,8 +20,8 @@ import java.util.Map;
 public class Config
 {
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private Templating            _oTemplating         = new Templating();
    private ModelDefs             _oModelDefs          = new ModelDefs();
+   private Templating            _oTemplating         = new Templating();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
 

@@ -20,6 +20,10 @@ public class JavaClassPathRule extends Rule
       _oJavaClassPath = oJavaClassPath;
    }
 
+   /**
+    * Factory methods for the "nested"-rules
+    */
+
    public AddCompiledDirRule createAddCompiledDirRule()
    {
       return new AddCompiledDirRule();
@@ -40,13 +44,17 @@ public class JavaClassPathRule extends Rule
     */
    public class AddCompiledDirRule extends Rule
    {
-      private File _oDir;
-      private  String                  _sPackageNamePrefix;
+      private  File        _oDir;
+      private  String      _sPackageNamePrefix;
 
       public void end( String sNamespace, String sName )
       {
          _oJavaClassPath.addCompiledDir( _oDir, _sPackageNamePrefix );
       }
+
+      /**
+       * Factory methods for the "nested"-rules
+       */
 
       public GetDirRule createGetDirRule()
       {
@@ -59,7 +67,7 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * createGetDirRule rule
+       * GetDirRule rule
        */
       private class GetDirRule extends Rule
       {
@@ -70,7 +78,7 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * createGetPackageNamePrefixRule rule
+       * GetPackageNamePrefixRule rule
        */
       private class GetPackageNamePrefixRule extends Rule
       {
@@ -89,13 +97,17 @@ public class JavaClassPathRule extends Rule
     */
    public class AddSourceDirRule extends Rule
    {
-      private  File                    _oDir;
-      private  String                  _sPackageNamePrefix;
+      private  File        _oDir;
+      private  String      _sPackageNamePrefix;
 
       public void end( String sNamespace, String sName )
       {
          _oJavaClassPath.addSourceDir( _oDir, _sPackageNamePrefix );
       }
+
+      /**
+       * Factory methods for the "nested"-rules
+       */
 
       public GetDirRule createGetDirRule()
       {
@@ -108,7 +120,7 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * createGetDirRule rule
+       * GetDirRule rule
        */
       private class GetDirRule extends Rule
       {
@@ -119,7 +131,7 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * createGetPackageNamePrefixRule rule
+       * GetPackageNamePrefixRule rule
        */
       private class GetPackageNamePrefixRule extends Rule
       {
