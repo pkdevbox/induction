@@ -27,7 +27,7 @@ public class TemplatingEngineInitializer
       if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngineProvider().getClassName() ) )
       {
          // if no templating engine is configured use the freemarker engine as the default
-         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oServletConfig, oLogger );
+         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oClassLoader, oServletConfig, oLogger );
       }
       else
       {
@@ -35,7 +35,12 @@ public class TemplatingEngineInitializer
 
          oTemplatingEngine
             =  ( TemplatingEngine )
-               ObjectFactory.createObject( oTemplatingEngineClass, new Object[]{ oServletConfig, oTemplatingConfig} );
+               ObjectFactory.createObject( oTemplatingEngineClass,
+                                           new Object[]{ oServletConfig,
+                                                         oTemplatingConfig,
+                                                         oClassLoader
+                                                       }
+                                         );
       }
 
       return oTemplatingEngine;

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
  * This class stores all the configuration for a single dispatcher instance.
@@ -238,6 +239,34 @@ public class Config
          return _oModelDefMap.values();
       }
 
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         if ( _oModelDefMap.size() == 0 )
+         {
+            return "";
+         }
+         else
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n\t<model-defs>" );
+
+            for ( Iterator oIter = _oModelDefMap.values().iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( oIter.next().toString() );
+            }
+
+            oBuffer.append( "\n\t<model-defs>" );
+
+            return oBuffer.toString();
+         }
+      }
+
       public static class ModelDef
       {
          private String    _sModelClassName;
@@ -317,6 +346,35 @@ public class Config
          {
             return _bIsRequestScope;
          }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n\t\t<model-def>" );
+            oBuffer.append( "\n\t\t\t<class>" );
+            oBuffer.append( _sModelClassName );
+            oBuffer.append( "</class>" );
+
+            if ( _sModelFactoryClassName != null )
+            {
+               oBuffer.append( "\n\t\t\t<factory-class>" );
+               oBuffer.append( _sModelFactoryClassName );
+               oBuffer.append( "</factory-class>" );
+            }
+
+            oBuffer.append( "\n\t\t\t<scope>" );
+            oBuffer.append( _bIsApplicationScope ? "Application" : ( _bIsSessionScope ? "Session" : ( _bIsRequestScope ? "Request" : "!! invalid value !!" ) ) );
+            oBuffer.append( "</scope>" );
+            oBuffer.append( "\n\t\t</model-def>" );
+
+            return  oBuffer.toString();
+         }
       }
    }
 
@@ -346,6 +404,63 @@ public class Config
          _oLocale = oLocale;
       }
 
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         String   sXML_TemplatePath             =  _oTemplatePath.toXML();
+         String   sXML_TemplatingEngineProvider =  _oTemplatingEngineProvider.toXML();
+         String   sXML_Locale                   =  toXML_Locale();
+
+         if ( sXML_TemplatePath.equals( "" )
+               && sXML_TemplatingEngineProvider.equals( "" )
+               && sXML_Locale.equals( "" )
+            )
+         {
+            return "";
+         }
+         else
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n\t<templating>" );
+
+            oBuffer.append( sXML_TemplatePath );
+            oBuffer.append( sXML_TemplatingEngineProvider );
+            oBuffer.append( sXML_Locale );
+
+            oBuffer.append( "\n\t</templating>" );
+
+            return  oBuffer.toString();
+         }
+      }
+
+      private String toXML_Locale()
+      {
+         StringBuffer oBuffer = new StringBuffer();
+
+         if ( _oLocale == null )
+         {
+            return "";
+         }
+         else
+         {
+            oBuffer.append( "\n\t\t<locale>" );
+            oBuffer.append( "\n\t\t\t<iso-language>" );
+            oBuffer.append( _oLocale.getLanguage() );
+            oBuffer.append( "</iso-language>" );
+            oBuffer.append( "\n\t\t\t<iso-country>" );
+            oBuffer.append( _oLocale.getCountry() );
+            oBuffer.append( "</iso-country>" );
+            oBuffer.append( "\n\t\t</locale>" );
+
+            return oBuffer.toString();
+         }
+      }
+
       public static class TemplatingEngineProvider
       {
          private String    _sClassName;
@@ -370,6 +485,31 @@ public class Config
          {
             return _sClassName;
          }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            if ( _sClassName == null )
+            {
+               return "";
+            }
+            else
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t<templating-engine-provider>" );
+               oBuffer.append( "\n\t\t\t<class>" );
+               oBuffer.append( _sClassName );
+               oBuffer.append( "</class>" );
+               oBuffer.append( "\n\t\t</templating-engine-provider>" );
+
+               return  oBuffer.toString();
+            }
+         }
       }
 
       public static class TemplatePath
@@ -392,13 +532,14 @@ public class Config
           * in these cases the templating engine will call the getResource() method on the specified
           * class to retrieve a template
           *
-          * @param oClass a class object
-          * @param sPackageNamePrefix a prefix to append to the template name before attempting
-          * to passing the name to getResource()
+          * @param sLoaderClassName a prefix to append to the template name before attempting
+          * @param sPath a path to where the templates are located, if the path starts with a /
+          * then the path is absolute, otherwise it is assumed to be relative to the package name
+          * of the loader class
           */
-         public void addClass( java.lang.Class oClass, String sPackageNamePrefix )
+         public void addLoaderClass( String sLoaderClassName, String sPath )
          {
-            _oTemplatePath.add( new Class( oClass, sPackageNamePrefix ) );
+            _oTemplatePath.add( new LoaderClass( sLoaderClassName, sPath ) );
          }
 
          /**
@@ -424,6 +565,34 @@ public class Config
             return _oTemplatePath;
          }
 
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            if ( _oTemplatePath.size() == 0 )
+            {
+               return "";
+            }
+            else
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t<template-path>" );
+
+               for ( Iterator oIter = _oTemplatePath.iterator(); oIter.hasNext(); )
+               {
+                  oBuffer.append ( oIter.next().toString() );
+               }
+
+               oBuffer.append( "\n\t\t<template-path>" );
+
+               return oBuffer.toString();
+            }
+         }
+
          public static class Dir
          {
             private  File     _oDir;
@@ -437,27 +606,64 @@ public class Config
             {
                return _oDir;
             }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t\t<directory>" );
+               oBuffer.append( _oDir );
+               oBuffer.append( "</directory>" );
+
+               return  oBuffer.toString();
+            }
          }
 
-         public static class Class
+         public static class LoaderClass
          {
-            private  java.lang.Class   _oClass;
-            private  String            _sPackageNamePrefix;
+            private  String _sLoaderClassName;
+            private  String _sPath;
 
-            private Class( java.lang.Class oClass, String sPackageNamePrefix )
+            private LoaderClass( String sLoaderClassName, String sPath )
             {
-               _oClass              = oClass;
-               _sPackageNamePrefix  = sPackageNamePrefix;
+               _sLoaderClassName = sLoaderClassName;
+               _sPath            = sPath;
             }
 
-            public java.lang.Class getLoaderClass()
+            public String getLoaderClassName()
             {
-               return _oClass;
+               return _sLoaderClassName;
             }
 
-            public String getPackageNamePrefix()
+            public String getPath()
             {
-               return _sPackageNamePrefix;
+               return _sPath;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t\t<loader-class>" );
+               oBuffer.append( "\n\t\t\t\t<class>" );
+               oBuffer.append( _sLoaderClassName );
+               oBuffer.append( "</class>" );
+               oBuffer.append( "\n\t\t\t\t<path>" );
+               oBuffer.append( _sPath );
+               oBuffer.append( "</path>" );
+               oBuffer.append( "</loader-class>" );
+
+               return  oBuffer.toString();
             }
          }
 
@@ -477,6 +683,22 @@ public class Config
             public String getPath()
             {
                return _sPath;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t\t<web-app-path>" );
+               oBuffer.append( _sPath );
+               oBuffer.append( "</web-app-path>" );
+
+               return  oBuffer.toString();
             }
          }
       }
@@ -512,6 +734,29 @@ public class Config
          return _oJavaCompiler;
       }
 
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n\t<java-class-path>" );
+
+         for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
+         {
+            oBuffer.append ( oIter.next().toString() );
+         }
+
+         oBuffer.append( _oJavaCompiler.toXML() );
+
+         oBuffer.append( "\n\t<java-class-path>" );
+
+         return oBuffer.toString();
+      }
+
       public static class CompiledDir
       {
          private  File     _oDir;
@@ -531,6 +776,27 @@ public class Config
          public String getPackageNamePrefix()
          {
             return _sPackageNamePrefix;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n\t\t<compiled-directory>" );
+            oBuffer.append( "\n\t\t\t<directory>" );
+            oBuffer.append( _oDir );
+            oBuffer.append( "</directory>" );
+            oBuffer.append( "\n\t\t\t<package-prefix>" );
+            oBuffer.append( _sPackageNamePrefix );
+            oBuffer.append( "</package-prefix>" );
+            oBuffer.append( "\n\t\t</compiled-directory>" );
+
+            return  oBuffer.toString();
          }
       }
 
@@ -554,23 +820,71 @@ public class Config
          {
             return _sPackageNamePrefix;
          }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n\t\t<source-directory>" );
+            oBuffer.append( "\n\t\t\t<directory>" );
+            oBuffer.append( _oDir );
+            oBuffer.append( "</directory>" );
+            oBuffer.append( "\n\t\t\t<package-prefix>" );
+            oBuffer.append( _sPackageNamePrefix );
+            oBuffer.append( "</package-prefix>" );
+            oBuffer.append( "\n\t\t</source-directory>" );
+
+            return  oBuffer.toString();
+         }
       }
 
       public static class JavaCompiler
       {
+         private static final String    DEFAULT = "com.acciente.commons.javac.JavaCompiler_JDK_1_4";
+
          private String    _sJavaCompilerClassName;
 
          public String getJavaCompilerClassName()
          {
             return ( _sJavaCompilerClassName != null
                      ? _sJavaCompilerClassName
-                     : "com.acciente.commons.javac.JavaCompiler_JDK_1_4"
+                     : DEFAULT
                    );
          }
 
          public void setJavaCompilerClassName( String sJavaCompilerClassName )
          {
             _sJavaCompilerClassName = sJavaCompilerClassName;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            if ( _sJavaCompilerClassName == null )
+            {
+               return "";
+            }
+            else
+            {
+               StringBuffer   oBuffer = new StringBuffer();
+
+               oBuffer.append( "\n\t\t<java-compiler>" );
+               oBuffer.append( "\n\t\t\t<class>" );
+               oBuffer.append( _sJavaCompilerClassName );
+               oBuffer.append( "</class>" );
+               oBuffer.append( "\n\t\t</java-compiler>" );
+
+               return oBuffer.toString();
+            }
          }
       }
    }

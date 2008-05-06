@@ -13,15 +13,17 @@ import java.io.File;
  */
 public class Test_XMLConfigLoader
 {
-   private File _oTestConfigFile = new File( "c:/acciente/acciente-projects/software/project/dragonfly/subversion/conf/dragonfly-complete-sample-config.xml" );
-   //private File _oTestConfigFile = new File( "t:/acciente-projects/software/project/dragonfly/subversion/conf/dragonfly-complete-sample-config.xml" );
+   //private File _oTestConfigFile = new File( "c:/acciente/acciente-projects/software/project/dragonfly/subversion/conf/dragonfly-complete-sample-config.xml" );
+   private File _oTestConfigFile = new File( "t:/acciente-projects/software/project/dragonfly/subversion/conf/dragonfly-complete-sample-config.xml" );
 
    @Test
    public void test_1() throws ConfigLoaderException
    {
       Config oConfig = getXMLConfigLoader().getConfig();
 
-      System.out.println( "Config=" + oConfig );
+      System.out.println( oConfig.getJavaClassPath() );
+      System.out.println( oConfig.getModelDefs() );
+      System.out.println( oConfig.getTemplating() );
    }
 
    private XMLConfigLoader getXMLConfigLoader()
