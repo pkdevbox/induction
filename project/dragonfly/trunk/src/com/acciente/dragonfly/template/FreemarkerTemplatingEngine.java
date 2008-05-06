@@ -29,7 +29,7 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 {
    private  Configuration  _oConfiguration;
 
-   public FreemarkerTemplatingEngine( Config.Templating oConfig, ServletConfig oServletConfig, Logger oLogger ) throws IOException
+   public FreemarkerTemplatingEngine( Config.Templating oConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger ) throws IOException, ClassNotFoundException
    {
       _oConfiguration = new Configuration();
 
@@ -49,17 +49,18 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
             oLogger.log( "freemarker > template load path > adding directory > "
                            + oDir.getDir() );
          }
-         else if ( oLoaderPathItem instanceof Config.Templating.TemplatePath.Class )
+         else if ( oLoaderPathItem instanceof Config.Templating.TemplatePath.LoaderClass )
          {
-            Config.Templating.TemplatePath.Class oClass = ( Config.Templating.TemplatePath.Class ) oLoaderPathItem;
+            Config.Templating.TemplatePath.LoaderClass oLoaderClass = ( Config.Templating.TemplatePath.LoaderClass ) oLoaderPathItem;
 
-            oTemplateLoaderList.add( new ClassTemplateLoader( oClass.getLoaderClass(),
-                                                              oClass.getPackageNamePrefix() ) );
+            Class oClass = Class.forName( oLoaderClass.getLoaderClassName() );
+
+            oTemplateLoaderList.add( new ClassTemplateLoader( oClass, oLoaderClass.getPath() ) );
 
             oLogger.log( "freemarker > template load path > adding class > "
-                           + oClass.getLoaderClass().getName()
+                           + oLoaderClass.getLoaderClassName()
                            + ", prefix: "
-                           + oClass.getPackageNamePrefix() );
+                           + oLoaderClass.getPath() );
          }
          else if ( oLoaderPathItem instanceof Config.Templating.TemplatePath.WebappPath )
          {

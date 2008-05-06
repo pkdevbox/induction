@@ -6,12 +6,6 @@ shown here. -->
 	<!-- The java-clasc-path section allows you to specify locations from which
 	dragonFly will automatically reload classes -->
 	<java-class-path>
-		<!-- It is possible to override the default java compiler used by dragonFly
-		to compile source files on the fly. A java compiler is only used if
-		source-directory entries are defined below. -->
-		<java-compiler>
-			<class>class_name_that_implements_the_dragonfly_compiler_interface</class>
-		</java-compiler>
 		<compiled-directory>
 			<directory>/a/directory/with/class/files/to/be/reloaded/dynamically</directory>
 			<!-- If the above directory points to a subfolder of the folder where the package
@@ -28,6 +22,12 @@ shown here. -->
 			folder structure begins, then specify package represented by the subfolder -->
 			<package-prefix>a.package.name</package-prefix>
 		</source-directory>
+		<!-- It is possible to override the default java compiler used by dragonFly
+		to compile source files on the fly. A java compiler is only used if
+		source-directory entries are defined below. -->
+		<java-compiler>
+			<class>class_name_that_implements_the_dragonfly_compiler_interface</class>
+		</java-compiler>
 	</java-class-path>
 
 	<!-- The following section allows you define the models used your application.
@@ -56,9 +56,30 @@ shown here. -->
 
 	<!-- The following section configures the templating engine -->
 	<templating>
+		<!-- This section defines (in order) the locations (and strategies) that should be used
+		to find a template -->	
 		<template-path>
-			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
+			<directory>a/directory/name/on/file/system/which/will/get/searched/for/a/template</directory>
+			<loader-class>
+				<class>a/class/name/on/which/getResource/will/be/called/to/locate/a/template</class>
+				<path>/a/package/path/to/the/templates</path>
+			</loader-class>
+			<web-app-path>a/path/to/a/folder/inside/your/web/app/jar/file/relative/to/the/WEB-INF/folder</web-app-path>			
 		</template-path>
+		
+		<!-- An application may define a locale to used to select a specific template, in an 
+		environment where more than once language version of the template exists -->
+		<locale>
+			<iso-language>en</iso-language>
+			<iso-country>US</iso-country>
+		</locale>
+
+		<!-- An application may define a templating engine provider which is basically an
+		adapter that plugins in a templating engine into dragonFly. If no provider is defined
+		dragonFly use the built-in adapter for the FreeMarker templating engine -->
+		<templating-engine-provider>
+			<class>the/name/of/a/class/that/implements/the/TemplatingEngine/interface</class>
+		</templating-engine-provider>
 	</templating>
 
 </dispatcher-config>
