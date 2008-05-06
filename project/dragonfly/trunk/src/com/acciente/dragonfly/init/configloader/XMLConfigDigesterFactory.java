@@ -19,20 +19,20 @@ public class XMLConfigDigesterFactory
       {
          JavaClassPathRule oJavaClassPathRule = new JavaClassPathRule( oConfig.getJavaClassPath() );
 
-         oDigester.addRule( "dispatcher-config/java-class-path/java-compiler/class",               oJavaClassPathRule.createSetJavaCompilerClassNameRule() );
+         oDigester.addRule( "config/java-class-path/java-compiler/class",               oJavaClassPathRule.createSetJavaCompilerClassNameRule() );
 
          {
             JavaClassPathRule.AddCompiledDirRule oAddCompiledDirRule = oJavaClassPathRule.createAddCompiledDirRule();
-            oDigester.addRule( "dispatcher-config/java-class-path/compiled-directory",                oAddCompiledDirRule );
-            oDigester.addRule( "dispatcher-config/java-class-path/compiled-directory/directory",      oAddCompiledDirRule.createGetDirRule() );
-            oDigester.addRule( "dispatcher-config/java-class-path/compiled-directory/package-prefix", oAddCompiledDirRule.createGetPackageNamePrefixRule() );
+            oDigester.addRule( "config/java-class-path/compiled-directory",                oAddCompiledDirRule );
+            oDigester.addRule( "config/java-class-path/compiled-directory/directory",      oAddCompiledDirRule.createGetDirRule() );
+            oDigester.addRule( "config/java-class-path/compiled-directory/package-prefix", oAddCompiledDirRule.createGetPackageNamePrefixRule() );
          }
 
          {
             JavaClassPathRule.AddSourceDirRule oAddSourceDirRule = oJavaClassPathRule.createAddSourceDirRule();
-            oDigester.addRule( "dispatcher-config/java-class-path/source-directory",                  oAddSourceDirRule );
-            oDigester.addRule( "dispatcher-config/java-class-path/source-directory/directory",        oAddSourceDirRule.createGetDirRule() );
-            oDigester.addRule( "dispatcher-config/java-class-path/source-directory/package-prefix",   oAddSourceDirRule.createGetPackageNamePrefixRule() );
+            oDigester.addRule( "config/java-class-path/source-directory",                  oAddSourceDirRule );
+            oDigester.addRule( "config/java-class-path/source-directory/directory",        oAddSourceDirRule.createGetDirRule() );
+            oDigester.addRule( "config/java-class-path/source-directory/package-prefix",   oAddSourceDirRule.createGetPackageNamePrefixRule() );
          }
       }
 
@@ -41,14 +41,14 @@ public class XMLConfigDigesterFactory
          ModelDefsRule oModelDefsRule = new ModelDefsRule( oConfig.getModelDefs() );
 
          ModelDefsRule.AddModelDefRule oAddModelDefRule = oModelDefsRule.createAddModelDefRule();
-         oDigester.addRule( "dispatcher-config/model-defs/model-def",               oAddModelDefRule );
-         oDigester.addRule( "dispatcher-config/model-defs/model-def/class",         oAddModelDefRule.createGetClassRule() );
-         oDigester.addRule( "dispatcher-config/model-defs/model-def/factory-class", oAddModelDefRule.createGetFactoryClassRule() );
-         oDigester.addRule( "dispatcher-config/model-defs/model-def/scope",         oAddModelDefRule.createGetScopeRule() );
+         oDigester.addRule( "config/model-defs/model-def",               oAddModelDefRule );
+         oDigester.addRule( "config/model-defs/model-def/class",         oAddModelDefRule.createGetClassRule() );
+         oDigester.addRule( "config/model-defs/model-def/factory-class", oAddModelDefRule.createGetFactoryClassRule() );
+         oDigester.addRule( "config/model-defs/model-def/scope",         oAddModelDefRule.createGetScopeRule() );
       }
 
       // todo: load of the config file
-      
+
       return oDigester;
    }
 }
