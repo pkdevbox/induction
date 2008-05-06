@@ -21,8 +21,8 @@ import java.util.Iterator;
 public class Config
 {
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private ModelDefs             _oModelDefs          = new ModelDefs();
    private Templating            _oTemplating         = new Templating();
+   private ModelDefs             _oModelDefs          = new ModelDefs();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
 
@@ -79,6 +79,26 @@ public class Config
    public FileUpload getFileUpload()
    {
       return _oFileUpload;
+   }
+
+   public String toString()
+   {
+      return toXML();
+   }
+
+   public String toXML()
+   {
+      StringBuffer   oBuffer = new StringBuffer();
+
+      oBuffer.append( XML.Config.OPEN );
+      oBuffer.append( _oJavaClassPath.toXML() );
+      oBuffer.append( _oTemplating.toXML() );
+      oBuffer.append( _oModelDefs.toXML() );
+      oBuffer.append( _oControllerResolver.toXML() );
+      oBuffer.append( _oFileUpload.toXML() );
+      oBuffer.append( "\n" + XML.Config.CLOSE );
+
+      return oBuffer.toString();
    }
 
    /**
@@ -138,13 +158,44 @@ public class Config
       {
          _iStoreFileOnDiskThresholdInBytes = iStoreOnDiskThresholdInBytes;
       }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n\t<file-upload>" );
+
+         oBuffer.append( "\n\t\t<max-upload-size>" );
+         oBuffer.append( _iMaxUploadSizeInBytes );
+         oBuffer.append( "</max-upload-size>" );
+
+         oBuffer.append( "\n\t\t<store-file-on-disk-threshold>" );
+         oBuffer.append( _iStoreFileOnDiskThresholdInBytes );
+         oBuffer.append( "</store-file-on-disk-threshold>" );
+
+         if ( _oUploadedFileStorageDir != null )
+         {
+            oBuffer.append( "\n\t\t<uploaded-file-storage-dir>" );
+            oBuffer.append( _oUploadedFileStorageDir );
+            oBuffer.append( "</uploaded-file-storage-dir>" );
+         }
+
+         oBuffer.append( "\n\t</file-upload>" );
+
+         return oBuffer.toString();
+      }
    }
 
    public static class ControllerResolver
    {
       private String    _sClassName;
       private String    _sDefaultHandlerMethodName = "handler";
-      private boolean   _bIgnoreMethodNameCase = true;
+      private boolean   _bIgnoreMethodNameCase = false;
 
       /**
        * Used to set a fully qualified class name used to resolve a HTTP request to a controller name (and method).
@@ -201,6 +252,37 @@ public class Config
       public void setIgnoreMethodNameCase( boolean bIgnoreMethodNameCase )
       {
          _bIgnoreMethodNameCase = bIgnoreMethodNameCase;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n\t<controller-resolver>" );
+
+         if ( _sClassName != null )
+         {
+            oBuffer.append( "\n\t\t<class>" );
+            oBuffer.append( _sClassName );
+            oBuffer.append( "</class>" );
+         }
+
+         oBuffer.append( "\n\t\t<default-handler-method>" );
+         oBuffer.append( _sDefaultHandlerMethodName );
+         oBuffer.append( "</default-handler-method>" );
+
+         oBuffer.append( "\n\t\t<ignore-method-case>" );
+         oBuffer.append( _bIgnoreMethodNameCase );
+         oBuffer.append( "</ignore-method-case>" );
+
+         oBuffer.append( "\n\t</controller-resolver>" );
+
+         return oBuffer.toString();
       }
    }
 
@@ -741,20 +823,29 @@ public class Config
 
       public String toXML()
       {
-         StringBuffer   oBuffer = new StringBuffer();
+         String   sXML_JavaCompiler = _oJavaCompiler.toXML();
 
-         oBuffer.append( "\n\t<java-class-path>" );
-
-         for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
+         if ( _oDirList.size() == 0 && sXML_JavaCompiler.equals( "" ) )
          {
-            oBuffer.append ( oIter.next().toString() );
+            return "";
          }
+         else
+         {
+            StringBuffer   oBuffer = new StringBuffer();
 
-         oBuffer.append( _oJavaCompiler.toXML() );
+            oBuffer.append( "\n\t<java-class-path>" );
 
-         oBuffer.append( "\n\t<java-class-path>" );
+            for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( oIter.next().toString() );
+            }
 
-         return oBuffer.toString();
+            oBuffer.append( sXML_JavaCompiler );
+
+            oBuffer.append( "\n\t<java-class-path>" );
+
+            return oBuffer.toString();
+         }
       }
 
       public static class CompiledDir
