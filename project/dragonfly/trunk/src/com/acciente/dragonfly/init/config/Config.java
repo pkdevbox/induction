@@ -21,8 +21,8 @@ import java.util.Iterator;
 public class Config
 {
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private Templating            _oTemplating         = new Templating();
    private ModelDefs             _oModelDefs          = new ModelDefs();
+   private Templating            _oTemplating         = new Templating();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
 
@@ -90,13 +90,14 @@ public class Config
    {
       StringBuffer   oBuffer = new StringBuffer();
 
-      oBuffer.append( XML.Config.OPEN );
+      oBuffer.append( XML.Config.OPEN_IND );
       oBuffer.append( _oJavaClassPath.toXML() );
-      oBuffer.append( _oTemplating.toXML() );
       oBuffer.append( _oModelDefs.toXML() );
+      oBuffer.append( _oTemplating.toXML() );
       oBuffer.append( _oControllerResolver.toXML() );
       oBuffer.append( _oFileUpload.toXML() );
-      oBuffer.append( "\n" + XML.Config.CLOSE );
+      oBuffer.append( "\n" );
+      oBuffer.append( XML.Config.CLOSE_IND );
 
       return oBuffer.toString();
    }
@@ -104,59 +105,34 @@ public class Config
    /**
     * Inner classes used to structure the configuration information follows
     */
-   public static class FileUpload
+   public static class JavaClassPath
    {
-      private static final int _1_KB = 1024;
-      private static final int _1_MB = 1024 * 1024;
+      private  List           _oDirList      = new ArrayList();
+      private  JavaCompiler   _oJavaCompiler = new JavaCompiler();
 
-      private int    _iMaxUploadSizeInBytes              = 10 * _1_MB;  // by default files larger than 10 megabytes are not allowed
-      private int    _iStoreFileOnDiskThresholdInBytes   = 10 * _1_KB;  // by default files larger than 10 kilobytes are stored on disk instead of memory
-      private File   _oUploadedFileStorageDir            = null;
-
-      public void setUploadedFileStorageDir( File oUploadedFileStorageDir )
+      public void addCompiledDir( File oDir, String sPackagePrefixName )
       {
-         _oUploadedFileStorageDir = oUploadedFileStorageDir;
+         _oDirList.add( new CompiledDir( oDir, sPackagePrefixName ) );
+      }
+
+      public void addSourceDir( File oDir, String sPackagePrefixName )
+      {
+         _oDirList.add( new SourceDir( oDir, sPackagePrefixName ) );
+      }
+
+      public List getDirList()
+      {
+         return _oDirList;
       }
 
       /**
-       * Returns the path to which uploaded files that are too large to be kept in memory
-       * should be written, if no directory is specified all files are kept in memory
+       * This method is used to configure the java compiler used for compiling java sources at runtime.
        *
-       * @return a File object representing a path to which the uploaded files should be saved
+       * @return an object reference that has the compiler settings
        */
-      public File getUploadedFileStorageDir()
+      public JavaCompiler getJavaCompiler()
       {
-         return _oUploadedFileStorageDir;
-      }
-
-      public int getMaxUploadSizeInBytes()
-      {
-         return _iMaxUploadSizeInBytes;
-      }
-
-      /**
-       * Sets the maximum upload file size in bytes will be accepted
-       *
-       * @param iMaxUploadSizeInBytes a file size in bytes
-       */
-      public void setMaxUploadSizeInBytes( int iMaxUploadSizeInBytes )
-      {
-         _iMaxUploadSizeInBytes = iMaxUploadSizeInBytes;
-      }
-
-      public int getStoreOnDiskThresholdInBytes()
-      {
-         return _iStoreFileOnDiskThresholdInBytes;
-      }
-
-      /**
-       * Set a file size in bytes above which the uploaded file will be stored on disk
-       *
-       * @param iStoreOnDiskThresholdInBytes a file size in bytes
-       */
-      public void setStoreOnDiskThresholdInBytes( int iStoreOnDiskThresholdInBytes )
-      {
-         _iStoreFileOnDiskThresholdInBytes = iStoreOnDiskThresholdInBytes;
+         return _oJavaCompiler;
       }
 
       public String toString()
@@ -166,123 +142,142 @@ public class Config
 
       public String toXML()
       {
-         StringBuffer   oBuffer = new StringBuffer();
+         String   sXML_JavaCompiler = _oJavaCompiler.toXML();
 
-         oBuffer.append( "\n\t<file-upload>" );
-
-         oBuffer.append( "\n\t\t<max-upload-size>" );
-         oBuffer.append( _iMaxUploadSizeInBytes );
-         oBuffer.append( "</max-upload-size>" );
-
-         oBuffer.append( "\n\t\t<store-file-on-disk-threshold>" );
-         oBuffer.append( _iStoreFileOnDiskThresholdInBytes );
-         oBuffer.append( "</store-file-on-disk-threshold>" );
-
-         if ( _oUploadedFileStorageDir != null )
+         if ( _oDirList.size() == 0 && sXML_JavaCompiler.equals( "" ) )
          {
-            oBuffer.append( "\n\t\t<uploaded-file-storage-dir>" );
-            oBuffer.append( _oUploadedFileStorageDir );
-            oBuffer.append( "</uploaded-file-storage-dir>" );
+            return "";
+         }
+         else
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_JavaClassPath.OPEN_IND );
+
+            for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( oIter.next().toString() );
+            }
+
+            oBuffer.append( sXML_JavaCompiler );
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_JavaClassPath.CLOSE_IND );
+
+            return oBuffer.toString();
+         }
+      }
+
+      public static class CompiledDir
+      {
+         private  File     _oDir;
+         private  String   _sPackageNamePrefix;
+
+         private CompiledDir( File oDir, String sPackagePrefixName )
+         {
+            _oDir                =  oDir;
+            _sPackageNamePrefix  =  sPackagePrefixName;
          }
 
-         oBuffer.append( "\n\t</file-upload>" );
-
-         return oBuffer.toString();
-      }
-   }
-
-   public static class ControllerResolver
-   {
-      private String    _sClassName;
-      private String    _sDefaultHandlerMethodName = "handler";
-      private boolean   _bIgnoreMethodNameCase = false;
-
-      /**
-       * Used to set a fully qualified class name used to resolve a HTTP request to a controller name (and method).
-       * This parameter is usually not set. When not set, a default controller resolver that maps a URL path to
-       * a controller name and method is used.
-       *
-       * @param sClassName a string representing fully qualified classname or null to use the default resolver
-       */
-      public void setClassName( String sClassName )
-      {
-         _sClassName = sClassName;
-      }
-
-      /**
-       * Returns the name of the class used to resolve a HTTP request to a controller name (and method).
-       *
-       * @return a string representing a fully qualified class name
-       */
-      public String getClassName()
-      {
-         return _sClassName;
-      }
-
-      public String getDefaultHandlerMethodName()
-      {
-         return _sDefaultHandlerMethodName;
-      }
-
-      public void setDefaultHandlerMethodName( String sDefaultHandlerMethodName )
-      {
-         if ( sDefaultHandlerMethodName == null )
+         public File getDir()
          {
-            throw new IllegalArgumentException( "config-error: default handler name cannot be set to null or empty" );
+            return _oDir;
          }
 
-         if ( Character.isJavaIdentifierStart( sDefaultHandlerMethodName.charAt( 0 )) )
+         public String getPackageNamePrefix()
          {
-            throw new IllegalArgumentException( "config-error: default handler name cannot starts with an invalid character" );
+            return _sPackageNamePrefix;
          }
 
-         _sDefaultHandlerMethodName = sDefaultHandlerMethodName;
-      }
-
-      public boolean isIgnoreMethodNameCase()
-      {
-         return _bIgnoreMethodNameCase;
-      }
-
-      /**
-       * Controls if the default resolver should respect method case when looking for a method.
-       *
-       * @param bIgnoreMethodNameCase
-       */
-      public void setIgnoreMethodNameCase( boolean bIgnoreMethodNameCase )
-      {
-         _bIgnoreMethodNameCase = bIgnoreMethodNameCase;
-      }
-
-      public String toString()
-      {
-         return toXML();
-      }
-
-      public String toXML()
-      {
-         StringBuffer   oBuffer = new StringBuffer();
-
-         oBuffer.append( "\n\t<controller-resolver>" );
-
-         if ( _sClassName != null )
+         public String toString()
          {
-            oBuffer.append( "\n\t\t<class>" );
-            oBuffer.append( _sClassName );
-            oBuffer.append( "</class>" );
+            return toXML();
          }
 
-         oBuffer.append( "\n\t\t<default-handler-method>" );
-         oBuffer.append( _sDefaultHandlerMethodName );
-         oBuffer.append( "</default-handler-method>" );
+         public String toXML()
+         {
+            return
+               XML.Config_JavaClassPath_CompiledDirectory
+                  .toXML( XML.Config_JavaClassPath_CompiledDirectory_Directory.toXML( _oDir )
+                          + XML.Config_JavaClassPath_CompiledDirectory_PackagePrefix.toXML( _sPackageNamePrefix )
+                        );
+         }
+      }
 
-         oBuffer.append( "\n\t\t<ignore-method-case>" );
-         oBuffer.append( _bIgnoreMethodNameCase );
-         oBuffer.append( "</ignore-method-case>" );
+      public static class SourceDir
+      {
+         private  File     _oDir;
+         private  String   _sPackageNamePrefix;
 
-         oBuffer.append( "\n\t</controller-resolver>" );
+         private SourceDir( File oDir, String sPackagePrefixName )
+         {
+            _oDir                =  oDir;
+            _sPackageNamePrefix  =  sPackagePrefixName;
+         }
 
-         return oBuffer.toString();
+         public File getDir()
+         {
+            return _oDir;
+         }
+
+         public String getPackageNamePrefix()
+         {
+            return _sPackageNamePrefix;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_JavaClassPath_SourceDirectory
+                  .toXML( XML.Config_JavaClassPath_SourceDirectory_Directory.toXML( _oDir )
+                          + XML.Config_JavaClassPath_SourceDirectory_PackagePrefix.toXML( _sPackageNamePrefix )
+                        );
+         }
+      }
+
+      public static class JavaCompiler
+      {
+         private static final String    DEFAULT = "com.acciente.commons.javac.JavaCompiler_JDK_1_4";
+
+         private String    _sJavaCompilerClassName;
+
+         public String getJavaCompilerClassName()
+         {
+            return ( _sJavaCompilerClassName != null
+                     ? _sJavaCompilerClassName
+                     : DEFAULT
+                   );
+         }
+
+         public void setJavaCompilerClassName( String sJavaCompilerClassName )
+         {
+            _sJavaCompilerClassName = sJavaCompilerClassName;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            if ( _sJavaCompilerClassName == null )
+            {
+               return "";
+            }
+            else
+            {
+               return
+                  XML.Config_JavaClassPath_JavaCompiler
+                     .toXML( XML.Config_JavaClassPath_JavaCompiler_Class.toXML( _sJavaCompilerClassName ) );
+            }
+         }
       }
    }
 
@@ -336,14 +331,16 @@ public class Config
          {
             StringBuffer   oBuffer = new StringBuffer();
 
-            oBuffer.append( "\n\t<model-defs>" );
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ModelDefs.OPEN_IND );
 
             for ( Iterator oIter = _oModelDefMap.values().iterator(); oIter.hasNext(); )
             {
-               oBuffer.append ( oIter.next().toString() );
+               oBuffer.append( ( ( ModelDef ) oIter.next() ).toXML() );
             }
 
-            oBuffer.append( "\n\t<model-defs>" );
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ModelDefs.CLOSE_IND );
 
             return oBuffer.toString();
          }
@@ -436,44 +433,39 @@ public class Config
 
          public String toXML()
          {
-            StringBuffer   oBuffer = new StringBuffer();
-
-            oBuffer.append( "\n\t\t<model-def>" );
-            oBuffer.append( "\n\t\t\t<class>" );
-            oBuffer.append( _sModelClassName );
-            oBuffer.append( "</class>" );
-
-            if ( _sModelFactoryClassName != null )
-            {
-               oBuffer.append( "\n\t\t\t<factory-class>" );
-               oBuffer.append( _sModelFactoryClassName );
-               oBuffer.append( "</factory-class>" );
-            }
-
-            oBuffer.append( "\n\t\t\t<scope>" );
-            oBuffer.append( _bIsApplicationScope ? "Application" : ( _bIsSessionScope ? "Session" : ( _bIsRequestScope ? "Request" : "!! invalid value !!" ) ) );
-            oBuffer.append( "</scope>" );
-            oBuffer.append( "\n\t\t</model-def>" );
-
-            return  oBuffer.toString();
+            return
+               XML.Config_ModelDefs_ModelDef
+                  .toXML( XML.Config_ModelDefs_ModelDef_Class.toXML( _sModelClassName )
+                          + XML.Config_ModelDefs_ModelDef_FactoryClass.toXML( _sModelFactoryClassName )
+                          + XML.Config_ModelDefs_ModelDef_Scope.toXML( _bIsApplicationScope 
+                                                                       ? "Application"
+                                                                       : ( _bIsSessionScope
+                                                                           ? "Session"
+                                                                           : ( _bIsRequestScope
+                                                                               ? "Request"
+                                                                               : "!! invalid value !!"
+                                                                             )
+                                                                         )
+                                                                     )
+                        );
          }
       }
    }
 
    public static class Templating
    {
-      private TemplatingEngineProvider _oTemplatingEngineProvider = new TemplatingEngineProvider();
-      private TemplatePath             _oTemplatePath             = new TemplatePath();
+      private TemplatePath             _oTemplatePath       = new TemplatePath();
       private Locale                   _oLocale;
+      private TemplatingEngine         _oTemplatingEngine   = new TemplatingEngine();
 
       public TemplatePath getTemplatePath()
       {
          return _oTemplatePath;
       }
 
-      public TemplatingEngineProvider getTemplatingEngineProvider()
+      public TemplatingEngine getTemplatingEngineProvider()
       {
-         return _oTemplatingEngineProvider;
+         return _oTemplatingEngine;
       }
 
       public Locale getLocale()
@@ -494,12 +486,12 @@ public class Config
       public String toXML()
       {
          String   sXML_TemplatePath             =  _oTemplatePath.toXML();
-         String   sXML_TemplatingEngineProvider =  _oTemplatingEngineProvider.toXML();
+         String   sXML_TemplatingEngineProvider =  _oTemplatingEngine.toXML();
          String   sXML_Locale                   =  toXML_Locale();
 
          if ( sXML_TemplatePath.equals( "" )
-               && sXML_TemplatingEngineProvider.equals( "" )
                && sXML_Locale.equals( "" )
+               && sXML_TemplatingEngineProvider.equals( "" )
             )
          {
             return "";
@@ -508,13 +500,15 @@ public class Config
          {
             StringBuffer   oBuffer = new StringBuffer();
 
-            oBuffer.append( "\n\t<templating>" );
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_Templating.OPEN_IND );
 
             oBuffer.append( sXML_TemplatePath );
             oBuffer.append( sXML_TemplatingEngineProvider );
             oBuffer.append( sXML_Locale );
 
-            oBuffer.append( "\n\t</templating>" );
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_Templating.CLOSE_IND );
 
             return  oBuffer.toString();
          }
@@ -530,20 +524,15 @@ public class Config
          }
          else
          {
-            oBuffer.append( "\n\t\t<locale>" );
-            oBuffer.append( "\n\t\t\t<iso-language>" );
-            oBuffer.append( _oLocale.getLanguage() );
-            oBuffer.append( "</iso-language>" );
-            oBuffer.append( "\n\t\t\t<iso-country>" );
-            oBuffer.append( _oLocale.getCountry() );
-            oBuffer.append( "</iso-country>" );
-            oBuffer.append( "\n\t\t</locale>" );
-
-            return oBuffer.toString();
+            return
+               XML.Config_Templating_Locale
+                  .toXML( XML.Config_Templating_Locale_ISOLanguage.toXML( _oLocale.getLanguage() )
+                          + XML.Config_Templating_Locale_ISOCountry.toXML( _oLocale.getCountry() )
+                        );
          }
       }
 
-      public static class TemplatingEngineProvider
+      public static class TemplatingEngine
       {
          private String    _sClassName;
 
@@ -581,15 +570,9 @@ public class Config
             }
             else
             {
-               StringBuffer   oBuffer = new StringBuffer();
-
-               oBuffer.append( "\n\t\t<templating-engine-provider>" );
-               oBuffer.append( "\n\t\t\t<class>" );
-               oBuffer.append( _sClassName );
-               oBuffer.append( "</class>" );
-               oBuffer.append( "\n\t\t</templating-engine-provider>" );
-
-               return  oBuffer.toString();
+               return
+                  XML.Config_Templating_TemplatingEngine
+                     .toXML( XML.Config_Templating_TemplatingEngine_Class.toXML( _sClassName ) );
             }
          }
       }
@@ -662,14 +645,33 @@ public class Config
             {
                StringBuffer   oBuffer = new StringBuffer();
 
-               oBuffer.append( "\n\t\t<template-path>" );
+               oBuffer.append( "\n" );
+               oBuffer.append( XML.Config_Templating_TemplatePath.OPEN_IND );
 
                for ( Iterator oIter = _oTemplatePath.iterator(); oIter.hasNext(); )
                {
-                  oBuffer.append ( oIter.next().toString() );
+                  Object oPathItem = oIter.next();
+
+                  if ( oPathItem instanceof Dir )
+                  {
+                     oBuffer.append ( ( ( Dir ) oPathItem ).toXML() );
+                  }
+                  else if ( oPathItem instanceof LoaderClass )
+                  {
+                     oBuffer.append ( ( ( LoaderClass ) oPathItem ).toXML() );
+                  }
+                  else if ( oPathItem instanceof WebappPath )
+                  {
+                     oBuffer.append ( ( ( WebappPath ) oPathItem ).toXML() );
+                  }
+                  else
+                  {
+                     throw new IllegalArgumentException( "config: internal error: unknown template path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
+                  }
                }
 
-               oBuffer.append( "\n\t\t<template-path>" );
+               oBuffer.append( "\n" );
+               oBuffer.append( XML.Config_Templating_TemplatePath.CLOSE_IND );
 
                return oBuffer.toString();
             }
@@ -696,13 +698,8 @@ public class Config
 
             public String toXML()
             {
-               StringBuffer   oBuffer = new StringBuffer();
-
-               oBuffer.append( "\n\t\t\t<directory>" );
-               oBuffer.append( _oDir );
-               oBuffer.append( "</directory>" );
-
-               return  oBuffer.toString();
+               return
+                  XML.Config_Templating_TemplatePath_Directory.toXML( _oDir );
             }
          }
 
@@ -734,18 +731,11 @@ public class Config
 
             public String toXML()
             {
-               StringBuffer   oBuffer = new StringBuffer();
-
-               oBuffer.append( "\n\t\t\t<loader-class>" );
-               oBuffer.append( "\n\t\t\t\t<class>" );
-               oBuffer.append( _sLoaderClassName );
-               oBuffer.append( "</class>" );
-               oBuffer.append( "\n\t\t\t\t<path>" );
-               oBuffer.append( _sPath );
-               oBuffer.append( "</path>" );
-               oBuffer.append( "</loader-class>" );
-
-               return  oBuffer.toString();
+               return
+                  XML.Config_Templating_TemplatePath_LoaderClass
+                     .toXML( XML.Config_Templating_TemplatePath_LoaderClass_Class.toXML( _sLoaderClassName )
+                             + XML.Config_Templating_TemplatePath_LoaderClass_Path.toXML( _sPath )
+                           );
             }
          }
 
@@ -774,46 +764,76 @@ public class Config
 
             public String toXML()
             {
-               StringBuffer   oBuffer = new StringBuffer();
-
-               oBuffer.append( "\n\t\t\t<web-app-path>" );
-               oBuffer.append( _sPath );
-               oBuffer.append( "</web-app-path>" );
-
-               return  oBuffer.toString();
+               return
+                  XML.Config_Templating_TemplatePath_WebAppPath.toXML( _sPath );
             }
          }
       }
    }
 
-   public static class JavaClassPath
+   public static class ControllerResolver
    {
-      private  List           _oDirList      = new ArrayList();
-      private  JavaCompiler   _oJavaCompiler = new JavaCompiler();
+      private String    _sClassName;
+      private String    _sDefaultHandlerMethodName = "handler";
+      private boolean   _bIgnoreMethodNameCase = false;
 
-      public void addCompiledDir( File oDir, String sPackagePrefixName )
+      /**
+       * Used to set a fully qualified class name used to resolve a HTTP request to a controller name (and method).
+       * This parameter is usually not set. When not set, a default controller resolver that maps a URL path to
+       * a controller name and method is used.
+       *
+       * @param sClassName a string representing fully qualified classname or null to use the default resolver
+       */
+      public void setClassName( String sClassName )
       {
-         _oDirList.add( new CompiledDir( oDir, sPackagePrefixName ) );
-      }
-
-      public void addSourceDir( File oDir, String sPackagePrefixName )
-      {
-         _oDirList.add( new SourceDir( oDir, sPackagePrefixName ) );
-      }
-
-      public List getDirList()
-      {
-         return _oDirList;
+         _sClassName = sClassName;
       }
 
       /**
-       * This method is used to configure the java compiler used for compiling java sources at runtime.
+       * Returns the name of the class used to resolve a HTTP request to a controller name (and method).
        *
-       * @return an object reference that has the compiler settings
+       * @return a string representing a fully qualified class name
        */
-      public JavaCompiler getJavaCompiler()
+      public String getClassName()
       {
-         return _oJavaCompiler;
+         return _sClassName;
+      }
+
+      public String getDefaultHandlerMethodName()
+      {
+         return _sDefaultHandlerMethodName;
+      }
+
+      public void setDefaultHandlerMethodName( String sDefaultHandlerMethodName )
+      {
+         if ( sDefaultHandlerMethodName == null )
+         {
+            throw new IllegalArgumentException( "config-error: default handler name cannot be set to null or empty" );
+         }
+
+         if ( Character.isJavaIdentifierStart( sDefaultHandlerMethodName.charAt( 0 )) )
+         {
+            throw new IllegalArgumentException( "config-error: default handler name cannot starts with an invalid character" );
+         }
+
+         _sDefaultHandlerMethodName = sDefaultHandlerMethodName;
+      }
+
+      public boolean isIgnoreMethodNameCase()
+      {
+         return _bIgnoreMethodNameCase;
+      }
+
+      /**
+       * Controls if the default resolver should respect method case when looking for a method. A resolver
+       * implementation is may choose to ignore this setting.
+       *
+       * @param bIgnoreMethodNameCase if true is specified, it tells the resolver implementation to
+       * search for a handler method name ignoring case.
+       */
+      public void setIgnoreMethodNameCase( boolean bIgnoreMethodNameCase )
+      {
+         _bIgnoreMethodNameCase = bIgnoreMethodNameCase;
       }
 
       public String toString()
@@ -823,160 +843,83 @@ public class Config
 
       public String toXML()
       {
-         String   sXML_JavaCompiler = _oJavaCompiler.toXML();
+         return
+            XML.Config_ControllerResolver
+               .toXML( XML.Config_ControllerResolver_Class.toXML( _sClassName )
+                       + XML.Config_ControllerResolver_DefaultHandlerMethod.toXML( _sDefaultHandlerMethodName )
+                       + XML.Config_ControllerResolver_IgnoreHandlerMethodCase.toXML( _bIgnoreMethodNameCase )
+                     );
+      }
+   }
 
-         if ( _oDirList.size() == 0 && sXML_JavaCompiler.equals( "" ) )
-         {
-            return "";
-         }
-         else
-         {
-            StringBuffer   oBuffer = new StringBuffer();
+   public static class FileUpload
+   {
+      private static final int _1_KB = 1024;
+      private static final int _1_MB = 1024 * 1024;
 
-            oBuffer.append( "\n\t<java-class-path>" );
+      private int    _iMaxUploadSizeInBytes              = 10 * _1_MB;  // by default files larger than 10 megabytes are not allowed
+      private int    _iStoreFileOnDiskThresholdInBytes   = 10 * _1_KB;  // by default files larger than 10 kilobytes are stored on disk instead of memory
+      private File   _oUploadedFileStorageDir            = null;
 
-            for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
-            {
-               oBuffer.append ( oIter.next().toString() );
-            }
-
-            oBuffer.append( sXML_JavaCompiler );
-
-            oBuffer.append( "\n\t<java-class-path>" );
-
-            return oBuffer.toString();
-         }
+      public void setUploadedFileStorageDir( File oUploadedFileStorageDir )
+      {
+         _oUploadedFileStorageDir = oUploadedFileStorageDir;
       }
 
-      public static class CompiledDir
+      /**
+       * Returns the path to which uploaded files that are too large to be kept in memory
+       * should be written, if no directory is specified all files are kept in memory
+       *
+       * @return a File object representing a path to which the uploaded files should be saved
+       */
+      public File getUploadedFileStorageDir()
       {
-         private  File     _oDir;
-         private  String   _sPackageNamePrefix;
-
-         private CompiledDir( File oDir, String sPackagePrefixName )
-         {
-            _oDir                =  oDir;
-            _sPackageNamePrefix  =  sPackagePrefixName;
-         }
-
-         public File getDir()
-         {
-            return _oDir;
-         }
-
-         public String getPackageNamePrefix()
-         {
-            return _sPackageNamePrefix;
-         }
-
-         public String toString()
-         {
-            return toXML();
-         }
-
-         public String toXML()
-         {
-            StringBuffer   oBuffer = new StringBuffer();
-
-            oBuffer.append( "\n\t\t<compiled-directory>" );
-            oBuffer.append( "\n\t\t\t<directory>" );
-            oBuffer.append( _oDir );
-            oBuffer.append( "</directory>" );
-            oBuffer.append( "\n\t\t\t<package-prefix>" );
-            oBuffer.append( _sPackageNamePrefix );
-            oBuffer.append( "</package-prefix>" );
-            oBuffer.append( "\n\t\t</compiled-directory>" );
-
-            return  oBuffer.toString();
-         }
+         return _oUploadedFileStorageDir;
       }
 
-      public static class SourceDir
+      public int getMaxUploadSizeInBytes()
       {
-         private  File     _oDir;
-         private  String   _sPackageNamePrefix;
-
-         private SourceDir( File oDir, String sPackagePrefixName )
-         {
-            _oDir                =  oDir;
-            _sPackageNamePrefix  =  sPackagePrefixName;
-         }
-
-         public File getDir()
-         {
-            return _oDir;
-         }
-
-         public String getPackageNamePrefix()
-         {
-            return _sPackageNamePrefix;
-         }
-
-         public String toString()
-         {
-            return toXML();
-         }
-
-         public String toXML()
-         {
-            StringBuffer   oBuffer = new StringBuffer();
-
-            oBuffer.append( "\n\t\t<source-directory>" );
-            oBuffer.append( "\n\t\t\t<directory>" );
-            oBuffer.append( _oDir );
-            oBuffer.append( "</directory>" );
-            oBuffer.append( "\n\t\t\t<package-prefix>" );
-            oBuffer.append( _sPackageNamePrefix );
-            oBuffer.append( "</package-prefix>" );
-            oBuffer.append( "\n\t\t</source-directory>" );
-
-            return  oBuffer.toString();
-         }
+         return _iMaxUploadSizeInBytes;
       }
 
-      public static class JavaCompiler
+      /**
+       * Sets the maximum upload file size in bytes will be accepted
+       *
+       * @param iMaxUploadSizeInBytes a file size in bytes
+       */
+      public void setMaxUploadSizeInBytes( int iMaxUploadSizeInBytes )
       {
-         private static final String    DEFAULT = "com.acciente.commons.javac.JavaCompiler_JDK_1_4";
+         _iMaxUploadSizeInBytes = iMaxUploadSizeInBytes;
+      }
 
-         private String    _sJavaCompilerClassName;
+      public int getStoreOnDiskThresholdInBytes()
+      {
+         return _iStoreFileOnDiskThresholdInBytes;
+      }
 
-         public String getJavaCompilerClassName()
-         {
-            return ( _sJavaCompilerClassName != null
-                     ? _sJavaCompilerClassName
-                     : DEFAULT
-                   );
-         }
+      /**
+       * Set a file size in bytes above which the uploaded file will be stored on disk
+       *
+       * @param iStoreOnDiskThresholdInBytes a file size in bytes
+       */
+      public void setStoreOnDiskThresholdInBytes( int iStoreOnDiskThresholdInBytes )
+      {
+         _iStoreFileOnDiskThresholdInBytes = iStoreOnDiskThresholdInBytes;
+      }
 
-         public void setJavaCompilerClassName( String sJavaCompilerClassName )
-         {
-            _sJavaCompilerClassName = sJavaCompilerClassName;
-         }
+      public String toString()
+      {
+         return toXML();
+      }
 
-         public String toString()
-         {
-            return toXML();
-         }
-
-         public String toXML()
-         {
-            if ( _sJavaCompilerClassName == null )
-            {
-               return "";
-            }
-            else
-            {
-               StringBuffer   oBuffer = new StringBuffer();
-
-               oBuffer.append( "\n\t\t<java-compiler>" );
-               oBuffer.append( "\n\t\t\t<class>" );
-               oBuffer.append( _sJavaCompilerClassName );
-               oBuffer.append( "</class>" );
-               oBuffer.append( "\n\t\t</java-compiler>" );
-
-               return oBuffer.toString();
-            }
-         }
+      public String toXML()
+      {
+         return
+            XML.Config_FileUpload
+               .toXML( XML.Config_FileUpload_MaxUploadSize.toXML( _iMaxUploadSizeInBytes )
+                       + XML.Config_FileUpload_StoreFileOnDiskThreshold.toXML( _iStoreFileOnDiskThresholdInBytes )
+                       + XML.Config_FileUpload_UploadedFileStorageDir.toXML( _oUploadedFileStorageDir )
+                     );
       }
    }
 }
