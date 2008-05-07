@@ -6,8 +6,6 @@ package com.acciente.dragonfly.init.config;
  */
 public class XML
 {
-   // todo: refactor to use this class
-
    public static final XML Config                                                = new XML( "config" );
 
    public static final XML Config_JavaClassPath                                  = new XML( "java-class-path",    Config );
