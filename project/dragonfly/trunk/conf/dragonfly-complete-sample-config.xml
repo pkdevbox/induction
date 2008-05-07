@@ -77,15 +77,15 @@ shown here. -->
 		<!-- An application may define a templating engine provider which is basically an
 		adapter that plugins in a templating engine into dragonFly. If no provider is defined
 		dragonFly use the built-in adapter for the FreeMarker templating engine -->
-		<templating-engine-provider>
+		<templating-engine>
 			<class>the_name_of_a_class_that_implements_the_TemplatingEngine_interface</class>
-		</templating-engine-provider>
+		</templating-engine>
 	</templating>
 
 	<controller-resolver>
 		<class>the_name_of_a_class_that_implements_a_controller_resolver</class>
 		<default-handler-method>handler</default-handler-method>
-		<ignore-method-case>false</ignore-method-case>
+		<ignore-handler-method-case>false</ignore-handler-method-case>
 	</controller-resolver>
 	
 	<file-upload>
