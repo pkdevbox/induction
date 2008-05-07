@@ -1,5 +1,8 @@
 package com.acciente.dragonfly.init.configloader;
 
+import com.acciente.dragonfly.init.config.Config;
+import com.acciente.dragonfly.init.config.ConfigLoader;
+import com.acciente.dragonfly.init.config.ConfigLoaderException;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
@@ -7,11 +10,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.acciente.dragonfly.init.config.ConfigLoader;
-import com.acciente.dragonfly.init.config.Config;
-import com.acciente.dragonfly.init.config.ConfigLoaderException;
-
 /**
+ * An implementation of the ConfigLoader that loads the configuration from an
+ * XML file.
+ * 
  * Log
  * Apr 26, 2008 APR  -  created
  */

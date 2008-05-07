@@ -37,22 +37,22 @@ public class ModelDefsRule extends Rule
          _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope  );
       }
 
-      public GetClassRule createGetClassRule()
+      public ParamClassRule createParamClassRule()
       {
-         return new GetClassRule();
+         return new ParamClassRule();
       }
 
-      public GetFactoryClassRule createGetFactoryClassRule()
+      public ParamFactoryClassRule createParamFactoryClassRule()
       {
-         return new GetFactoryClassRule();
+         return new ParamFactoryClassRule();
       }
 
-      public GetScopeRule createGetScopeRule()
+      public ParamScopeRule createParamScopeRule()
       {
-         return new GetScopeRule();
+         return new ParamScopeRule();
       }
 
-      private class GetClassRule extends Rule
+      private class ParamClassRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
@@ -60,7 +60,7 @@ public class ModelDefsRule extends Rule
          }
       }
 
-      private class GetFactoryClassRule extends Rule
+      private class ParamFactoryClassRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
@@ -68,7 +68,7 @@ public class ModelDefsRule extends Rule
          }
       }
 
-      private class GetScopeRule extends Rule
+      private class ParamScopeRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText ) throws ConfigLoaderException
          {

@@ -56,20 +56,20 @@ public class JavaClassPathRule extends Rule
        * Factory methods for the "nested"-rules
        */
 
-      public GetDirRule createGetDirRule()
+      public ParamDirRule createParamDirRule()
       {
-         return new GetDirRule();
+         return new ParamDirRule();
       }
 
-      public GetPackageNamePrefixRule createGetPackageNamePrefixRule()
+      public ParamPackageNamePrefixRule createParamPackageNamePrefixRule()
       {
-         return new GetPackageNamePrefixRule();
+         return new ParamPackageNamePrefixRule();
       }
 
       /**
-       * GetDirRule rule
+       * ParamDirRule
        */
-      private class GetDirRule extends Rule
+      private class ParamDirRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
@@ -78,9 +78,9 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * GetPackageNamePrefixRule rule
+       * ParamPackageNamePrefixRule
        */
-      private class GetPackageNamePrefixRule extends Rule
+      private class ParamPackageNamePrefixRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
@@ -109,20 +109,20 @@ public class JavaClassPathRule extends Rule
        * Factory methods for the "nested"-rules
        */
 
-      public GetDirRule createGetDirRule()
+      public ParamDirRule createParamDirRule()
       {
-         return new GetDirRule();
+         return new ParamDirRule();
       }
 
-      public GetPackageNamePrefixRule createGetPackageNamePrefixRule()
+      public ParamPackageNamePrefixRule createParamPackageNamePrefixRule()
       {
-         return new GetPackageNamePrefixRule();
+         return new ParamPackageNamePrefixRule();
       }
 
       /**
-       * GetDirRule rule
+       * ParamDirRule
        */
-      private class GetDirRule extends Rule
+      private class ParamDirRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
@@ -131,9 +131,9 @@ public class JavaClassPathRule extends Rule
       }
 
       /**
-       * GetPackageNamePrefixRule rule
+       * ParamPackageNamePrefixRule rule
        */
-      private class GetPackageNamePrefixRule extends Rule
+      private class ParamPackageNamePrefixRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
