@@ -3,7 +3,7 @@ The purpose of this file is to demonstrate all the possible parameters that may 
 dragonFly. It should be noted that typically most dragonFly configurations will not use all the parameters
 shown here. -->
 <config>
-	<!-- The java-clasc-path section allows you to specify locations from which
+	<!-- The java-class-path section allows you to specify locations from which
 	dragonFly will automatically reload classes -->
 	<java-class-path>
 		<compiled-directory>
