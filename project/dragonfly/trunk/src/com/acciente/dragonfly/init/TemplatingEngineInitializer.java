@@ -24,14 +24,14 @@ public class TemplatingEngineInitializer
    {
       TemplatingEngine  oTemplatingEngine;
 
-      if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngineProvider().getClassName() ) )
+      if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngine().getClassName() ) )
       {
          // if no templating engine is configured use the freemarker engine as the default
          oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oClassLoader, oServletConfig, oLogger );
       }
       else
       {
-         Class oTemplatingEngineClass = oClassLoader.loadClass( oTemplatingConfig.getTemplatingEngineProvider().getClassName() );
+         Class oTemplatingEngineClass = oClassLoader.loadClass( oTemplatingConfig.getTemplatingEngine().getClassName() );
 
          oTemplatingEngine
             =  ( TemplatingEngine )

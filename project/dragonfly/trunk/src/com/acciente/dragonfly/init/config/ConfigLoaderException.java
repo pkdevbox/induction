@@ -16,3 +16,5 @@ public class ConfigLoaderException extends Exception
       super( sMessage, oCause );
    }
 }
+
+// EOF
