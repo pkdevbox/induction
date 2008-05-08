@@ -8,6 +8,7 @@ package com.acciente.dragonfly.init;
  * Log
  * Mar 16, 2008 APR  -  created
  */
+// todo: investigate the use of a more standard logging api
 public interface Logger
 {
    void log( String sMessage );

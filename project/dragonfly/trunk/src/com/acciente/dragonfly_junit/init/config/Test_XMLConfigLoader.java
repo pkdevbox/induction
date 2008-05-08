@@ -1,6 +1,6 @@
 package com.acciente.dragonfly_junit.init.config;
 
-import com.acciente.dragonfly.init.configloader.XMLConfigLoader;
+import com.acciente.dragonfly.init.config.xmlconfigloader.XMLConfigLoader;
 import com.acciente.dragonfly.init.config.ConfigLoaderException;
 import com.acciente.dragonfly.init.config.Config;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package com.acciente.dragonfly.init;
 
 import com.acciente.dragonfly.init.config.ConfigLoader;
-import com.acciente.dragonfly.init.configloader.XMLConfigLoader;
+import com.acciente.dragonfly.init.config.xmlconfigloader.XMLConfigLoader;
 import com.acciente.dragonfly.util.ConstructorNotFoundException;
 import com.acciente.dragonfly.util.ObjectFactory;
 

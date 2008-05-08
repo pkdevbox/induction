@@ -437,7 +437,7 @@ public class Config
                XML.Config_ModelDefs_ModelDef
                   .toXML( XML.Config_ModelDefs_ModelDef_Class.toXML( _sModelClassName )
                           + XML.Config_ModelDefs_ModelDef_FactoryClass.toXML( _sModelFactoryClassName )
-                          + XML.Config_ModelDefs_ModelDef_Scope.toXML( _bIsApplicationScope 
+                          + XML.Config_ModelDefs_ModelDef_Scope.toXML( _bIsApplicationScope
                                                                        ? "Application"
                                                                        : ( _bIsSessionScope
                                                                            ? "Session"
@@ -463,7 +463,7 @@ public class Config
          return _oTemplatePath;
       }
 
-      public TemplatingEngine getTemplatingEngineProvider()
+      public TemplatingEngine getTemplatingEngine()
       {
          return _oTemplatingEngine;
       }
@@ -504,8 +504,8 @@ public class Config
             oBuffer.append( XML.Config_Templating.OPEN_IND );
 
             oBuffer.append( sXML_TemplatePath );
-            oBuffer.append( sXML_TemplatingEngineProvider );
             oBuffer.append( sXML_Locale );
+            oBuffer.append( sXML_TemplatingEngineProvider );
 
             oBuffer.append( "\n" );
             oBuffer.append( XML.Config_Templating.CLOSE_IND );
