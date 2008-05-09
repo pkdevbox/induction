@@ -811,9 +811,9 @@ public class Config
             throw new IllegalArgumentException( "config-error: default handler name cannot be set to null or empty" );
          }
 
-         if ( Character.isJavaIdentifierStart( sDefaultHandlerMethodName.charAt( 0 )) )
+         if ( ! Character.isJavaIdentifierStart( sDefaultHandlerMethodName.charAt( 0 )) )
          {
-            throw new IllegalArgumentException( "config-error: default handler name cannot starts with an invalid character" );
+            throw new IllegalArgumentException( "config-error: default handler name starts with an invalid character" );
          }
 
          _sDefaultHandlerMethodName = sDefaultHandlerMethodName;

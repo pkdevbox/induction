@@ -1,8 +1,8 @@
 package com.acciente.dragonfly_junit.init.config;
 
-import com.acciente.dragonfly.init.config.xmlconfigloader.XMLConfigLoader;
-import com.acciente.dragonfly.init.config.ConfigLoaderException;
 import com.acciente.dragonfly.init.config.Config;
+import com.acciente.dragonfly.init.config.ConfigLoaderException;
+import com.acciente.dragonfly.init.config.xmlconfigloader.XMLConfigLoader;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,14 +19,14 @@ public class Test_XMLConfigLoader
    @Test
    public void test_1() throws ConfigLoaderException
    {
-      Config oConfig = getXMLConfigLoader().getConfig();
+      Config oConfig = getConfig();
 
       System.out.println( oConfig );
    }
 
-   private XMLConfigLoader getXMLConfigLoader()
+   private Config getConfig() throws ConfigLoaderException
    {
-      return new XMLConfigLoader( _oTestConfigFile );
+      return new XMLConfigLoader( _oTestConfigFile ).getConfig();
    }
 }
 

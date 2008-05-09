@@ -5,7 +5,7 @@ import com.acciente.dragonfly.init.config.Config;
 import com.acciente.dragonfly.init.config.XML;
 
 /**
- * This class ...
+ * DigesterFactory
  *
  * Log
  * May 1, 2008 APR  -  created
@@ -16,7 +16,7 @@ public class DigesterFactory
    {
       Digester oDigester = new Digester();
 
-      // java-class-path processing rules
+      // java-class-path config rules
       {
          JavaClassPathRule oJavaClassPathRule = new JavaClassPathRule( oConfig.getJavaClassPath() );
 
@@ -37,7 +37,7 @@ public class DigesterFactory
          }
       }
 
-      // model-defs processing rules
+      // model-defs config rules
       {
          ModelDefsRule oModelDefsRule = new ModelDefsRule( oConfig.getModelDefs() );
 
@@ -48,7 +48,7 @@ public class DigesterFactory
          oDigester.addRule( XML.Config_ModelDefs_ModelDef_Scope.PATTERN,         oAddModelDefRule.createParamScopeRule() );
       }
 
-      // templating processing rules
+      // templating config rules
       {
          TemplatingRule oTemplatingRule = new TemplatingRule( oConfig.getTemplating() );
 
@@ -73,7 +73,23 @@ public class DigesterFactory
          }
       }
 
-      // todo: load the rest of the config file
+      // controller-resolver config rules
+      {
+         ControllerResolverRule oControllerResolverRule = new ControllerResolverRule( oConfig.getControllerResolver() );
+         oDigester.addRule( XML.Config_ControllerResolver.PATTERN,                           oControllerResolverRule );
+         oDigester.addRule( XML.Config_ControllerResolver_Class.PATTERN,                     oControllerResolverRule.createParamClassRule() );
+         oDigester.addRule( XML.Config_ControllerResolver_DefaultHandlerMethod.PATTERN,      oControllerResolverRule.createParamDefaultHandlerMethodRule() );
+         oDigester.addRule( XML.Config_ControllerResolver_IgnoreHandlerMethodCase.PATTERN,   oControllerResolverRule.createParamIgnoreHandlerMethodCaseRule() );
+      }
+
+      // file-upload config rules
+      {
+         FileUploadRule oFileUploadRule = new FileUploadRule( oConfig.getFileUpload() );
+         oDigester.addRule( XML.Config_FileUpload.PATTERN,                             oFileUploadRule );
+         oDigester.addRule( XML.Config_FileUpload_MaxUploadSize.PATTERN,               oFileUploadRule.createParamMaxUploadSizeRule() );
+         oDigester.addRule( XML.Config_FileUpload_StoreFileOnDiskThreshold.PATTERN,    oFileUploadRule.createParamStoreFileOnDiskThresholdRule() );
+         oDigester.addRule( XML.Config_FileUpload_UploadedFileStorageDir.PATTERN,      oFileUploadRule.createParamUploadedFileStorageDirRule() );
+      }
 
       return oDigester;
    }

@@ -1,5 +1,6 @@
 package com.acciente.dragonfly.init.config.xmlconfigloader;
 
+import com.acciente.commons.lang.Strings;
 import com.acciente.dragonfly.init.config.Config;
 import org.apache.commons.digester.Rule;
 
@@ -11,7 +12,6 @@ import org.apache.commons.digester.Rule;
  */
 public class ModelDefsRule extends Rule
 {
-   // todo: improved error detection along the lines of that in TemplatingRule
    private  Config.ModelDefs    _oModelDefs;
 
    public ModelDefsRule( Config.ModelDefs oModelDefs )
@@ -32,8 +32,16 @@ public class ModelDefsRule extends Rule
       private boolean   _bIsSessionScope;
       private boolean   _bIsRequestScope;
 
-      public void end( String sNamespace, String sName )
+      public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
+         if ( Strings.isEmpty( _sModelClassName ) )
+         {
+            throw new XMLConfigLoaderException( "config > modeldefs > model: class is a required attribute" );
+         }
+         if ( ! ( _bIsApplicationScope || _bIsSessionScope || _bIsRequestScope ) )
+         {
+            throw new XMLConfigLoaderException( "config > modeldefs > model: scope is a required attribute" );
+         }
          _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope  );
       }
 

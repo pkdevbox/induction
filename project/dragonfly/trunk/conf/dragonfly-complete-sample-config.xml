@@ -7,17 +7,17 @@ shown here. -->
 	dragonFly will automatically reload classes -->
 	<java-class-path>
 		<compiled-directory>
-			<directory>/a/directory/with/class/files/to/be/reloaded/dynamically</directory>
+			<directory>\a\directory\with\class\files\to\be\reloaded\dynamically</directory>
 			<!-- If the above directory points to a subfolder of the folder where the package
 			folder structure begins, then specify package represented by the subfolder -->
 			<package-prefix>a.package.name</package-prefix>
 		</compiled-directory>
 		<compiled-directory>
-			<directory>/another/directory/with/class/files/to/be/reloaded/dynamically</directory>
+			<directory>\another\directory\with\class\files\to\be\reloaded\dynamically</directory>
 			<package-prefix>a.package.name</package-prefix>
 		</compiled-directory>
 		<source-directory>
-			<directory>/a/directory/with/java/source/files/to/be/compiled/dynamically</directory>
+			<directory>\a\directory\with\java\source\files\to\be\compiled\dynamically</directory>
 			<!-- If the above directory points to a subfolder of the folder where the package
 			folder structure begins, then specify package represented by the subfolder -->
 			<package-prefix>a.package.name</package-prefix>
@@ -50,7 +50,7 @@ shown here. -->
 		<model-def>
 			<class>the_name_of_the_model_class_or_an_interface_that_it_implements</class>
 			<factory-class>the_name_of_the_factory_class_for_the_model</factory-class>
-			<scope>session</scope>
+			<scope>Session</scope>
 		</model-def>
 	</model-defs>
 
@@ -59,7 +59,7 @@ shown here. -->
 		<!-- This section defines (in order) the locations (and strategies) that should be used
 		to find a template -->	
 		<template-path>
-			<directory>a/directory/name/on/file/system/which/will/get/searched/for/a/template</directory>
+			<directory>a\directory\name\on\file\system\which\will\get\searched\for\a\template</directory>
 			<loader-class>
 				<class>a_class_name_on_which_getResource_will_be_called_to_locate_a_template</class>
 				<path>/a/package/path/to/the/templates</path>
@@ -84,13 +84,13 @@ shown here. -->
 
 	<controller-resolver>
 		<class>the_name_of_a_class_that_implements_a_controller_resolver</class>
-		<default-handler-method>handler</default-handler-method>
-		<ignore-handler-method-case>false</ignore-handler-method-case>
+		<default-handler-method>my_favorite_handler_name</default-handler-method>
+		<ignore-handler-method-case>true</ignore-handler-method-case>
 	</controller-resolver>
 	
 	<file-upload>
 		<max-upload-size>10485760</max-upload-size>
 		<store-file-on-disk-threshold>20480</store-file-on-disk-threshold>
-		<uploaded-file-storage-dir>//localhost/sandbox_partition/fileupload</uploaded-file-storage-dir>
+		<uploaded-file-storage-dir>\\localhost\sandbox_partition\fileupload</uploaded-file-storage-dir>
 	</file-upload>
 </config>
