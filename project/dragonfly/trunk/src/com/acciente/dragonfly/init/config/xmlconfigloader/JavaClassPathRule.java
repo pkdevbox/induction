@@ -1,7 +1,8 @@
 package com.acciente.dragonfly.init.config.xmlconfigloader;
 
-import org.apache.commons.digester.Rule;
+import com.acciente.commons.lang.Strings;
 import com.acciente.dragonfly.init.config.Config;
+import org.apache.commons.digester.Rule;
 
 import java.io.File;
 
@@ -11,9 +12,8 @@ import java.io.File;
  * Log
  * May 1, 2008 APR  -  created
  */
-public class JavaClassPathRule extends Rule
+public class JavaClassPathRule
 {
-   // todo: improved error detection along the lines of that in TemplatingRule
    private  Config.JavaClassPath    _oJavaClassPath;
 
    public JavaClassPathRule( Config.JavaClassPath oJavaClassPath )
@@ -48,8 +48,12 @@ public class JavaClassPathRule extends Rule
       private  File        _oDir;
       private  String      _sPackageNamePrefix;
 
-      public void end( String sNamespace, String sName )
+      public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
+         if ( _oDir == null || Strings.isEmpty( _oDir.getPath() ) )
+         {
+            throw new XMLConfigLoaderException( "config > java-class-path > compiled-directory: must specify a directory name" );
+         }
          _oJavaClassPath.addCompiledDir( _oDir, _sPackageNamePrefix );
       }
 
@@ -101,8 +105,12 @@ public class JavaClassPathRule extends Rule
       private  File        _oDir;
       private  String      _sPackageNamePrefix;
 
-      public void end( String sNamespace, String sName )
+      public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
+         if ( _oDir == null || Strings.isEmpty( _oDir.getPath() ) )
+         {
+            throw new XMLConfigLoaderException( "config > java-class-path > source-directory: must specify a directory name" );
+         }
          _oJavaClassPath.addSourceDir( _oDir, _sPackageNamePrefix );
       }
 
@@ -148,11 +156,14 @@ public class JavaClassPathRule extends Rule
     */
    private class SetJavaCompilerClassNameRule extends Rule
    {
-      public void body( String sNamespace, String sName, String sText )
+      public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
       {
+         if ( Strings.isEmpty( sText ) )
+         {
+            throw new XMLConfigLoaderException( "config > java-class-path > java-compiler: must specify a class name" );
+         }
          _oJavaClassPath.getJavaCompiler().setJavaCompilerClassName( sText );
       }
-
    }
 }
 

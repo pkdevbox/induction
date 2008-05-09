@@ -4,16 +4,19 @@ import com.acciente.commons.lang.Strings;
 import com.acciente.dragonfly.init.config.Config;
 import org.apache.commons.digester.Rule;
 
-import java.io.File;
 import java.util.Locale;
+import java.io.File;
 
 /**
  * TemplatingRule
  *
+ * NOTE: we do not extend Rule in this class, since this class while a rules "container",
+ * but is not itself a rule
+ *
  * Log
  * May 6, 2008 APR  -  created
  */
-public class TemplatingRule   // we do not extend Rule, since this class contains rules but is not a rule itself
+public class TemplatingRule
 {
    private  Config.Templating    _oTemplating;
 
@@ -54,14 +57,11 @@ public class TemplatingRule   // we do not extend Rule, since this class contain
    {
       public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
       {
-         if ( ! Strings.isEmpty( sText ) )
+         if ( Strings.isEmpty( sText ) )
          {
-            _oTemplating.getTemplatePath().addDir( new File( sText ) );
+            throw new XMLConfigLoaderException( "config > templating > template-path: directory item cannot be empty" );
          }
-         else
-         {
-            throw new XMLConfigLoaderException( "templating config: template path directory item cannot be empty" );
-         }
+         _oTemplating.getTemplatePath().addDir( new File( sText ) );
       }
    }
 
@@ -72,14 +72,11 @@ public class TemplatingRule   // we do not extend Rule, since this class contain
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
-         if ( ! Strings.isEmpty( _sLoaderClassName ) && ! Strings.isEmpty( _sPath ) )
+         if ( Strings.isEmpty( _sLoaderClassName ) || Strings.isEmpty( _sPath ) )
          {
-            _oTemplating.getTemplatePath().addLoaderClass( _sLoaderClassName, _sPath );
+            throw new XMLConfigLoaderException( "config > templating > template-path: loader class must specify a class and a path" );
          }
-         else
-         {
-            throw new XMLConfigLoaderException( "templating config: loader class in  template path must specify a class and path" );
-         }
+         _oTemplating.getTemplatePath().addLoaderClass( _sLoaderClassName, _sPath );
       }
 
       public ParamClassRule createParamClassRule()
@@ -120,8 +117,12 @@ public class TemplatingRule   // we do not extend Rule, since this class contain
     */
    public class TemplatePathAddWebAppPathRule extends Rule
    {
-      public void body( String sNamespace, String sName, String sText )
+      public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
       {
+         if ( Strings.isEmpty( sText ) )
+         {
+            throw new XMLConfigLoaderException( "config > templating > template-path: web app path must specify a path" );
+         }
          _oTemplating.getTemplatePath().addWebappPath( sText );
       }
    }
@@ -133,17 +134,18 @@ public class TemplatingRule   // we do not extend Rule, since this class contain
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
-         if ( ! Strings.isEmpty( _sISOLanguage ) && ! Strings.isEmpty( _sISOCountry ) )
+         if ( Strings.isEmpty( _sISOLanguage ) )
+         {
+            throw new XMLConfigLoaderException( "config > templating > template-path: locale must specify an ISO language code" );
+         }
+
+         if ( ! Strings.isEmpty( _sISOCountry ) )
          {
             _oTemplating.setLocale( new Locale( _sISOLanguage, _sISOCountry ) );
          }
-         else if ( ! Strings.isEmpty( _sISOLanguage ) )
-         {
-            _oTemplating.setLocale( new Locale( _sISOLanguage ) );
-         }
          else
          {
-            throw new XMLConfigLoaderException( "templating config: locale must specify an ISO language code" );
+            _oTemplating.setLocale( new Locale( _sISOLanguage ) );
          }
       }
 
@@ -180,14 +182,11 @@ public class TemplatingRule   // we do not extend Rule, since this class contain
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
-         if ( ! Strings.isEmpty( _sClassName ) )
+         if ( Strings.isEmpty( _sClassName ) )
          {
-            _oTemplating.getTemplatingEngine().setClassName( _sClassName );
+            throw new XMLConfigLoaderException( "config > templating > template-engine: must specify a class name" );
          }
-         else
-         {
-            throw new XMLConfigLoaderException( "templating config: template engine config does not specify a class name" );
-         }
+         _oTemplating.getTemplatingEngine().setClassName( _sClassName );
       }
 
       public ParamClassRule createParamClassRule()
