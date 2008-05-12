@@ -1,6 +1,6 @@
 
 <!-- this file contains the configuration for the dragonFly dispatcher -->
-<dispatcher-config>
+<config>
 
 	<!-- The following section allows you to specify locations from which
 	dragonFly will automatically reload a class if the file has changed -->
@@ -34,7 +34,7 @@
 	-->
 	<model-defs>
 		<model-def>
-			<class>demoapp.model.Counter</class>
+			<class>demoapp.counter_app.Counter</class>
 			<scope>session</scope>
 		</model-def>
 	</model-defs>
@@ -46,4 +46,4 @@
 		</template-path>
 	</templating>
 
-</dispatcher-config> 
+</config> 
