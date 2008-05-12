@@ -5,8 +5,6 @@ import com.acciente.dragonfly.controller.Response;
 
 import java.io.IOException;
 
-import demoapp.counter_app.Counter;
-
 /**
  * This class ...
  *
@@ -37,7 +35,7 @@ public class CounterController implements Controller
    }
 
    public void incrementCounter( Response oResponse, Counter oCounter )
-      throws IOException
+      throws IOException 
    {
       oCounter.increment();
       oResponse.out().println( "count incremented to: " + oCounter.getCount() );
