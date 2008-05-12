@@ -1,7 +1,7 @@
 package com.acciente.test.dragonfly.config;
 
-import com.acciente.dragonfly.init.config.Config;
-import com.acciente.dragonfly.init.config.ConfigLoader;
+import com.acciente.nitrogen.init.config.Config;
+import com.acciente.nitrogen.init.config.ConfigLoader;
 
 import java.io.File;
 

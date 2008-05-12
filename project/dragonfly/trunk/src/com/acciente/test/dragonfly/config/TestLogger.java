@@ -1,6 +1,6 @@
 package com.acciente.test.dragonfly.config;
 
-import com.acciente.dragonfly.init.Logger;
+import com.acciente.nitrogen.init.Logger;
 
 /**
  * This class implments a logger used by the test classes
