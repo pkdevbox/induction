@@ -36,7 +36,7 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
       if ( _sPackageNamePrefix == null )
       {
-         sFilename = sClassName.replace( '.', '/' ) + ".java";
+         sFilename = sClassName.replace( '.', '/' ) + ".class";
       }
       else
       {

@@ -56,6 +56,8 @@ public class HttpDispatcher extends HttpServlet
          oConfig
          =  ConfigLoaderInitializer
                   .getConfigLoader( oServletConfig, _oLogger ).getConfig();
+
+         //System.out.println( "config: \n" + oConfig );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
@@ -144,6 +146,7 @@ public class HttpDispatcher extends HttpServlet
       throws ServletException, IOException
    {
       dispatch( oRequest, oResponse );
+      System.out.println( "request @" + System.currentTimeMillis() );
    }
 
    public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )

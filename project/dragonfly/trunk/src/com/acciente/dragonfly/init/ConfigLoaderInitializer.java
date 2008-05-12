@@ -71,6 +71,8 @@ public class ConfigLoaderInitializer
       {
          // no custom loader defined, use the default XML loader (this is the typical case)
          oConfigLoader = new XMLConfigLoader( oServletConfig );
+
+         oLogger.log( "using default XML config loader" );
       }
       else
       {
