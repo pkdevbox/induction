@@ -1,6 +1,6 @@
 package demoapp.helloworld3_app;
 
-import com.acciente.dragonfly.view.Template;
+import com.acciente.nitrogen.view.Template;
 
 /**
  * Log

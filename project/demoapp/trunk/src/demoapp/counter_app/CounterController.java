@@ -1,7 +1,7 @@
 package demoapp.counter_app;
 
-import com.acciente.dragonfly.controller.Controller;
-import com.acciente.dragonfly.controller.Response;
+import com.acciente.nitrogen.controller.Controller;
+import com.acciente.nitrogen.controller.Response;
 
 import java.io.IOException;
 
