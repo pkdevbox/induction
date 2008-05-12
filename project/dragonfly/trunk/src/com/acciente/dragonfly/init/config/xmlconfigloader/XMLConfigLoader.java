@@ -17,6 +17,7 @@ import java.io.InputStream;
  * Log
  * Apr 26, 2008 APR  -  created
  */
+// todo: support for a DTD validator to catch simple config errors, otherwise hard to trace
 public class XMLConfigLoader implements ConfigLoader
 {
    private  ServletConfig  _oServletConfig;

@@ -48,6 +48,10 @@ public class ReloadingClassLoader extends SecureClassLoader
    public Class loadClass( String sClassName, boolean bResolve )
       throws ClassNotFoundException
    {
+      System.out.println( "loading class: " + sClassName );
+      // todo: debug code above
+
+
       Class oClass;
 
       // the implementation of this method was adapted from the
@@ -56,7 +60,7 @@ public class ReloadingClassLoader extends SecureClassLoader
 
       // we first look for the ClassControlBlock for this class to determine if we previously
       // loaded this class. We cannot use the findLoadedClass() method since this classloader
-      // loads a every time using a new classloader instance (of type ByteCodeClassLoader).
+      // loads a class every time using a new classloader instance (of type ByteCodeClassLoader).
       // We need to use newly created classloader since if this classloader loaded the class
       // directly we would have not way of unloading the class.
       ClassControlBlock oClassControlBlock = ( ClassControlBlock ) _oClassControlBlockMap.get( sClassName );
