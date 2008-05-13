@@ -48,10 +48,12 @@ public class ReloadingClassLoader extends SecureClassLoader
    public Class loadClass( String sClassName, boolean bResolve )
       throws ClassNotFoundException
    {
-      System.out.println( "loading class: " + sClassName );
-      // todo: debug code above
+      return loadClass( sClassName, bResolve, false );
+   }
 
-
+   public Class loadClass( String sClassName, boolean bResolve, boolean bForceReload )
+      throws ClassNotFoundException
+   {
       Class oClass;
 
       // the implementation of this method was adapted from the
@@ -79,6 +81,11 @@ public class ReloadingClassLoader extends SecureClassLoader
             // reload new class def
             oClassControlBlock.getClassDef().reload();
 
+            // now load in new class
+            oClass = loadClass( oClassControlBlock );
+         }
+         else if ( bForceReload )
+         {
             // now load in new class
             oClass = loadClass( oClassControlBlock );
          }

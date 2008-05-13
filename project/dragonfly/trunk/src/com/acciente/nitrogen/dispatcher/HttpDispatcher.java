@@ -101,9 +101,6 @@ public class HttpDispatcher extends HttpServlet
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
-      // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
-      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
-
       // the ParamResolver manages resolution of parameter values based on the parameter type
       ParamResolver oParamResolver
          =  new ParamResolver( new ModelPool( oConfig.getModelDefs(),
@@ -114,6 +111,9 @@ public class HttpDispatcher extends HttpServlet
                                             ),
                                oConfig.getFileUpload()
                              );
+
+      // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
+      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
@@ -146,7 +146,8 @@ public class HttpDispatcher extends HttpServlet
       throws ServletException, IOException
    {
       dispatch( oRequest, oResponse );
-      System.out.println( "request @" + System.currentTimeMillis() );
+
+      System.out.println( "** debug: received request @" + System.currentTimeMillis() );    // todo: remove after debug completed
    }
 
    public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )

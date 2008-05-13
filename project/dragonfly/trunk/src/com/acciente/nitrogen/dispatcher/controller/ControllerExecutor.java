@@ -47,44 +47,14 @@ public class ControllerExecutor
    public Object execute( ControllerResolver.Resolution oResolution, HttpServletRequest oRequest, HttpServletResponse oResponse )
       throws ControllerExecutorException
    {
-      Controller oController;
-      try
-      {
-         oController = _oControllerPool.getController( oResolution.getClassName() );
-      }
-      catch ( ClassNotFoundException e )
-      {
-         throw new ControllerExecutorException( "load: unable to load definition", e );
-      }
-      catch ( ConstructorNotFoundException e )
-      {
-         throw new ControllerExecutorException( "load: unable to find constructor", e );
-      }
-      catch ( InstantiationException e )
-      {
-         throw new ControllerExecutorException( "load: instantiate error", e );
-      }
-      catch ( InvocationTargetException e )
-      {
-         throw new ControllerExecutorException( "load: target exception", e );
-      }
-      catch ( IllegalAccessException e )
-      {
-         throw new ControllerExecutorException( "load: access exception", e );
-      }
+      Controller  oController;
+      Method      oControllerMethod;
+
+      // get a controller instance from the pool
+      oController = getController( oResolution, false );
 
       // use performance enhanced reflection to determine the methods in the controller with the specified name
-      Method oControllerMethod;
-      try
-      {
-         oControllerMethod = ReflectUtils.getSingletonMethod( oController.getClass(),
-                                                              oResolution.getMethodName(),
-                                                              oResolution.isIgnoreMethodNameCase() );
-      }
-      catch ( MethodNotFoundException e )
-      {
-         throw new ControllerExecutorException( "load: method not found", e );
-      }
+      oControllerMethod = getControllerMethod( oResolution, oController );
 
       // ok, we have a controller, now compute values for its formal parameter list
       Class[]  aoParameterTypes  = oControllerMethod.getParameterTypes();
@@ -129,23 +99,94 @@ public class ControllerExecutor
       }
 
       // finally call the controller method!
-      Object   oControllerReturnValue;
-      try
+      Object   oControllerReturnValue = null;
+
+      for ( int i = 0; i < 2; i++ )
       {
-         // todo: Problem  : currently if any of the model classes reload above this invoke fails
-         // todo: Solution : if the param resolver reloaded any models, then reload the controller
-         oControllerReturnValue = oControllerMethod.invoke( oController, aoParameterValues );
-      }
-      catch ( IllegalAccessException e )
-      {
-         throw new ControllerExecutorException( "invoke: method access error", e );
-      }
-      catch ( InvocationTargetException e )
-      {
-         throw new ControllerExecutorException( "invoke: method threw exception", e );
+         try
+         {
+            // todo: Problem  : currently if any of the model classes reload above this invoke fails
+            // todo: Solution : if the param resolver reloaded any models, then reload the controller
+            oControllerReturnValue = oControllerMethod.invoke( oController, aoParameterValues );
+            break;
+         }
+         catch ( IllegalAccessException e )
+         {
+            throw new ControllerExecutorException( "invoke: method access error", e );
+         }
+         catch ( InvocationTargetException e )
+         {
+            throw new ControllerExecutorException( "invoke: method threw exception", e );
+         }
+         catch ( IllegalArgumentException e )
+         {
+            System.out.println( "i=" + i );
+
+            if ( i == 0 )
+            {
+               // try reloading the controller
+               // get a controller instance from the pool
+               oController = getController( oResolution, true );
+
+               // use performance enhanced reflection to determine the methods in the controller with the specified name
+               oControllerMethod = getControllerMethod( oResolution, oController );
+            }
+            else
+            {
+               throw new ControllerExecutorException( "invoke: argument exception", e );
+            }
+         }
       }
 
       return oControllerReturnValue;
+   }
+
+   private Method getControllerMethod( ControllerResolver.Resolution oResolution, Controller oController )
+      throws ControllerExecutorException
+   {
+      Method oControllerMethod;
+      try
+      {
+         oControllerMethod = ReflectUtils.getSingletonMethod( oController.getClass(),
+                                                              oResolution.getMethodName(),
+                                                              oResolution.isIgnoreMethodNameCase() );
+      }
+      catch ( MethodNotFoundException e )
+      {
+         throw new ControllerExecutorException( "load: method not found", e );
+      }
+      return oControllerMethod;
+   }
+
+   private Controller getController( ControllerResolver.Resolution oResolution, boolean bForceReload )
+      throws ControllerExecutorException
+   {
+      Controller oController;
+      try
+      {
+         oController = _oControllerPool.getController( oResolution.getClassName(), bForceReload );
+      }
+      catch ( ClassNotFoundException e )
+      {
+         throw new ControllerExecutorException( "load: unable to load definition", e );
+      }
+      catch ( ConstructorNotFoundException e )
+      {
+         throw new ControllerExecutorException( "load: unable to find constructor", e );
+      }
+      catch ( InstantiationException e )
+      {
+         throw new ControllerExecutorException( "load: instantiate error", e );
+      }
+      catch ( InvocationTargetException e )
+      {
+         throw new ControllerExecutorException( "load: target exception", e );
+      }
+      catch ( IllegalAccessException e )
+      {
+         throw new ControllerExecutorException( "load: access exception", e );
+      }
+      return oController;
    }
 }
 

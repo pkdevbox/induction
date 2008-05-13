@@ -4,6 +4,7 @@ import com.acciente.nitrogen.controller.Controller;
 import com.acciente.nitrogen.init.Logger;
 import com.acciente.nitrogen.util.ConstructorNotFoundException;
 import com.acciente.nitrogen.util.ObjectFactory;
+import com.acciente.commons.loader.ReloadingClassLoader;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +37,7 @@ public class ControllerPool
     * Returns a controller from the controller pool, instantiating if needed
     *
     * @param sControllerClassName fully qualified controller class name
+    * @param bForceReload if true reloads the controller class, regardless of if the underlying class has changed
     * @return an instance of a controller object
     *
     * @throws ClassNotFoundException propagated exception
@@ -44,12 +46,22 @@ public class ControllerPool
     * @throws ConstructorNotFoundException propagated exception
     * @throws InstantiationException propagated exception
     */
-   public Controller getController( String sControllerClassName )
+   public Controller getController( String sControllerClassName, boolean bForceReload )
       throws ClassNotFoundException, ConstructorNotFoundException, InstantiationException, InvocationTargetException, IllegalAccessException
    {
       // the class definition may have changed so we have to load the class unconditionally our
       // classloader caches so if the class is unchanged this call just returns the last loaded class
-      Class oLatestControllerClass = _oClassLoader.loadClass( sControllerClassName );
+      Class oLatestControllerClass;
+      
+      if ( bForceReload && _oClassLoader instanceof ReloadingClassLoader )
+      {
+         System.out.println( "** debug: forcing controller reload" ); // todo: remove after debug completed
+         oLatestControllerClass = ( ( ReloadingClassLoader ) _oClassLoader ).loadClass( sControllerClassName, false, true );
+      }
+      else
+      {
+         oLatestControllerClass = _oClassLoader.loadClass( sControllerClassName );
+      }
 
       // check if we have a cached controller instance
       Controller  oController = ( Controller ) _oControllerCache.get( sControllerClassName );
