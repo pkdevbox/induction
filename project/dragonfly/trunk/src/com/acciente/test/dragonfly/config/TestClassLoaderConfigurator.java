@@ -1,6 +1,6 @@
 package com.acciente.test.dragonfly.config;
 
-import com.acciente.nitrogen.init.ClassLoaderInitializer;
+import com.acciente.dragonfly.init.ClassLoaderInitializer;
 
 import java.io.IOException;
 
