@@ -1,6 +1,6 @@
 package demoapp.helloworld3_app;
 
-import com.acciente.nitrogen.view.Template;
+import com.acciente.dragonfly.view.Template;
 
 /**
  * Log
@@ -10,7 +10,7 @@ public class HelloWorldView implements Template
 {
    public String getTemplateName()
    {
-      return "/HelloWorld.ftl";
+      return "HelloWorld.ftl";
    }
 
    public String getMimeType()
