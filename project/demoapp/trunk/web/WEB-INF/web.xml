@@ -6,17 +6,17 @@
            version="2.5">
    <description>DemoApp</description>
 
-   <display-name>Test - dragonFly - DemoApp</display-name>
+   <display-name>Nitrogen - DemoApp</display-name>
 
    <servlet>
-       <description>Demo dragonfly application</description>
+       <description>Nitrogen - Demo Application</description>
        <display-name>DemoApp</display-name>
        <servlet-name>demoapp</servlet-name>
-       <servlet-class>com.acciente.dragonfly.dispatcher.HttpDispatcher</servlet-class>
+       <servlet-class>com.acciente.nitrogen.dispatcher.HttpDispatcher</servlet-class>
 <!--
        <init-param>
            <param-name>demoapp.config-loader-class</param-name>
-           <param-value>com.acciente.test.dragonfly.config.TestConfig_DemoApp</param-value>
+           <param-value>com.acciente.test.nitrogen.config.TestConfig_DemoApp</param-value>
        </init-param>
 -->
        <load-on-startup>0</load-on-startup>

@@ -1,6 +1,6 @@
 package demoapp.helloworld2_app;
 
-import com.acciente.nitrogen.view.Text;
+import com.acciente.dragonfly.view.Text;
 
 public class HelloWorldView implements Text
 {
