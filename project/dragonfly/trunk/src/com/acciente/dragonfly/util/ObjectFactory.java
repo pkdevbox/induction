@@ -54,7 +54,7 @@ public class ObjectFactory
       // if we found a single public method, use it only it expects no parameters
       if ( oDestructorMethod != null && oDestructorMethod.getParameterTypes().length == 0 )
       {
-         oDestructorMethod.invoke( oTargetObject, null );
+         oDestructorMethod.invoke( oTargetObject, new Object[]{} );
       }
    }
 }
