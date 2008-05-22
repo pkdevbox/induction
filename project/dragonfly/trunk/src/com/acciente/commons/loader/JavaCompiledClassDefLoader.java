@@ -27,7 +27,16 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
          throw new IllegalArgumentException( "class definition loader requires a classname, none specified!" );
       }
 
-      return new JavaCompiledClassDef( sClassName, new File( _oCompiledDirectory, getFileNameFromClassName( sClassName ) ) );
+      File oCompiledFile = new File( _oCompiledDirectory, getFileNameFromClassName( sClassName ) );
+
+      JavaCompiledClassDef oClassDef = null;
+
+      if ( oCompiledFile.exists() )
+      {
+         oClassDef = new JavaCompiledClassDef( sClassName, oCompiledFile );
+      }
+
+      return oClassDef;
    }
 
    private String getFileNameFromClassName( String sClassName )

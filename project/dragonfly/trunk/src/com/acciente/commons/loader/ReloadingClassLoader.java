@@ -1,7 +1,9 @@
 package com.acciente.commons.loader;
 
 import java.security.SecureClassLoader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,45 +15,71 @@ import java.util.Map;
  * Log
  * Feb 23, 2008 APR  -  created
  * Feb 27, 2008 APR  -  refactored SourceClassLoader -> ReloadingClassLoader
+ * May 21, 2008 APR  -  refactored to support a list of ClassDefLoaders to enable
+ *                      searching in multiple load locations without the need to
+ *                      to chain classloaders.
  */
 public class ReloadingClassLoader extends SecureClassLoader
 {
-   private ClassDefLoader  _oClassDefLoader;
-   private Map             _oClassControlBlockMap =  new HashMap();
+   private  List           _oClassDefLoaderList    = new ArrayList();
+   private  Map            _oClassControlBlockMap  = new HashMap();
+   private  Map            _oDependencyMap         = new HashMap();
 
    /**
     * Creates a class loader with no parent class loader, this is expected to
     * cause the system class loader to be used as the parent class loader
     *
-    * @param oClassDefLoader an object that implements the class ClassDefLoader interface
     */
-   public ReloadingClassLoader( ClassDefLoader oClassDefLoader )
+   public ReloadingClassLoader()
    {
       super();
-
-      _oClassDefLoader = oClassDefLoader;
    }
 
    /**
     * Creates a class loader that delegates to the specified parent class loader
     *
-    * @param oClassDefLoader an object that implements the class ClassDefLoader interface
     * @param oParentClassLoader the parent class loader
     */
-   public ReloadingClassLoader( ClassDefLoader oClassDefLoader, ClassLoader oParentClassLoader )
+   public ReloadingClassLoader( ClassLoader oParentClassLoader )
    {
       super( oParentClassLoader );
+   }
 
-      _oClassDefLoader = oClassDefLoader;
+   /**
+    * Adds a class definition loader to the list of class definition loaders to search
+    *
+    * @param oClassDefLoader an object that implements the class ClassDefLoader interface
+    */
+   public void addClassDefLoader( ClassDefLoader oClassDefLoader )
+   {
+      _oClassDefLoaderList.add( oClassDefLoader );
+   }
+
+   /**
+    * Used to tell this class loader to reload sClassName if sDependsOnClassName reloads
+    * since sClassName was last loaded.
+    *
+    * @param sClassName the class name with the dependency
+    * @param sDependsOnClassName the class name that sClassName depends on
+    */
+   public void addDependency( String sClassName, String sDependsOnClassName )
+   {
+      List  oDependsOnClassNameList = ( List ) _oDependencyMap.get( sClassName );
+
+      if ( oDependsOnClassNameList == null )
+      {
+         oDependsOnClassNameList = new ArrayList();
+
+         _oDependencyMap.put( sClassName, oDependsOnClassNameList );
+      }
+
+      if ( ! oDependsOnClassNameList.contains( sDependsOnClassName ) )
+      {
+         oDependsOnClassNameList.add( sDependsOnClassName );
+      }
    }
 
    public Class loadClass( String sClassName, boolean bResolve )
-      throws ClassNotFoundException
-   {
-      return loadClass( sClassName, bResolve, false );
-   }
-
-   public Class loadClass( String sClassName, boolean bResolve, boolean bForceReload )
       throws ClassNotFoundException
    {
       Class oClass;
@@ -75,17 +103,26 @@ public class ReloadingClassLoader extends SecureClassLoader
       }
       else
       {
+         boolean  bReload = false;
+
          // ok, we have previously loaded this class so check if we need to reload
          if ( oClassControlBlock.getClassDef().isModified() )
+         {
+            bReload = true;
+         }
+         else
+         {
+            // if the class def is not modified we may still reload if one the dependent classes has
+            // reloaded since we last loaded
+
+            // todo: implement
+         }
+
+         if ( bReload )
          {
             // reload new class def
             oClassControlBlock.getClassDef().reload();
 
-            // now load in new class
-            oClass = loadClass( oClassControlBlock );
-         }
-         else if ( bForceReload )
-         {
             // now load in new class
             oClass = loadClass( oClassControlBlock );
          }
@@ -101,9 +138,28 @@ public class ReloadingClassLoader extends SecureClassLoader
    protected Class findClass( String sClassName )
       throws ClassNotFoundException
    {
+      // first find the byte codes for this class using the class def loaders defined
+      ClassDef oClassDef = null;
+
+      for ( int i = 0; i < _oClassDefLoaderList.size(); i++ )
+      {
+         ClassDefLoader oClassDefLoader = ( ClassDefLoader ) _oClassDefLoaderList.get( i );
+
+         if ( ( oClassDef = oClassDefLoader.getClassDef( sClassName ) ) != null )
+         {
+            break;
+         }
+      }
+
+      // if we could not locate the class above we cannot proceed, so complain
+      if ( oClassDef == null )
+      {
+         throw new ClassNotFoundException( "Unable to locate a definition for class: " + sClassName );
+      }
+
       // create a new class control block to keep track of this class
       ClassControlBlock oClassControlBlock
-         = new ClassControlBlock( sClassName, _oClassDefLoader.getClassDef( sClassName ) );
+         = new ClassControlBlock( sClassName, oClassDef );
 
       // load the class from source and update the class control block
       Class oClass = loadClass( oClassControlBlock );
@@ -154,9 +210,9 @@ public class ReloadingClassLoader extends SecureClassLoader
     */
    static private class ClassControlBlock
    {
-      private String    _sClassName;
-      private Class     _oLastLoadedClass;
-      private ClassDef  _oClassDef;
+      private  String      _sClassName;
+      private  Class       _oLastLoadedClass;
+      private  ClassDef    _oClassDef;
 
       private ClassControlBlock( String sClassName, ClassDef oClassDef )
       {

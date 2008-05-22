@@ -1,0 +1,10 @@
+[May 17, 2008 APR]
+
+HttpDispatcher -> ControllerExecutor (detect arg error) -> ControllerPool (pass-thru) -> ReloadingClassLoader (target)
+
+
+HttpDispatcher -> (dependency-map) -> ReloadingClassLoader (target)
+                                   <- ControllerExecutor
+
+
+(dependency-map)

@@ -26,7 +26,8 @@ public class TestReloadingClassLoader_JavaCompiled
       // source files
       ReloadingClassLoader oReloadingClassLoader;
 
-      oReloadingClassLoader = new ReloadingClassLoader( oJavaCompiledClassDefLoader );
+      oReloadingClassLoader = new ReloadingClassLoader();
+      oReloadingClassLoader.addClassDefLoader( oJavaCompiledClassDefLoader );
       //oReloadingClassLoader = TestReloadingClassLoader_JavaCompiled.class.getClassLoader();
 
       // now have some fun reloading classes
