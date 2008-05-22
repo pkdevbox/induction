@@ -18,13 +18,14 @@ public class ClassLoaderInitializer
    public static ClassLoader getClassLoader( Config.JavaClassPath oJavaClassPathConfig, ClassLoader oParentClassLoader, Logger oLogger )
       throws ClassNotFoundException
    {
-      // we start with the parent classloader, if no other class loader config are defined
-      // we will end up using this as our class loader, otherwise we will "chain" the user
-      // configured classloaders to this one
-      ClassLoader oClassLoader = oParentClassLoader;
-
-      if ( oJavaClassPathConfig.getDirList().size() != 0 )
+      if ( oJavaClassPathConfig.getDirList().size() == 0 )
       {
+         return oParentClassLoader;
+      }
+      else
+      {
+         ReloadingClassLoader oClassLoader = new ReloadingClassLoader( oParentClassLoader );
+
          // if there is a classpath defined setup a reloading classloader to handle the specified directories
          for ( int i = 0; i < oJavaClassPathConfig.getDirList().size(); i++ )
          {
@@ -39,8 +40,8 @@ public class ClassLoaderInitializer
                oJavaCompiledClassDefLoader.setCompiledDirectory( oCompiledDir.getDir() );
                oJavaCompiledClassDefLoader.setPackageNamePrefix( oCompiledDir.getPackageNamePrefix() );
 
-               // chain in the new classloader
-               oClassLoader = new ReloadingClassLoader( oJavaCompiledClassDefLoader, oClassLoader );
+               // add the class def loader to the search list
+               oClassLoader.addClassDefLoader( oJavaCompiledClassDefLoader );
             }
             else if ( oJavaClassPathConfig.getDirList().get( i ) instanceof Config.JavaClassPath.SourceDir )
             {
@@ -55,13 +56,13 @@ public class ClassLoaderInitializer
                oJavaSourceClassDefLoader.setSourceDirectory( oSourceDir.getDir() );
                oJavaSourceClassDefLoader.setPackageNamePrefix( oSourceDir.getPackageNamePrefix() );
 
-               // chain in the new classloader
-               oClassLoader = new ReloadingClassLoader( oJavaSourceClassDefLoader, oClassLoader );
+               // add the class def loader to the search list
+               oClassLoader.addClassDefLoader( oJavaSourceClassDefLoader );
             }
          }
-      }
 
-      return oClassLoader;
+         return oClassLoader;
+      }
    }
 }
 

@@ -38,7 +38,16 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
          throw new IllegalStateException( "no compiler manager defined, unable to load class from source, class: " + sClassName );
       }
 
-      return new JavaSourceClassDef( sClassName, new File( _oSourceDirectory, getFileNameFromClassName( sClassName ) ), _oJavaCompilerManager );
+      File oSourceFile = new File( _oSourceDirectory, getFileNameFromClassName( sClassName ) );
+
+      JavaSourceClassDef oClassDef = null;
+
+      if ( oSourceFile.exists() )
+      {
+         oClassDef = new JavaSourceClassDef( sClassName, oSourceFile, _oJavaCompilerManager );
+      }
+
+      return oClassDef;
    }
 
    private String getFileNameFromClassName( String sClassName )

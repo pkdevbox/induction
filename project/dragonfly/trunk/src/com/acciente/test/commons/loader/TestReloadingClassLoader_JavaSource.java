@@ -26,7 +26,8 @@ public class TestReloadingClassLoader_JavaSource
       // create a reloading class loader, the class loader uses the classdef loader we provide
       // the class loader is unaware of the origination of the classes it loads, in this case
       // source files
-      ReloadingClassLoader oReloadingClassLoader = new ReloadingClassLoader( oJavaSourceClassDefLoader );
+      ReloadingClassLoader oReloadingClassLoader = new ReloadingClassLoader();
+      oReloadingClassLoader.addClassDefLoader( oJavaSourceClassDefLoader );
 
       // now have some fun reloading classes
       String[]   sClassNames
