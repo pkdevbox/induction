@@ -38,6 +38,11 @@ class ByteCodeClassDef implements ClassDef
    {
       return null;
    }
+
+   public String[] getReferencedClasses()
+   {
+      return null;
+   }
 }
 
 // EOF

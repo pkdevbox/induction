@@ -65,6 +65,11 @@ class JavaSourceClassDef implements ClassDef
       return _aoBundledClassDefs;
    }
 
+   public String[] getReferencedClasses()
+   {
+      return null;
+   }
+
    private void loadClassFromSource()
       throws ClassNotFoundException
    {
