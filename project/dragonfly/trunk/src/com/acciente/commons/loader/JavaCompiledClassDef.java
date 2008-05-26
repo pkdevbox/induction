@@ -1,9 +1,17 @@
 package com.acciente.commons.loader;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantClass;
+import org.apache.bcel.classfile.ConstantUtf8;
+import org.apache.bcel.classfile.ConstantPool;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 
 /**
  * Log
@@ -18,6 +26,7 @@ public class JavaCompiledClassDef implements ClassDef
    // class data
    private String       _sClassName;
    private byte[]       _ayClassByteCode;
+   private String[]     _asReferencedClassNames;
 
    JavaCompiledClassDef( String sClassName, File oCompiledFile )
       throws ClassNotFoundException
@@ -53,6 +62,11 @@ public class JavaCompiledClassDef implements ClassDef
       return null;
    }
 
+   public String[] getReferencedClasses()
+   {
+      return _asReferencedClassNames;
+   }
+
    private void loadCompiledClassFile()
       throws ClassNotFoundException
    {
@@ -64,11 +78,51 @@ public class JavaCompiledClassDef implements ClassDef
          _ayClassByteCode = FileUtils.readFileToByteArray( _oCompiledFile );
 
          _iLastModifiedTimeAtLastLoad = iLastModifiedTimeAtLastLoad;
+
+         readReferencedClasses( _ayClassByteCode, _oCompiledFile.getName() );
       }
       catch ( IOException e )
       {
          throw new ClassNotFoundException( "Error loading class definition", e );
       }
+   }
+
+   private void readReferencedClasses( byte[] ayClassByteCode, String sFilename ) throws IOException
+   {
+      ArrayList   oReferencedClassNameList;
+      JavaClass   oJavaClass;
+
+      oJavaClass = ( new ClassParser( new ByteArrayInputStream( ayClassByteCode ), sFilename ) ).parse();
+
+      oReferencedClassNameList = new ArrayList();
+
+      ConstantPool oConstantPool = oJavaClass.getConstantPool();
+
+      for ( int i = 0; i < oConstantPool.getLength(); i++ )
+      {
+         Constant oConstant = oConstantPool.getConstant( i );
+
+         if ( oConstant instanceof ConstantClass )
+         {
+            ConstantUtf8 oConstantUtf8
+               =  ( ConstantUtf8 )
+                     oConstantPool
+                        .getConstant( ( ( ConstantClass ) oConstant ).getNameIndex() );
+
+            String sReferencedClassname = oConstantUtf8.getBytes().replace( "/", "." );
+
+            if ( ! ( sReferencedClassname.equals( _sClassName ) || sReferencedClassname.equals( "java.lang.Object" ) ) )
+            {
+               System.out.println( "referenced-class: " + sReferencedClassname );   // todo: remove debug trace   
+               oReferencedClassNameList.add( sReferencedClassname );
+            }
+         }
+      }
+
+      // convert the list to an array
+      _asReferencedClassNames = new String[ oReferencedClassNameList.size() ];
+
+      oReferencedClassNameList.toArray( _asReferencedClassNames );
    }
 }
 

@@ -9,7 +9,7 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.cache.WebappTemplateLoader;
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateException;
 
 import javax.servlet.ServletConfig;
@@ -83,7 +83,7 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       _oConfiguration.setTemplateLoader( new MultiTemplateLoader( oTemplateLoaderArray ) );
 
       // next set the object wrapper handler
-      _oConfiguration.setObjectWrapper( new DefaultObjectWrapper() );
+      _oConfiguration.setObjectWrapper( ObjectWrapper.BEANS_WRAPPER );
 
       if ( oConfig.getLocale() != null )
       {
@@ -103,7 +103,9 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
          throw new IllegalArgumentException( "Templating must specify a template name" );
       }
 
-      _oConfiguration.getTemplate( oTemplate.getTemplateName() ).process( oTemplate, oWriter );
+      _oConfiguration
+         .getTemplate( oTemplate.getTemplateName() )
+            .process( oTemplate, oWriter );
    }
 }
 
