@@ -10,7 +10,7 @@ public class Counter
 
    public void increment()
    {
-      iCount += 2;      
+      iCount+=3;
    }
 
    public void decrement()
@@ -23,4 +23,3 @@ public class Counter
       return iCount;
    }
 }
- 

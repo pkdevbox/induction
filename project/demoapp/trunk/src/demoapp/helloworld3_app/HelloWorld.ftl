@@ -11,6 +11,11 @@
 <BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#FF0000" VLINK="#800000" ALINK="#FF00FF">
 
 Hello World, using a Freemarker template
+<br>
+
+<#-- Sample value: ${SampleValue} -->
+
+Sample value: ${sampleValue}
 
 </BODY>
 

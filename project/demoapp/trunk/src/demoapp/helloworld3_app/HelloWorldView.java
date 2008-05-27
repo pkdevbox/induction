@@ -13,8 +13,13 @@ public class HelloWorldView implements Template
       return "HelloWorld.ftl";
    }
 
+   public String getSampleValue()
+   {
+      return "Liz2 Flintstone";
+   }
+
    public String getMimeType()
    {
-      return null;
+      return "text/plain";
    }
 }
