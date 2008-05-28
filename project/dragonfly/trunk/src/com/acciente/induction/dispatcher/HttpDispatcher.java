@@ -168,10 +168,6 @@ public class HttpDispatcher extends HttpServlet
 
          if ( oControllerReturnValue != null )
          {
-            // todo: Problem : we need to handle the change detection/reload of the view classes somewhere!
-            // todo: Ideas   : if we can find via the classloader all the class a controller depends on (including
-            // todo:           the views) then we can reload these classes *before* the controller is invoked
-
             try
             {
                _oViewExecutor.execute( oControllerReturnValue, oResponse );

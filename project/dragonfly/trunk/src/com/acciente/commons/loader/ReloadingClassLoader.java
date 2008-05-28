@@ -89,16 +89,13 @@ public class ReloadingClassLoader extends SecureClassLoader
          {
             // before we can determine if we need to reload this class we need to
             // check and if needed reload the classes referenced by this class
-            String[] asReferencedClasses = oClassControlBlock.getClassDef().getReferencedClasses();
             Class[]  aoReferencedClasses = oClassControlBlock.getReferencedClasses();
 
             // if any of the classes referenced by this class has changed then
             // we will proceed to reload this class
-            for ( int i = 0; i < asReferencedClasses.length; i++ )
+            for ( int i = 0; i < aoReferencedClasses.length; i++ )
             {
-               System.out.println( "loading: " + sClassName + ", checking referenced class: " + asReferencedClasses[ i ] );   // todo: remove debug trace
-
-               Class oCurrentReferencedClass = loadClass( asReferencedClasses[ i ] );
+               Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
 
                if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
                {
@@ -106,8 +103,6 @@ public class ReloadingClassLoader extends SecureClassLoader
                   bReload = true;
                }
             }
-
-            System.out.println( "loading: " + sClassName + ", referenced class(es) changed: " + bReload );  // todo: remove debug trace
          }
 
          if ( bReload )
@@ -140,8 +135,6 @@ public class ReloadingClassLoader extends SecureClassLoader
 
       for ( int i = 0; i < asReferencedClasses.length; i++ )
       {
-         System.out.println( "loading: " + sClassName + ", initial load of referenced class: " + asReferencedClasses[ i ] );  // todo: remove debug trace
-
          aoReferencedClasses[ i ] = loadClass( asReferencedClasses[ i ] );
       }
 
