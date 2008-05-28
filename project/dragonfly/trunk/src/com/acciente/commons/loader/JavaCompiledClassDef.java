@@ -111,9 +111,8 @@ public class JavaCompiledClassDef implements ClassDef
 
             String sReferencedClassname = oConstantUtf8.getBytes().replace( "/", "." );
 
-            if ( ! ( sReferencedClassname.equals( _sClassName ) || sReferencedClassname.equals( "java.lang.Object" ) ) )
+            if ( ! ( sReferencedClassname.equals( _sClassName ) || sReferencedClassname.startsWith( "java." ) || sReferencedClassname.startsWith( "javax." ) ) )
             {
-               System.out.println( "referenced-class: " + sReferencedClassname );   // todo: remove debug trace   
                oReferencedClassNameList.add( sReferencedClassname );
             }
          }

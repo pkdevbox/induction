@@ -132,8 +132,6 @@ public class ControllerExecutor
       Object   oControllerReturnValue;
       try
       {
-         // todo: Problem  : currently if any of the model classes reload above this invoke fails
-         // todo: Solution : if the param resolver reloaded any models, then reload the controller
          oControllerReturnValue = oControllerMethod.invoke( oController, aoParameterValues );
       }
       catch ( IllegalAccessException e )
