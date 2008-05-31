@@ -32,7 +32,8 @@ public class TestReloadingClassLoader_JavaCompiled
 
       // now have some fun reloading classes
       String[]   sClassNames
-         = new String[]{   "demoapp.helloworld3_app.HelloWorldController",
+         = new String[]{   "demoapp.testclass.TestClass1",
+                           "demoapp.helloworld3_app.HelloWorldController"
                        };
       Class    oClass;
 
