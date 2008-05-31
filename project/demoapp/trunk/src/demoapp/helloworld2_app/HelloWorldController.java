@@ -1,6 +1,6 @@
 package demoapp.helloworld2_app;
 
-import com.acciente.dragonfly.controller.Controller;
+import com.acciente.induction.controller.Controller;
 
 /**
  * A simple controller that uses a Text view to display hello world

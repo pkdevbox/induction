@@ -1,6 +1,7 @@
 package demoapp.helloworld3_app;
 
-import com.acciente.dragonfly.view.Template;
+import com.acciente.induction.view.Template;
+import demoapp.testclass.TestClass1;
 
 /**
  * Log
@@ -15,7 +16,7 @@ public class HelloWorldView implements Template
 
    public String getSampleValue()
    {
-      return "Liz2 Flintstone";
+      return "Crazy2 Flintstone";
    }
 
    public String getMimeType()
