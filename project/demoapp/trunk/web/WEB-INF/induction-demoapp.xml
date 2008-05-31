@@ -42,7 +42,7 @@
 	<!-- The following section configures the templating engine -->
 	<templating>
 		<template-path>
-			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
+			<web-app-path>/WEB-INF/templates</web-app-path>
 		</template-path>
 	</templating>
 
