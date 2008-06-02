@@ -98,6 +98,8 @@ public class JavaCompiledClassDef implements ClassDef
 
       ConstantPool oConstantPool = oJavaClass.getConstantPool();
 
+      String   sInnerClassNamePrefix = _sClassName + "$";
+
       for ( int i = 0; i < oConstantPool.getLength(); i++ )
       {
          Constant oConstant = oConstantPool.getConstant( i );
@@ -113,10 +115,13 @@ public class JavaCompiledClassDef implements ClassDef
 
             // the sReferencedClassname.startsWith( _sClassName ) is to exclude a self-reference
             // and any inner classes
-            if ( ! ( sReferencedClassname.startsWith( _sClassName ) || sReferencedClassname.startsWith( "java." ) || sReferencedClassname.startsWith( "javax." ) ) )
+            if ( ! ( sReferencedClassname.equals( _sClassName )
+                     || sReferencedClassname.startsWith( sInnerClassNamePrefix )
+                     || sReferencedClassname.startsWith( "java." )
+                     || sReferencedClassname.startsWith( "javax." ) ) )
             {
                oReferencedClassNameList.add( sReferencedClassname );
-               System.out.println( "referenced-classname: " + sReferencedClassname );
+               // System.out.println( "referenced-classname: " + sReferencedClassname ); // todo: remove
             }
          }
       }
