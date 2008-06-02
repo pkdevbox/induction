@@ -84,9 +84,11 @@ public class ReloadingClassLoader extends SecureClassLoader
          if ( oClassControlBlock.getClassDef().isModified() )
          {
             bReload = true;
+            //System.out.println( "reloading-classloader > reloading > class modified" );      // todo: remove
          }
          else
          {
+            //System.out.println( "reloading-classloader > checking dependent classes for: " + sClassName );      // todo: remove
             // before we can determine if we need to reload this class we need to
             // check and if needed reload the classes referenced by this class
             Class[]  aoReferencedClasses = oClassControlBlock.getReferencedClasses();
@@ -95,12 +97,14 @@ public class ReloadingClassLoader extends SecureClassLoader
             // we will proceed to reload this class
             for ( int i = 0; i < aoReferencedClasses.length; i++ )
             {
+               //System.out.println( "reloading-classloader > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
                Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
 
                if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
                {
                   aoReferencedClasses[ i ] = oCurrentReferencedClass;
                   bReload = true;
+                  //System.out.println( "reloading-classloader > reload caused by class: " + aoReferencedClasses[ i ] );      // todo: remove
                }
             }
          }
