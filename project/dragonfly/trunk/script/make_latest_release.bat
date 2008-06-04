@@ -11,8 +11,8 @@
 @rd %release_root% /s/q
 @md %release_root%
 
-@jar -cfM %release_root%\acciente-induction-latest-beta.jar	-C %compiled_class_root% /com/acciente/induction
-@jar -cfM %release_root%\acciente-commons-latest-beta.jar	-C %compiled_class_root% /com/acciente/commons
+@jar -cfM %release_root%\acciente-induction-beta-latest.jar	-C %compiled_class_root% /com/acciente/induction
+@jar -cfM %release_root%\acciente-commons-beta-latest.jar	-C %compiled_class_root% /com/acciente/commons
 @jar -cfM %release_root%\demoapp-src.jar			-C %demoapp_root%        /
 
 @echo Release package to: %release_root%
