@@ -135,6 +135,8 @@ public class ViewExecutor
 
    private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws IOException, TemplateException
    {
+      oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
+
       BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
       try
       {
