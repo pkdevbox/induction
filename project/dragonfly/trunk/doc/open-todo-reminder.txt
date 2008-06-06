@@ -25,7 +25,7 @@
 
 * major todos
   = parser integration
-  - implement controller method return value processing
+  = implement controller method return value processing
   = refactor old code to use ReflectUtils
   = change Configurators to not throw ServletException
   = invokeConstructor -> invoke
@@ -60,17 +60,23 @@
 
 [03/28/2008]
 
-- plan moving forward
+= plan moving forward
 
   = complete form processing module except file upload
     = completed, including file upload integration, needs testing 04/10/2008
     
-  - complete all other outstanding todos except XML config loader
+  = complete all other outstanding todos except XML config loader
   
-  - integrate freemarker templating engine
+  = integrate freemarker templating engine
   
   - celebrate :)
 
 [04/17/2008]
 - consider allowing access to Form object in the ControllerResolver
   - this means that the Form will need be cached somehow for the duration of the request execution thread
+  
+[06/05/2008]
+- JavaCompiledClassDef does not compute all dependencies of class (usages in a constructor)
+- why does Freemarker not allow access to public in the template views (should we allow such access?)
+- model to model injection
+

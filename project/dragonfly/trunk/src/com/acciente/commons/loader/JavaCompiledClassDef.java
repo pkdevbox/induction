@@ -121,7 +121,7 @@ public class JavaCompiledClassDef implements ClassDef
                      || sReferencedClassname.startsWith( "javax." ) ) )
             {
                oReferencedClassNameList.add( sReferencedClassname );
-               // System.out.println( "referenced-classname: " + sReferencedClassname ); // todo: remove
+               System.out.println( "ref-class: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
             }
          }
       }

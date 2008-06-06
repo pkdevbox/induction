@@ -39,6 +39,8 @@ public class ModelFactory
    {
       Object   oModel;
 
+      Object[] oInjectionValues = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
+
       // does this model class have a factory class defined?
       if ( ! oModelDef.hasModelFactoryClassName() )
       {
@@ -46,7 +48,7 @@ public class ModelFactory
          // instantiate the model via a a direct parameter injected constructor call
          oModel
             =  ObjectFactory.createObject( _oClassLoader.loadClass( oModelDef.getModelClassName() ),
-                                           new Object[]{  _oServletConfig, _oLogger } );
+                                           oInjectionValues );
       }
       else
       {
@@ -60,13 +62,7 @@ public class ModelFactory
             =  Invoker
                   .invoke( ReflectUtils.getSingletonMethod( oConfiguredModelFactory.getClass(), "createModel", true ),
                            oConfiguredModelFactory,
-                           new Object[]
-                           {  _oServletConfig,
-                              _oLogger,
-                              oModelDef,
-                              oHttpServletRequest
-                           }
-                         );
+                           oInjectionValues );
       }
 
       return oModel;
