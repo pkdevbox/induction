@@ -1,17 +1,11 @@
 package com.acciente.commons.loader;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.ConstantPool;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Log
@@ -89,47 +83,31 @@ public class JavaCompiledClassDef implements ClassDef
 
    private void readReferencedClasses( byte[] ayClassByteCode, String sFilename ) throws IOException
    {
-      ArrayList   oReferencedClassNameList;
-      JavaClass   oJavaClass;
+      Set         oReferencedClassNameSet;
 
-      oJavaClass = ( new ClassParser( new ByteArrayInputStream( ayClassByteCode ), sFilename ) ).parse();
-
-      oReferencedClassNameList = new ArrayList();
-
-      ConstantPool oConstantPool = oJavaClass.getConstantPool();
+      oReferencedClassNameSet  = new ClassFile( ayClassByteCode ).getReferencedClasses();
 
       String   sInnerClassNamePrefix = _sClassName + "$";
 
-      for ( int i = 0; i < oConstantPool.getLength(); i++ )
+      for ( Iterator oIter = oReferencedClassNameSet.iterator(); oIter.hasNext(); )
       {
-         Constant oConstant = oConstantPool.getConstant( i );
+         String sReferencedClassname = ( String ) oIter.next();
 
-         if ( oConstant instanceof ConstantClass )
+         // the sReferencedClassname.startsWith( _sClassName ) is to exclude a self-reference
+         // and any inner classes
+         if ( sReferencedClassname.startsWith( sInnerClassNamePrefix )
+               || sReferencedClassname.startsWith( "java." )
+               || sReferencedClassname.startsWith( "javax." )
+               || sReferencedClassname.startsWith( "com.acciente." ) )
          {
-            ConstantUtf8 oConstantUtf8
-               =  ( ConstantUtf8 )
-                     oConstantPool
-                        .getConstant( ( ( ConstantClass ) oConstant ).getNameIndex() );
-
-            String sReferencedClassname = oConstantUtf8.getBytes().replace( "/", "." );
-
-            // the sReferencedClassname.startsWith( _sClassName ) is to exclude a self-reference
-            // and any inner classes
-            if ( ! ( sReferencedClassname.equals( _sClassName )
-                     || sReferencedClassname.startsWith( sInnerClassNamePrefix )
-                     || sReferencedClassname.startsWith( "java." )
-                     || sReferencedClassname.startsWith( "javax." ) ) )
-            {
-               oReferencedClassNameList.add( sReferencedClassname );
-               System.out.println( "ref-class: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
-            }
+            oIter.remove();
+            System.out.println( "ignoring dependency: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
          }
       }
 
       // convert the list to an array
-      _asReferencedClassNames = new String[ oReferencedClassNameList.size() ];
-
-      oReferencedClassNameList.toArray( _asReferencedClassNames );
+      _asReferencedClassNames = new String[ oReferencedClassNameSet.size() ];
+      oReferencedClassNameSet.toArray( _asReferencedClassNames );
    }
 }
 
