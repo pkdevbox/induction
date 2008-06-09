@@ -13,21 +13,6 @@ import java.io.IOException;
  */
 public class CounterController implements Controller
 {
-   public void post( Response oResponse )
-      throws IOException
-   {
-      oResponse.out().println( "post( Response oResponse ): hello 1" );
-   }
-
-   public void save( Response oResponse )
-      throws IOException
-   {
-      oResponse.setContentType( "text/plain" );
-
-      oResponse.out().println( "save( Response oResponse ): hello 1" );
-      oResponse.out().println( "save( Response oResponse ): hello 2" );
-   }
-
    public void showCounter( Response oResponse, Counter oCounter )
       throws IOException
    {
@@ -35,7 +20,7 @@ public class CounterController implements Controller
    }
 
    public void incrementCounter( Response oResponse, Counter oCounter )
-      throws IOException 
+      throws IOException
    {
       oCounter.increment();
       oResponse.out().println( "count incremented to: " + oCounter.getCount() );
@@ -48,5 +33,5 @@ public class CounterController implements Controller
       oResponse.out().println( "count decremented to: "  + oCounter.getCount() );
    }
 }
-              
+
 // EOF
