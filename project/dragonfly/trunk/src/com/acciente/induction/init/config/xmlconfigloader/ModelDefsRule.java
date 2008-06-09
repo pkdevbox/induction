@@ -83,14 +83,20 @@ public class ModelDefsRule extends Rule
             if ( "application".equalsIgnoreCase( sText ) )
             {
                _bIsApplicationScope = true;
+               _bIsSessionScope     = false;
+               _bIsRequestScope     = false;
             }
             else if ( "session".equalsIgnoreCase( sText ) )
             {
-               _bIsSessionScope = true;
+               _bIsApplicationScope = false;
+               _bIsSessionScope     = true;
+               _bIsRequestScope     = false;
             }
             else if ( "request".equalsIgnoreCase( sText ) )
             {
-               _bIsRequestScope = true;
+               _bIsApplicationScope = false;
+               _bIsSessionScope     = false;
+               _bIsRequestScope     = true;
             }
             else
             {
