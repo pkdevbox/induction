@@ -71,6 +71,13 @@ public class HTMLForm implements Form
       return _oFormParams.keySet();
    }
 
+   public boolean containsParam( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   {
+      parseForm();
+
+      return _oFormParams.containsKey( sParamName );
+   }
+
    private Object getParamValue( String sParamName )
       throws IOException, FileUploadException, ParserException, HTMLFormException
    {

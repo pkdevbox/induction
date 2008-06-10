@@ -76,7 +76,9 @@
   - this means that the Form will need be cached somehow for the duration of the request execution thread
   
 [06/05/2008]
-- JavaCompiledClassDef does not compute all dependencies of class (usages in a constructor)
-- why does Freemarker not allow access to public in the template views (should we allow such access?)
+= JavaCompiledClassDef does not compute all dependencies of class (usages in a constructor)
+* why does Freemarker not allow access to public in the template views (should we allow such access?)
 - model to model injection
 
+[06/10/2008]
+= add containsParam() to Form

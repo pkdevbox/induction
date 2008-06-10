@@ -101,6 +101,17 @@ public interface Form
     * @return a list containing strings, each string being a parameter name
     */
    Set getParamNames() throws IOException, FileUploadException, ParserException;
+
+   /**
+    * Used to check if the specified HTML form has the specified parameter
+    * @param sParamName the name of the HTML form parameter
+    * @return true if the parameter is defined in the form, false otherwise
+    * @throws IOException
+    * @throws FileUploadException
+    * @throws ParserException
+    * @throws HTMLFormException
+    */
+   boolean containsParam( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
 }
 
 // EOF

@@ -66,6 +66,7 @@ public class DigesterFactory
             oDigester.addRule( XML.Config_Templating_Locale_ISOLanguage.PATTERN, oSetLocaleRule.createParamISOLanguageRule() );
             oDigester.addRule( XML.Config_Templating_Locale_ISOCountry.PATTERN,  oSetLocaleRule.createParamISOCountryRule() );
          }
+         oDigester.addRule( XML.Config_Templating_ExposePublicFields.PATTERN,    oTemplatingRule.createExposePublicFieldsRule() );
          {
             TemplatingRule.TemplatingEngineRule oTemplatingEngineRule = oTemplatingRule.createTemplatingEngineRule();
             oDigester.addRule( XML.Config_Templating_TemplatingEngine.PATTERN,         oTemplatingEngineRule );
