@@ -57,7 +57,7 @@ public class ReloadingClassLoader extends SecureClassLoader
    public Class loadClass( String sClassName, boolean bResolve )
       throws ClassNotFoundException
    {
-      System.out.println( "re-cl > " + sClassName +  " > start" );      // todo: remove
+      //System.out.println( "re-cl > " + sClassName +  " > start" );      // todo: remove
       Class oClass;
 
       // the implementation of this method was adapted from the
@@ -85,7 +85,7 @@ public class ReloadingClassLoader extends SecureClassLoader
          if ( oClassControlBlock.getClassDef().isModified() )
          {
             bReload = true;
-            System.out.println( "re-cl > " + sClassName +  " > reloading (class modified)" );      // todo: remove
+            //System.out.println( "re-cl > " + sClassName +  " > reloading (class modified)" );      // todo: remove
          }
          else
          {
@@ -98,14 +98,14 @@ public class ReloadingClassLoader extends SecureClassLoader
             // we will proceed to reload this class
             for ( int i = 0; i < aoReferencedClasses.length; i++ )
             {
-               System.out.println( "re-cl > " + sClassName +  " > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
+               //System.out.println( "re-cl > " + sClassName +  " > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
                Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
 
                if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
                {
                   aoReferencedClasses[ i ] = oCurrentReferencedClass;
                   bReload = true;
-                  System.out.println( "re-cl > " + sClassName +  " > dependent class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
+                  //System.out.println( "re-cl > " + sClassName +  " > dependent class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
                }
             }
          }
