@@ -101,7 +101,7 @@ public class JavaCompiledClassDef implements ClassDef
                || sReferencedClassname.startsWith( "com.acciente." ) )
          {
             oIter.remove();
-            System.out.println( "ignoring dependency: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
+            //System.out.println( "ignoring dependency: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
          }
       }
 
