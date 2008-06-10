@@ -25,6 +25,11 @@ public class TemplatingRule
       _oTemplating = oTemplating;
    }
 
+   public ExposePublicFieldsRule createExposePublicFieldsRule()
+   {
+      return new ExposePublicFieldsRule();
+   }
+
    public TemplatePathAddDirRule createTemplatePathAddDirRule()
    {
       return new TemplatePathAddDirRule();
@@ -53,6 +58,17 @@ public class TemplatingRule
    /**
     * TemplatePathAddDirRule
     */
+   private class ExposePublicFieldsRule extends Rule
+   {
+      public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
+      {
+         _oTemplating.setExposePublicFields( Boolean.valueOf( sText ).booleanValue() );
+      }
+   }
+
+   /**
+    * TemplatePathAddDirRule
+    */
    private class TemplatePathAddDirRule extends Rule
    {
       public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
@@ -65,6 +81,9 @@ public class TemplatingRule
       }
    }
 
+   /**
+    * TemplatePathAddLoaderClassRule
+    */
    public class TemplatePathAddLoaderClassRule extends Rule
    {
       private  String      _sLoaderClassName;
@@ -127,6 +146,9 @@ public class TemplatingRule
       }
    }
 
+   /**
+    * SetLocaleRule
+    */
    public class SetLocaleRule extends Rule
    {
       private String _sISOLanguage;
@@ -176,6 +198,9 @@ public class TemplatingRule
       }
    }
 
+   /**
+    * TemplatingEngineRule
+    */
    public class TemplatingEngineRule extends Rule
    {
       private String    _sClassName;

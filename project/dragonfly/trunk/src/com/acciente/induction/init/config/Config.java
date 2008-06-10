@@ -457,6 +457,7 @@ public class Config
       private TemplatePath             _oTemplatePath       = new TemplatePath();
       private Locale                   _oLocale;
       private TemplatingEngine         _oTemplatingEngine   = new TemplatingEngine();
+      private boolean                  _bExposePublicFields;
 
       public TemplatePath getTemplatePath()
       {
@@ -476,6 +477,16 @@ public class Config
       public void setLocale( Locale oLocale )
       {
          _oLocale = oLocale;
+      }
+
+      public boolean isExposePublicFields()
+      {
+         return _bExposePublicFields;
+      }
+
+      public void setExposePublicFields( boolean bExposePublicFields )
+      {
+         _bExposePublicFields = bExposePublicFields;
       }
 
       public String toString()

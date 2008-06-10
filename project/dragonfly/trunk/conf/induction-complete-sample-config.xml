@@ -74,6 +74,9 @@ shown here. -->
 			<iso-country>US</iso-country>
 		</locale>
 
+		<!-- use to control if public fields in a view should be expose to a template (default is false) -->
+		<expose-public-fields>false</expose-public-fields>
+		
 		<!-- An application may define a templating engine provider which is basically an
 		adapter that plugins in a templating engine into dragonFly. If no provider is defined
 		dragonFly use the built-in adapter for the FreeMarker templating engine -->

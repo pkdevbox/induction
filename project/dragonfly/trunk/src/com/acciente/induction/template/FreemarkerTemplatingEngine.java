@@ -11,6 +11,7 @@ import freemarker.cache.WebappTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateException;
+import freemarker.template.DefaultObjectWrapper;
 
 import javax.servlet.ServletConfig;
 import java.io.IOException;
@@ -83,7 +84,14 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       _oConfiguration.setTemplateLoader( new MultiTemplateLoader( oTemplateLoaderArray ) );
 
       // next set the object wrapper handler
-      _oConfiguration.setObjectWrapper( ObjectWrapper.BEANS_WRAPPER );
+      DefaultObjectWrapper oDefaultObjectWrapper = new DefaultObjectWrapper();
+
+      // should publics fields in views be available in the templates
+      oDefaultObjectWrapper.setExposeFields( oConfig.isExposePublicFields() );
+
+      oLogger.log( "freemarker > expose public fields > " + oConfig.isExposePublicFields() );
+
+      _oConfiguration.setObjectWrapper( oDefaultObjectWrapper );
 
       if ( oConfig.getLocale() != null )
       {

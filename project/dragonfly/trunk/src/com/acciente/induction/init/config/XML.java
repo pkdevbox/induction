@@ -24,18 +24,19 @@ public class XML
    public static final XML Config_ModelDefs_ModelDef_FactoryClass                = new XML( "factory-class",      Config_ModelDefs_ModelDef );
    public static final XML Config_ModelDefs_ModelDef_Scope                       = new XML( "scope",              Config_ModelDefs_ModelDef );
 
-   public static final XML Config_Templating                                     = new XML( "templating",         Config );
-   public static final XML Config_Templating_TemplatePath                        = new XML( "template-path",      Config_Templating );
-   public static final XML Config_Templating_TemplatePath_Directory              = new XML( "directory",          Config_Templating_TemplatePath );
-   public static final XML Config_Templating_TemplatePath_LoaderClass            = new XML( "loader-class",       Config_Templating_TemplatePath );
-   public static final XML Config_Templating_TemplatePath_LoaderClass_Class      = new XML( "class",              Config_Templating_TemplatePath_LoaderClass );
-   public static final XML Config_Templating_TemplatePath_LoaderClass_Path       = new XML( "path",               Config_Templating_TemplatePath_LoaderClass );
-   public static final XML Config_Templating_TemplatePath_WebAppPath             = new XML( "web-app-path",       Config_Templating_TemplatePath );
-   public static final XML Config_Templating_Locale                              = new XML( "locale",             Config_Templating );
-   public static final XML Config_Templating_Locale_ISOLanguage                  = new XML( "iso-language",       Config_Templating_Locale );
-   public static final XML Config_Templating_Locale_ISOCountry                   = new XML( "iso-country",        Config_Templating_Locale );
-   public static final XML Config_Templating_TemplatingEngine                    = new XML( "templating-engine",  Config_Templating );
-   public static final XML Config_Templating_TemplatingEngine_Class              = new XML( "class",              Config_Templating_TemplatingEngine );
+   public static final XML Config_Templating                                     = new XML( "templating",            Config );
+   public static final XML Config_Templating_TemplatePath                        = new XML( "template-path",         Config_Templating );
+   public static final XML Config_Templating_TemplatePath_Directory              = new XML( "directory",             Config_Templating_TemplatePath );
+   public static final XML Config_Templating_TemplatePath_LoaderClass            = new XML( "loader-class",          Config_Templating_TemplatePath );
+   public static final XML Config_Templating_TemplatePath_LoaderClass_Class      = new XML( "class",                 Config_Templating_TemplatePath_LoaderClass );
+   public static final XML Config_Templating_TemplatePath_LoaderClass_Path       = new XML( "path",                  Config_Templating_TemplatePath_LoaderClass );
+   public static final XML Config_Templating_TemplatePath_WebAppPath             = new XML( "web-app-path",          Config_Templating_TemplatePath );
+   public static final XML Config_Templating_Locale                              = new XML( "locale",                Config_Templating );
+   public static final XML Config_Templating_Locale_ISOLanguage                  = new XML( "iso-language",          Config_Templating_Locale );
+   public static final XML Config_Templating_Locale_ISOCountry                   = new XML( "iso-country",           Config_Templating_Locale );
+   public static final XML Config_Templating_ExposePublicFields                  = new XML( "expose-public-fields",  Config_Templating );
+   public static final XML Config_Templating_TemplatingEngine                    = new XML( "templating-engine",     Config_Templating );
+   public static final XML Config_Templating_TemplatingEngine_Class              = new XML( "class",                 Config_Templating_TemplatingEngine );
 
    public static final XML Config_ControllerResolver                             = new XML( "controller-resolver",         Config );
    public static final XML Config_ControllerResolver_Class                       = new XML( "class",                       Config_ControllerResolver );

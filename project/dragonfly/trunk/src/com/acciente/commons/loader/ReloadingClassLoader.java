@@ -105,7 +105,7 @@ public class ReloadingClassLoader extends SecureClassLoader
                {
                   aoReferencedClasses[ i ] = oCurrentReferencedClass;
                   bReload = true;
-                  System.out.println( "re-cl > " + sClassName +  " > dependednt class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
+                  System.out.println( "re-cl > " + sClassName +  " > dependent class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
                }
             }
          }
