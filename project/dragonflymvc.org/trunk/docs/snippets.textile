@@ -1,0 +1,24 @@
+
+
+
+p. We will start by setting up a few folders to hold the our files, ofcourse Induction does not impose any folder. Shown below are the files that we will use and how we choose to organize them:
+
+bc. 
+c:/project/demoapp
+           + /src
+             + demoapp
+             + HelloWorldController.java   
+           + /web
+             + /WEB-INF
+               + web.xml
+               + induction-demoapp.xml
+               + /lib
+                 + acciente-induction-beta-1.0.4.jar
+                 + acciente-commons-beta-1.0.4.jar
+                 + bcel-5.2.jar
+                 + commons-collections-3.2.1.jar
+                 + commons-digester-1.8.jar
+                 + commons-fileupload-1.2.1.jar
+                 + commons-io-1.4.jar
+                 + commons-logging-1.1.1.jar
+                 + freemarker-2.3.12.jar
