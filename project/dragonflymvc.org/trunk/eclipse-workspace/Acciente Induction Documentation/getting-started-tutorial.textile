@@ -1,0 +1,78 @@
+h1. Getting Started with Induction
+
+h2. Introduction
+
+Welcome to Induction! Induction is a powerful, lightweight framework for developing web applications using the Java(tm) programming language. Induction belongs to the class of web frameworks usually referred to as __request-based__ frameworks. Induction deploys as a servlet into a Java(tm) servlet container. Induction promotes the Model-View-Controller (MVC) approach to web application development. Some of the key design goals in Induction are:
+
+* eliminate the need for web application reloads to test changes to models, views and controllers (we believe that a simple page refresh should suffice)
+
+* declare bindings between controllers, views and models in such way that they can be anaylzed using any IDE
+
+* enable tracking of the data used in user interface templates (typically HTML templates) 
+
+* file upload handling should be simple to the point of being unremarkable
+
+* make it simple to use arrays and dictionary types in an HTML form
+
+* use XML wisely (Induction requires only one XML file per application)
+
+* an extensible architecture to support a range of usage patterns
+
+* high performance
+
+* compatibility with JDK versions 1.4 through 1.6 (both inclusive)
+
+h2. About this tutorial
+
+The goal of this tutorial is to get you running quickly using Induction. Induction requires a servlet container, in this tutorial we will use the "Apache Tomcat":http://tomcat.apache.org/ servlet container, but you are free to use any standards compliant servlet container.
+
+h2. Installing 
+
+We will assume that we have a Tomcat 6 installation in @c:/dev/Tomcat6@. Induction does not require any installation steps. The jar files for Induction can simply be included in your web application.
+
+h2. Writing our first controller
+
+We will start our tutorial with controllers sinces controllers are a typical entry point into a web application. Let's start by writing our first controller that simply prints a string to the browser.
+
+bc.. 
+package demoapp.helloworld1_app;
+ 
+import com.acciente.induction.controller.Controller;
+import com.acciente.induction.controller.Response;
+import java.io.IOException;
+
+/**
+ * A very simple controller that does the customary "Hello World"
+  */
+public class HelloWorldController implements Controller
+{
+   public void handler( Response oReponse ) throws IOException
+   {
+      oReponse.setContentType( "text/plain" );
+      oReponse.out().println( "Hello World, using a simple println()" );
+   }
+}
+
+p. Before we run this controller let's take a closer look. First we note that the @HelloWorldController@ class implements the Induction @Controller@ interface. The @Controller@ interface is simply a marker interface, it does not enforce any methods on the implementing class. When Induction receives a request to activate a controller implementation, such as our @HelloWorldController@ class, Induction first verifies that the class implements the @Controller@ interface. So currently the only reason for the @Controller@ interface is security. It is under consideration to make this requirement to implement the @Controller@ interface configurable.   
+
+Next, note that the @handler@ method has a @Response@ input parameter. The @Response@ class extends the @javax.servlet.http.HttpServletResponse@ interface and is simply a facade to the servlet container's response object. This value for the @Response@ parameter is _injected_ into the @handler@ method by Induction.
+
+Also note that @handler@ method is not bound to a fixed signature, it can declare its parameters using the following supported types: 
+
+| *Type*        | *Description* |
+| @Request@       | facade to the servlet request, extends javax.servlet.http.HttpServletRequest | 
+| @Response@      | facade to the servlet response, extends javax.servlet.http.HttpServletResponse | 
+| @Form@         | provides access to the HTML form (if any) submitted with this request | 
+| @model_class_name@ | instance of a user provided model class, the instance is managed to conform to a user specified lifecycle | 
+
+For brevity the class names above are not fully qualified, for the curious the Request, Response and Form classes are in the @com.acciente.induction.controller@ package.
+
+ 
+
+
+
+
+
+
+
+
