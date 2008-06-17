@@ -6,7 +6,7 @@ import com.acciente.induction.controller.Response;
 import java.io.IOException;
 
 /**
- * A very simple controller that does the customary "Hello World!"
+ * A very simple controller that does the customary "Hello World"
  *
  * Log
  * Apr 26, 2008 APR  -  created

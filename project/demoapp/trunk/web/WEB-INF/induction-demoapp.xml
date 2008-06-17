@@ -1,9 +1,9 @@
 
-<!-- this file contains the configuration for the dragonFly dispatcher -->
+<!-- this file contains the configuration for the Induction dispatcher -->
 <config>
 
 	<!-- The following section allows you to specify locations from which
-	dragonFly will automatically reload a class if the file has changed -->
+	Induction will automatically reload a class if the file has changed -->
 	<java-class-path>
 		<compiled-directory>
 			<directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
@@ -27,9 +27,9 @@
 	session, request (case insignificant).
 	
 	For most real-life applications, each model class will have a factory class 
-	specified. The model's factory class will be used by dragonFly to instantiate 
-	objects of the respective model class. If no factory class is defined dragonFly 
-	will expect the model class to have a single public constructor, which dragonFly 
+	specified. The model's factory class will be used by Induction to instantiate 
+	objects of the respective model class. If no factory class is defined Induction 
+	will expect the model class to have a single public constructor, which Induction 
 	will call with parameter injection semantics.
 	-->
 	<model-defs>
