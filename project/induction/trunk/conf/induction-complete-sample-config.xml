@@ -1,10 +1,10 @@
-<!-- dragonfly-complete-sample-config.xml
+<!-- induction-complete-sample-config.xml
 The purpose of this file is to demonstrate all the possible parameters that may used to configure
-dragonFly. It should be noted that typically most dragonFly configurations will not use all the parameters
+Induction. It should be noted that typically most Induction configurations will not use all the parameters
 shown here. -->
 <config>
 	<!-- The java-class-path section allows you to specify locations from which
-	dragonFly will automatically reload classes -->
+	Induction will automatically reload classes -->
 	<java-class-path>
 		<compiled-directory>
 			<directory>\a\directory\with\class\files\to\be\reloaded\dynamically</directory>
@@ -22,11 +22,11 @@ shown here. -->
 			folder structure begins, then specify package represented by the subfolder -->
 			<package-prefix>a.package.name</package-prefix>
 		</source-directory>
-		<!-- It is possible to override the default java compiler used by dragonFly
+		<!-- It is possible to override the default java compiler used by Induction
 		to compile source files on the fly. A java compiler is only used if
 		source-directory entries are defined below. -->
 		<java-compiler>
-			<class>class_name_that_implements_the_dragonfly_compiler_interface</class>
+			<class>class_name_that_implements_the_induction_compiler_interface</class>
 		</java-compiler>
 	</java-class-path>
 
@@ -42,9 +42,9 @@ shown here. -->
 	following values: application, session, request (case insignificant).
 
 	For most real-life applications, each model class will have a factory class
-	specified. The model's factory class will be used by dragonFly to instantiate
-	objects of the respective model class. If no factory class is defined dragonFly
-	will expect the model class to have a single public constructor, which dragonFly
+	specified. The model's factory class will be used by Induction to instantiate
+	objects of the respective model class. If no factory class is defined Induction
+	will expect the model class to have a single public constructor, which Induction
 	will call with parameter injection semantics. -->
 	<model-defs>
 		<model-def>
@@ -78,8 +78,8 @@ shown here. -->
 		<expose-public-fields>false</expose-public-fields>
 		
 		<!-- An application may define a templating engine provider which is basically an
-		adapter that plugins in a templating engine into dragonFly. If no provider is defined
-		dragonFly use the built-in adapter for the FreeMarker templating engine -->
+		adapter that plugins in a templating engine into Induction. If no provider is defined
+		Induction use the built-in adapter for the FreeMarker templating engine -->
 		<templating-engine>
 			<class>the_name_of_a_class_that_implements_the_TemplatingEngine_interface</class>
 		</templating-engine>
