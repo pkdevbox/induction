@@ -15,7 +15,7 @@ public class Counter
 
    public void decrement()
    {
-      iCount++;
+      iCount--;
    }
 
    public int getCount()
