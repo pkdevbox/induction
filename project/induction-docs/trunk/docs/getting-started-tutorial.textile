@@ -2,7 +2,7 @@ h1. Getting Started with Induction
 
 h2. Introduction
 
-Welcome to Induction! Induction is a powerful, lightweight framework for developing web applications using the Java(tm) programming language. Induction belongs to the class of web frameworks usually referred to as __request-based__ frameworks. Induction deploys as a servlet into a Java(tm) servlet container. Induction promotes the Model-View-Controller (MVC) approach to web application development. Some of the key design goals in Induction are:
+Welcome to Induction! Induction is a powerful, lightweight framework for developing web applications using the Java(tm) programming language. Induction belongs to the class of web frameworks usually referred to as __request-based__ frameworks. Induction deploys as a servlet into a Java(tm) servlet container. Induction promotes the Model-View-Controller (MVC) approach to web application development. Some of the key design goals of Induction are:
 
 * eliminate the need for web application reloads to test changes to models, views and controllers (we believe that a simple page refresh should suffice)
 
@@ -30,7 +30,11 @@ h2. Installing
 
 We will assume that we have a Tomcat 6 installation in @c:/dev/Tomcat6@. Induction does not require any installation steps. The jar files for Induction can simply be included in your web application.
 
-h2. Writing our first application
+h2. Writing our first application - Hello World
+
+In this tutorial we will write a simple "Hello World" application. This application will allow us to illustrate many important concepts in Induction.
+
+h3. Writing a controller
 
 We will start our tutorial with controllers sinces controllers are a typical entry point into a web application. Let's start by writing our first controller that simply prints a string to the browser.
 
@@ -65,25 +69,25 @@ Also note that @handler@ method is not bound to a fixed signature, it can declar
 | @Form@         | provides access to the HTML form (if any) submitted with this request | 
 | @model_class_name@ | instance of a user provided model class, the instance is managed to conform to a user specified lifecycle | 
 
-For brevity the class names above are not fully qualified, for the curious the Request, Response and Form classes are in the @com.acciente.induction.controller@ package.
+For brevity the class names above are not fully qualified, for the curious the @Request@, @Response@ and @Form@ classes are in the @com.acciente.induction.controller@ package.
 
-h2. Deploying our application
+h3. Deploying the application
 
 Before we can run our controller it needs to be compiled. We can use @javac@ or any IDE to do this. Next we need to tell Tomcat about our web application. To do this we will create a @.war@ file and deploy it to Tomcat by copying it to @c:/dev/Tomcat6/webapps@. 
 
-Our @.war@ file will contain the following files in the @WEB-INF@ folder:
+Our @.war@ file will contain the following files in the @/WEB-INF@ folder: 
 
 bc. 
 web.xml
 induction-demoapp.xml 
 
-The following Induction @.jar@ files WEB-INF/lib folder: 
+The following Induction @.jar@ files in the @/WEB-INF/lib@ folder: 
 
 bc. 
 acciente-induction-beta-1.0.4.jar
 acciente-commons-beta-1.0.4.jar
 
-And finally the following supporting @.jar@ files from "Apache Commons":http://commons.apache.org/ ,  "Apache BCEL":http://jakarta.apache.org/bcel/ and "Freemarker":http://freemarker.sourceforge.net/ (Freemarker is one of the templating engines supported in Induction) also WEB-INF/lib folder: 
+And finally the following supporting @.jar@ files also in the @/WEB-INF/lib@:
 
 bc. 
 apache-bcel-5.2.jar
@@ -94,11 +98,13 @@ apache-commons-io-1.4.jar
 apache-commons-logging-1.1.1.jar
 apache-freemarker-2.3.12.jar
 
-Note that the code for our application classes (in this case just the controller class) are not stored inside the @.war@ file. We are going to point to the location of the compiled application code in @induction-demoapp.xml@. Whenever we recompile an application classes Induction will detect on the next access of that the respective application class that the underlying class file has changed and "hot" reload the class, therefore there is no need to recreate/redeploy the @.war@ when we change/compile the application classes. 
+(The respective @.jar@ files are from the following projects: "Apache Commons":http://commons.apache.org/ "Apache BCEL":http://jakarta.apache.org/bcel/  "Freemarker":http://freemarker.sourceforge.net/ )
+ 
+Note that the code for our application classes (in this case basically our single controller class) are not stored inside the @.war@ file, instead we are going to point to the location of the compiled application code in the Induction application config file @induction-demoapp.xml@. Whenever we recompile an application class Induction will detect on the next access of that class that the underlying class file has changed and will "hot" reload the class into the JVM, therefore there is no need to recreate/redeploy the @.war@ when we change/compile the application classes. 
 
-Induction, ofcourse, also supports putting our application classes in @/WEB-INF/classes@, in a @.jar@ in @/WEB-INF/lib@ or any other location in the classpath that Tomcat sees. Storing the application classes outside the @.war@ file is recommended during development to leverage "hot" reload. The application classes may be repackage into the @.war@ file for final delivery. 
+Induction, ofcourse, also supports putting the application classes inside the @.war@ file in @/WEB-INF/classes@ or as a @.jar@ in @/WEB-INF/lib@ or any other location in the classpath that Tomcat sees. Storing the application classes outside the @.war@ file is recommended during development to leverage "hot" reload for development productivity. The application classes can then be repackage into the @.war@ file, if desired, for final delivery. Next let's take a look at the contents of the @.war@ file. 
 
-First let's look at the contents of the @web.xml@, where we will define the Induction dispatcher servlet:
+Let's start with a look at the @web.xml@ file, all we need to do here is to define Induction dispatcher servlet as the handler for the requests to our application:
 
 bc.. 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -122,7 +128,7 @@ bc..
 
 </web-app>
 
-p. Now let's look at the contents of @induction-demoapp.xml@, we will assume that our compiled application classes are stored in @c:/project/demoapp/classes@.
+p. Now let's look at the contents of @induction-demoapp.xml@, assuming that our compiled application classes are stored in @c:/project/demoapp/classes@, the contents of @induction-demoapp.xml@ would be as shown below: 
 
 bc.. 
 <!-- this file contains the configuration for the Induction dispatcher -->
@@ -138,9 +144,30 @@ bc..
 
 p. After creating the @.war@ as described above, deploy the @.war@ file to Tomcat. Now it's time to run our application.  
 
-h2. Running our first application
+h3. Running the application
 
-Assuming your Tomcat is running on @localhost:8080@, if you point a browser to htpp://localhost:8080/demoapp/...
+Assuming your Tomcat is running on @localhost:8080@, and the war file file you deployed was named @induction-demo.war@, pointing your browser to the URL:
 
+@http://localhost:8080/induction-demo/demoapp/helloworld1_app/HelloWorldController/@ 
 
+should cause the following string to output to the browser: 
+
+@Hello World, using a simple println()@
+
+h3. Controlling the URL resolution 
+
+Now let's take a closer look at the URL we used to run our controller: 
+@http://localhost:8080/induction-demo/demoapp/helloworld1_app/HelloWorldController/@. The first part @http://localhost:8080/induction-demo@ is dictated by Tomcat and points to the dispatcher servlet, so this part of the URL is not Induction related. The part of the URL processed by Induction is @/demoapp/helloworld1_app/HelloWorldController/@.
+
+In Induction the URL is resolved to a fully qualified controller class name and method name. The resolution mapping from a URL to a controller class name and method name is completely under developer control via the Induction @ControllerResolver@ interface. 
+
+When the developer does not specify a custom controller resolver, Induction uses a fairly simple default controller resolver. The default controller resolver works as follows. Consider the path @/demoapp/helloworld1_app/HelloWorldController/@, everything between the first and last / is interpreted as a fully qualified class name (so @/demoapp/helloworld1_app/HelloWorldController/@ will map to @demoapp.helloworld1_app.HelloWorldController@). Everything following the last slash is interpreted as a method name. In our example since there is no string following the last / the default resolver will use an "implied" method name (the default resolver uses "handler" for the implied method but this can be changed in the Induction config file).
+
+h3. Dynamic reloading
+
+To have some fun, go ahead and change the string printed out by the controller, now compile your change and just refresh the browser. You should see your changes take effect instantly, no more of the "create war file > redeploy > wait" cycle!
+
+h2. Conclusion
+
+This concludes our first tutorial in which we discussed several key concepts. Next the "Views Tutorial":http://www.inductionframework.org/tutorials/views-tutorial.html introduces how to use views in Induction. Models are introduced subsequently in the "Models Tutorial":http://www.inductionframework.org/tutorials/models-tutorial.html 
 
