@@ -9,6 +9,8 @@ import demoapp.testclass.TestClass1;
  */
 public class HelloWorldView implements Template
 {
+   public String samplePublic = "What can I say?";
+
    public String getTemplateName()
    {
       return "HelloWorld.ftl";
@@ -16,7 +18,7 @@ public class HelloWorldView implements Template
 
    public String getSampleValue()
    {
-      return "Crazy2 Flintstone";
+      return "FooBar Flintstone";
    }
 
    public String getMimeType()

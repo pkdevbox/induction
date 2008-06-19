@@ -44,6 +44,7 @@
 		<template-path>
 			<web-app-path>/WEB-INF/templates</web-app-path>
 		</template-path>
+		<expose-public-fields>true</expose-public-fields>
 	</templating>
 
 </config> 

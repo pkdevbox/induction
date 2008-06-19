@@ -15,7 +15,9 @@ Hello World, using a Freemarker template
 
 <#-- Sample value: ${SampleValue} -->
 
-Sample value: ${sampleValue}
+Sample bean style value: ${sampleValue}
+
+Sample public var value: ${samplePublic}
 
 </BODY>
 
