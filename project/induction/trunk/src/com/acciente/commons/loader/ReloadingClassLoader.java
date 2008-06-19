@@ -158,7 +158,8 @@ public class ReloadingClassLoader extends SecureClassLoader
             // we will proceed to reload this class
             for ( int i = 0; i < aoReferencedClasses.length; i++ )
             {
-               if ( ! isIgnoredDependency( aoReferencedClasses[ i ].getName() ) )
+               if ( aoReferencedClasses[ i ] != null &&
+                     ! isIgnoredDependency( aoReferencedClasses[ i ].getName() ) )
                {
                   System.out.println( "re-cl > " + sClassName +  " > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
                   Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
@@ -224,11 +225,6 @@ public class ReloadingClassLoader extends SecureClassLoader
       String[] asReferencedClasses = oClassDef.getReferencedClasses();
       Class[]  aoReferencedClasses = new Class[ asReferencedClasses.length ];
 
-      for ( int i = 0; i < asReferencedClasses.length; i++ )
-      {
-         aoReferencedClasses[ i ] = loadClass( asReferencedClasses[ i ] );
-      }
-
       // create a new class control block to keep track of this class
       ClassControlBlock oClassControlBlock
          = new ClassControlBlock( sClassName, oClassDef, aoReferencedClasses );
@@ -236,8 +232,15 @@ public class ReloadingClassLoader extends SecureClassLoader
       // now load the class and update the class control block
       Class oClass = findClass( oClassControlBlock );
 
-      // save the class control block, after the class loads without errors
+      // save the class control block, after the class loads without errors, the dependencies
+      // are not yet loaded, we have to update the class-control-block at this point to
+      // support cyclical dependencies
       _oClassControlBlockMap.put( sClassName, oClassControlBlock );
+
+      for ( int i = 0; i < asReferencedClasses.length; i++ )
+      {
+         aoReferencedClasses[ i ] = loadClass( asReferencedClasses[ i ] );
+      }
 
       return oClass;
    }
