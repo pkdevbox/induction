@@ -2,9 +2,12 @@ package com.acciente.commons.loader;
 
 import java.security.SecureClassLoader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This classloader loads classes retrieved vis a class definition loader
@@ -21,8 +24,10 @@ import java.util.Map;
  */
 public class ReloadingClassLoader extends SecureClassLoader
 {
-   private  List           _oClassDefLoaderList    = new ArrayList();
-   private  Map            _oClassControlBlockMap  = new HashMap();
+   private  List           _oClassDefLoaderList          = new ArrayList();
+   private  Map            _oClassControlBlockMap        = new HashMap();
+   private  Set            _oIgnoredClassNameSet         = new HashSet();
+   private  List           _oIgnoredClassNamePrefixList  = new ArrayList();
 
    /**
     * Creates a class loader with no parent class loader, this is expected to
@@ -52,6 +57,61 @@ public class ReloadingClassLoader extends SecureClassLoader
    public void addClassDefLoader( ClassDefLoader oClassDefLoader )
    {
       _oClassDefLoaderList.add( oClassDefLoader );
+   }
+
+   /**
+    * This method is used to add to the list classnames that should be "ignored" as regards the
+    * dependency checking.
+    *
+    * By "ignored" is meant the following:
+    * If class A depends on class B, and if class B changes, then if class B is on the
+    * list of classes to be "ignored" then the behavior is identical to that if class A had no dependency
+    * on class B.
+    *
+    * @param sIgnoredClassName a string representing a fully qualified classname
+    */
+   public void addIgnoredClassName( String sIgnoredClassName )
+   {
+      _oIgnoredClassNameSet.add( sIgnoredClassName );
+   }
+
+   /**
+    * This method is used to add to list of classname prefixes that should be "ignored" as regards the
+    * dependency checking. For example specifying "com.foo.bar." will cause all classesname starting with
+    * com.foo.bar. package to be ignored.
+    *
+    * By "ignored" is meant the following:
+    * If class A depends on class B, and if class B changes, then if class B is on the
+    * list of classes to be "ignored" then the behavior is identical to if class A had no dependency
+    * on class B
+    *
+    * @param sIgnoredClassNamePrefix a string representing the prefix of one or more fully qualified classnames
+    */
+   public void addIgnoredClassNamePrefix( String sIgnoredClassNamePrefix )
+   {
+      _oIgnoredClassNamePrefixList.add( sIgnoredClassNamePrefix );
+   }
+
+   /**
+    * Returns the set of classnames that are being "ignored" as regards the dependency checking
+    *
+    * @return a set of strings representing classnames that should be ignored by the
+    * dependency checker.
+    */
+   public Collection getIgnoredClassNames()
+   {
+      return _oIgnoredClassNameSet;
+   }
+
+   /**
+    * Returns the set of classname prefixes that are being "ignored" as regards the dependency checking
+    *
+    * @return a set of strings representing classname prefixes that should be ignored by the
+    * dependency checker.
+    */
+   public Collection getIgnoredClassNamePrefixes()
+   {
+      return _oIgnoredClassNamePrefixList;
    }
 
    public Class loadClass( String sClassName, boolean bResolve )
@@ -98,14 +158,17 @@ public class ReloadingClassLoader extends SecureClassLoader
             // we will proceed to reload this class
             for ( int i = 0; i < aoReferencedClasses.length; i++ )
             {
-               //System.out.println( "re-cl > " + sClassName +  " > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
-               Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
-
-               if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
+               if ( ! isIgnoredDependency( aoReferencedClasses[ i ].getName() ) )
                {
-                  aoReferencedClasses[ i ] = oCurrentReferencedClass;
-                  bReload = true;
-                  //System.out.println( "re-cl > " + sClassName +  " > dependent class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
+                  System.out.println( "re-cl > " + sClassName +  " > checking class: " + aoReferencedClasses[ i ] );      // todo: remove
+                  Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
+
+                  if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
+                  {
+                     aoReferencedClasses[ i ] = oCurrentReferencedClass;
+                     bReload = true;
+                     System.out.println( "re-cl > " + sClassName +  " > dependent class: " + aoReferencedClasses[ i ] + " changed" );      // todo: remove
+                  }
                }
             }
          }
@@ -125,6 +188,29 @@ public class ReloadingClassLoader extends SecureClassLoader
       }
 
       return oClass;
+   }
+
+   private boolean isIgnoredDependency( String sClassName )
+   {
+      boolean bIsIgnoredDependency = false;
+
+      if ( _oIgnoredClassNameSet.size() != 0 && _oIgnoredClassNameSet.contains( sClassName ) )
+      {
+         bIsIgnoredDependency = true;
+      }
+      else if ( _oIgnoredClassNamePrefixList.size() != 0 )
+      {
+         for ( int i = 0; i < _oIgnoredClassNamePrefixList.size(); i++ )
+         {
+            if ( sClassName.startsWith( ( String ) _oIgnoredClassNamePrefixList.get( i ) ) )
+            {
+               bIsIgnoredDependency = true;
+               break;
+            }
+         }
+      }
+
+      return bIsIgnoredDependency;
    }
 
    protected Class findClass( String sClassName )

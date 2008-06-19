@@ -93,12 +93,8 @@ public class JavaCompiledClassDef implements ClassDef
       {
          String sReferencedClassname = ( String ) oIter.next();
 
-         // the sReferencedClassname.startsWith( _sClassName ) is to exclude a self-reference
-         // and any inner classes
-         if ( sReferencedClassname.startsWith( sInnerClassNamePrefix )
-               || sReferencedClassname.startsWith( "java." )
-               || sReferencedClassname.startsWith( "javax." )
-               || sReferencedClassname.startsWith( "com.acciente." ) )
+         // exclude any inner classes
+         if ( sReferencedClassname.startsWith( sInnerClassNamePrefix ) )
          {
             oIter.remove();
             //System.out.println( "ignoring dependency: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove

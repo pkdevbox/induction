@@ -26,6 +26,11 @@ public class ClassLoaderInitializer
       {
          ReloadingClassLoader oClassLoader = new ReloadingClassLoader( oParentClassLoader );
 
+         // we will ignore any dependencies for classes in any of the following packages
+         oClassLoader.addIgnoredClassNamePrefix( "java." );
+         oClassLoader.addIgnoredClassNamePrefix( "javax." );
+         oClassLoader.addIgnoredClassNamePrefix( "com.acciente." );
+
          // if there is a classpath defined setup a reloading classloader to handle the specified directories
          for ( int i = 0; i < oJavaClassPathConfig.getDirList().size(); i++ )
          {

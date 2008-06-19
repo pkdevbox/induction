@@ -136,3 +136,5 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       _sPackageNamePrefix = sPackageNamePrefix;
    }
 }
+
+// EOF
