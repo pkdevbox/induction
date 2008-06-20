@@ -1,7 +1,6 @@
 package demoapp.helloworld3_app;
 
 import com.acciente.induction.view.Template;
-import demoapp.testclass.TestClass1;
 
 /**
  * Log
