@@ -83,23 +83,7 @@ public class JavaCompiledClassDef implements ClassDef
 
    private void readReferencedClasses( byte[] ayClassByteCode, String sFilename ) throws IOException
    {
-      Set         oReferencedClassNameSet;
-
-      oReferencedClassNameSet  = new ClassFile( ayClassByteCode ).getReferencedClasses();
-
-      String   sInnerClassNamePrefix = _sClassName + "$";
-
-      for ( Iterator oIter = oReferencedClassNameSet.iterator(); oIter.hasNext(); )
-      {
-         String sReferencedClassname = ( String ) oIter.next();
-
-         // exclude any inner classes
-         if ( sReferencedClassname.startsWith( sInnerClassNamePrefix ) )
-         {
-            oIter.remove();
-            //System.out.println( "ignoring dependency: " + _sClassName + " -> " + sReferencedClassname ); // todo: remove
-         }
-      }
+      Set oReferencedClassNameSet  = new ClassFile( ayClassByteCode ).getReferencedClasses();
 
       // convert the list to an array
       _asReferencedClassNames = new String[ oReferencedClassNameSet.size() ];
