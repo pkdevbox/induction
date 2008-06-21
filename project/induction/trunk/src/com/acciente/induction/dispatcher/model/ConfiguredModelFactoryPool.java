@@ -2,10 +2,13 @@ package com.acciente.induction.dispatcher.model;
 
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import java.util.Hashtable;
 import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class manages instances of the the model factory classes configured in the system.
@@ -31,7 +34,7 @@ public class ConfiguredModelFactoryPool
    }
 
    public Object getConfiguredModelFactory( String sModelFactoryClassName )
-      throws Exception
+      throws ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       // first load the class (the class loader caches)
       Class oModelFactoryClass = _oClassLoader.loadClass( sModelFactoryClassName );
@@ -90,7 +93,7 @@ public class ConfiguredModelFactoryPool
    }
 
    private Object createConfiguredModelFactory( Class oModelFactoryClass )
-      throws Exception
+      throws InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       return ObjectFactory.createObject( oModelFactoryClass, new Object[]{ _oServletConfig, _oLogger }, null );
    }

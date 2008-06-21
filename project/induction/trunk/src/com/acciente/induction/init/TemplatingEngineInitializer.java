@@ -1,12 +1,16 @@
 package com.acciente.induction.init;
 
 import com.acciente.commons.lang.Strings;
+import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.template.FreemarkerTemplatingEngine;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.induction.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class manages initialization of the templating engine based on the configured settings
@@ -16,8 +20,11 @@ import javax.servlet.ServletConfig;
  */
 public class TemplatingEngineInitializer
 {
-   public static TemplatingEngine getTemplatingEngine( Config.Templating oTemplatingConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
-      throws Exception
+   public static TemplatingEngine getTemplatingEngine( Config.Templating   oTemplatingConfig,
+                                                       ClassLoader         oClassLoader,
+                                                       ServletConfig       oServletConfig,
+                                                       Logger oLogger )
+      throws ClassNotFoundException, IOException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       TemplatingEngine  oTemplatingEngine;
 

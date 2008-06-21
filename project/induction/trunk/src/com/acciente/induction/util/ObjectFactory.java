@@ -2,6 +2,7 @@ package com.acciente.induction.util;
 
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProvider;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +16,7 @@ import java.lang.reflect.Method;
 public class ObjectFactory
 {
    public static Object createObject( Class oClass, Object[] aoInitArgs, ParameterProvider oParameterProvider )
-      throws Exception
+      throws InvocationTargetException, ParameterProviderException, InstantiationException, IllegalAccessException, ConstructorNotFoundException
    {
       Object oObject = Invoker.invoke( ReflectUtils.getSingletonConstructor( oClass ), aoInitArgs, oParameterProvider );
 

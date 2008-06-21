@@ -16,6 +16,7 @@ import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -69,10 +70,10 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( ConfigLoaderException e )
-      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
-      catch ( Exception e )
-      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
+      {  throw new ServletException( "init-error: config-loader", e );    }
 
       // setup up our classloader
       ClassLoader oClassLoader;
@@ -102,7 +103,7 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
-      catch ( Exception e )
+      catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
@@ -142,7 +143,7 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( Exception e )
+      catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
    }
 

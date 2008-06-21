@@ -7,6 +7,7 @@ import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ReflectUtils;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,9 +73,9 @@ public class ControllerExecutor
       {
          throw new ControllerExecutorException( "load: access exception", e );
       }
-      catch ( Exception e )
+      catch ( ParameterProviderException e )
       {
-         throw new ControllerExecutorException( "load: general exception", e );
+         throw new ControllerExecutorException( "load: parameter exception", e );
       }
 
       // use performance enhanced reflection to determine the methods in the controller with the specified name
@@ -130,9 +131,9 @@ public class ControllerExecutor
          {
             throw new ControllerExecutorException( "model-load:  parameter resolution exception", e );
          }
-         catch ( Exception e )
+         catch ( ParameterProviderException e )
          {
-            throw new ControllerExecutorException( "model-load:  general exception", e );
+            throw new ControllerExecutorException( "model-load:  parameter resolution exception", e );
          }
       }
 

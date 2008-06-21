@@ -8,9 +8,13 @@ import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
+import com.acciente.induction.util.MethodNotFoundException;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class handles the resolution of parameter values used for injection into controller methods.
@@ -29,8 +33,8 @@ public class ParamResolver
       _oFileUploadConfig   = oFileUploadConfig;
    }
 
-   public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse )
-      throws Exception
+   public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse ) 
+      throws ParamResolverException, MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       Object   oParamValue = null;
 
@@ -65,7 +69,7 @@ public class ParamResolver
 
       if ( oParamValue == null )
       {
-         throw ( new ParamResolverException( "Value resolution yielded no value for paramter type: " + oParamClass.getName() ) );
+         throw ( new ParamResolverException( "Value resolution yielded no value for parameter type: " + oParamClass.getName() ) );
       }
 
       return oParamValue;

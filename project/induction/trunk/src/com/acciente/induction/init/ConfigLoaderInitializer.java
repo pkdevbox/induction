@@ -4,6 +4,7 @@ import com.acciente.induction.init.config.ConfigLoader;
 import com.acciente.induction.init.config.xmlconfigloader.XMLConfigLoader;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -56,7 +57,7 @@ public class ConfigLoaderInitializer
     * Mar 15, 2008 APR  -  created
     */
    public static ConfigLoader getConfigLoader( ServletConfig oServletConfig, Logger oLogger )
-      throws Exception
+      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       ConfigLoader oConfigLoader;
       String         sConfigLoaderClassName;
@@ -78,8 +79,8 @@ public class ConfigLoaderInitializer
       {
          oLogger.log( "loading user-defined config loader class: " + sConfigLoaderClassName );
 
-         // not that to load this class we use the default class loader since any of our
-         // custom classloaders have to wait until later
+         // note that to load this class we use the default class loader since any of our
+         // custom classloaders have to wait until we load in the configuration
          Class oConfigLoaderClass = Class.forName( sConfigLoaderClassName );
 
          // attempt to find and call the single public constructor

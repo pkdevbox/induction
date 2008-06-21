@@ -2,15 +2,19 @@ package com.acciente.induction.dispatcher.model;
 
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProvider;
+import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ReflectUtils;
+import com.acciente.induction.util.MethodNotFoundException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * This class is the factory used to instantiate new Model object instances
@@ -20,11 +24,12 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ModelFactory
 {
-   private ClassLoader                 _oClassLoader;
-   private ServletConfig               _oServletConfig;
-   private Logger                      _oLogger;
-   private ConfiguredModelFactoryPool  _oConfiguredModelFactoryPool;
-   private ModelPool                   _oModelPool;
+   private  ClassLoader                   _oClassLoader;
+   private  ServletConfig                 _oServletConfig;
+   private  Logger                        _oLogger;
+   private  ConfiguredModelFactoryPool    _oConfiguredModelFactoryPool;
+   private  ModelPool                     _oModelPool;
+   private  ThreadLocal                   _oCreateInProgressModelClassNameSet  = new ModelClassNameSet();
 
    public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
    {
@@ -48,36 +53,57 @@ public class ModelFactory
    }
 
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
-      throws Exception
+      throws InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, MethodNotFoundException, ClassNotFoundException
    {
+      // we keep track of the model classname we are loading in a thread local set, this allows
+      // us to detect cyclic dependencies which would otherwise cause infinite recursion
+      Set oCreateInProgressModelClassNameSet = ( Set ) _oCreateInProgressModelClassNameSet.get();
+
+      if ( oCreateInProgressModelClassNameSet.contains( oModelDef.getModelClassName() ) )
+      {
+         throw new IllegalArgumentException( "model-create-error: cyclical dependency detected between model: "
+                                             + oModelDef.getModelClassName()
+                                             + " and model(s): "
+                                             + oCreateInProgressModelClassNameSet );
+      }
+
+      oCreateInProgressModelClassNameSet.add( oModelDef.getModelClassName() );
+
       Object   oModel;
 
-      Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
-      ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
-
-      // does this model class have a factory class defined?
-      if ( ! oModelDef.hasModelFactoryClassName() )
+      try
       {
-         // no factory class, then we expect a single public constructor, which we use to
-         // instantiate the model via a a direct parameter injected constructor call
-         oModel
-            =  ObjectFactory.createObject( _oClassLoader.loadClass( oModelDef.getModelClassName() ),
-                                           oParameterValues, oModelParameterProvider );
+         Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
+         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
+
+         // does this model class have a factory class defined?
+         if ( ! oModelDef.hasModelFactoryClassName() )
+         {
+            // no factory class, then we expect a single public constructor, which we use to
+            // instantiate the model via a a direct parameter injected constructor call
+            oModel
+               =  ObjectFactory.createObject( _oClassLoader.loadClass( oModelDef.getModelClassName() ),
+                                              oParameterValues, oModelParameterProvider );
+         }
+         else
+         {
+            // we have a factory class, so a few more steps in this case
+
+            // first get a model factory instance
+            Object   oConfiguredModelFactory = _oConfiguredModelFactoryPool.getConfiguredModelFactory( oModelDef.getModelFactoryClassName() );
+
+            // next call the createModel() method on the factory instance
+            oModel
+               =  Invoker
+                     .invoke( ReflectUtils.getSingletonMethod( oConfiguredModelFactory.getClass(), "createModel", true ),
+                              oConfiguredModelFactory,
+                              oParameterValues,
+                              oModelParameterProvider );
+         }
       }
-      else
+      finally
       {
-         // we have a factory class, so a few more steps in this case
-
-         // first get a model factory instance
-         Object   oConfiguredModelFactory = _oConfiguredModelFactoryPool.getConfiguredModelFactory( oModelDef.getModelFactoryClassName() );
-
-         // next call the createModel() method on the factory instance
-         oModel
-            =  Invoker
-                  .invoke( ReflectUtils.getSingletonMethod( oConfiguredModelFactory.getClass(), "createModel", true ),
-                           oConfiguredModelFactory,
-                           oParameterValues,
-                           oModelParameterProvider );
+         ( ( Set ) _oCreateInProgressModelClassNameSet.get() ).remove( oModelDef.getModelClassName() );
       }
 
       return oModel;
@@ -95,7 +121,7 @@ public class ModelFactory
       {
          // todo: reinspect below
          // we have a factory class, also check if the factory class reloaded since the model was created
-         bStale = _oConfiguredModelFactoryPool.isConfiguredModelFactoryStale( oModelDef.getModelFactoryClassName() ); 
+         bStale = _oConfiguredModelFactoryPool.isConfiguredModelFactoryStale( oModelDef.getModelFactoryClassName() );
       }
 
       return bStale;
@@ -112,9 +138,32 @@ public class ModelFactory
          _oHttpServletRequest = oHttpServletRequest;
       }
 
-      public Object getParameter( Class oValueType ) throws Exception
+      public Object getParameter( Class oValueType ) throws ParameterProviderException
       {
-         return _oModelPool.getModel( oValueType.getName(), _oHttpServletRequest );
+         try
+         {
+            return _oModelPool.getModel( oValueType.getName(), _oHttpServletRequest );
+         }
+         catch ( MethodNotFoundException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         catch ( InvocationTargetException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         catch ( ClassNotFoundException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         catch ( ConstructorNotFoundException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         catch ( IllegalAccessException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         catch ( InstantiationException e )
+         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+      }
+   }
+
+   private static class ModelClassNameSet extends ThreadLocal
+   {
+      public synchronized Set initialValue()
+      {
+         return new HashSet();
       }
    }
 }
