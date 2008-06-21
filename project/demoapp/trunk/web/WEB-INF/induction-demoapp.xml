@@ -37,6 +37,14 @@
 			<class>demoapp.counter_app.Counter</class>
 			<scope>session</scope>
 		</model-def>
+		<model-def>
+			<class>demoapp.models_app.FooModel</class>
+			<scope>session</scope>
+		</model-def>
+		<model-def>
+			<class>demoapp.models_app.BarModel</class>
+			<scope>session</scope>
+		</model-def>
 	</model-defs>
 
 	<!-- The following section configures the templating engine -->
