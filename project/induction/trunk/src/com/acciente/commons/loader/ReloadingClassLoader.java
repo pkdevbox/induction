@@ -123,72 +123,77 @@ public class ReloadingClassLoader extends SecureClassLoader
       // us to detect cyclic dependencies which would otherwise cause infinite recursion
       ( ( Set ) _oLoadInProgressClassNameSet.get() ).add( sClassName );
 
-      // the implementation of this method was adapted from the corresponding implementation 
-      // in java.lang.ClassLoader to ensure that we are a well-behaved classloader
-
-      // we first look for the ClassControlBlock for this class to determine if we previously
-      // loaded this class. We cannot use the findLoadedClass() method since this classloader
-      // loads a class every time using a new classloader instance (of type ByteCodeClassLoader).
-      // We need to use newly created classloader since if this classloader loaded the class
-      // directly we would have not way of unloading the class.
-      ClassControlBlock oClassControlBlock = ( ClassControlBlock ) _oClassControlBlockMap.get( sClassName );
-
       Class oClass;
 
-      if ( oClassControlBlock == null )
+      try
       {
-         // this class has not previously been loaded by us, so ensure the standard
-         // delegation semantics by calling the super classes loadClass()
-         oClass = super.loadClass( sClassName, bResolve );
-      }
-      else
-      {
-         boolean  bReload = false;
+         // the implementation of this method was adapted from the corresponding implementation
+         // in java.lang.ClassLoader to ensure that we are a well-behaved classloader
 
-         // ok, we have previously loaded this class so check if we need to reload
-         if ( oClassControlBlock.getClassDef().isModified() )
+         // we first look for the ClassControlBlock for this class to determine if we previously
+         // loaded this class. We cannot use the findLoadedClass() method since this classloader
+         // loads a class every time using a new classloader instance (of type ByteCodeClassLoader).
+         // We need to use newly created classloader since if this classloader loaded the class
+         // directly we would have not way of unloading the class.
+         ClassControlBlock oClassControlBlock = ( ClassControlBlock ) _oClassControlBlockMap.get( sClassName );
+
+         if ( oClassControlBlock == null )
          {
-            bReload = true;
+            // this class has not previously been loaded by us, so ensure the standard
+            // delegation semantics by calling the super classes loadClass()
+            oClass = super.loadClass( sClassName, bResolve );
          }
          else
          {
-            // before we can determine if we need to reload this class we need to
-            // check and if need to reload the classes referenced by this class
-            Class[]  aoReferencedClasses = oClassControlBlock.getReferencedClasses();
+            boolean  bReload = false;
 
-            // if any of the classes referenced by this class has changed then
-            // we will proceed to reload this class
-            for ( int i = 0; i < aoReferencedClasses.length; i++ )
+            // ok, we have previously loaded this class so check if we need to reload
+            if ( oClassControlBlock.getClassDef().isModified() )
             {
-               // the findClass() method leaves nulls in aoReferencedClasses for "ignored" classes
-               if ( aoReferencedClasses[ i ] != null )
-               {
-                  Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
+               bReload = true;
+            }
+            else
+            {
+               // before we can determine if we need to reload this class we need to
+               // check and if need to reload the classes referenced by this class
+               Class[]  aoReferencedClasses = oClassControlBlock.getReferencedClasses();
 
-                  if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
+               // if any of the classes referenced by this class has changed then
+               // we will proceed to reload this class
+               for ( int i = 0; i < aoReferencedClasses.length; i++ )
+               {
+                  // the findClass() method leaves nulls in aoReferencedClasses for "ignored" classes
+                  if ( aoReferencedClasses[ i ] != null )
                   {
-                     aoReferencedClasses[ i ] = oCurrentReferencedClass;
-                     bReload = true;
+                     Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
+
+                     if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
+                     {
+                        aoReferencedClasses[ i ] = oCurrentReferencedClass;
+                        bReload = true;
+                     }
                   }
                }
             }
-         }
 
-         if ( bReload )
-         {
-            // reload new class def
-            oClassControlBlock.getClassDef().reload();
+            if ( bReload )
+            {
+               // reload new class def
+               oClassControlBlock.getClassDef().reload();
 
-            // now load in the new version of the class
-            oClass = findClass( oClassControlBlock );
-         }
-         else
-         {
-            oClass = oClassControlBlock.getLastLoadedClass();
+               // now load in the new version of the class
+               oClass = findClass( oClassControlBlock );
+            }
+            else
+            {
+               oClass = oClassControlBlock.getLastLoadedClass();
+            }
          }
       }
-
-      ( ( Set ) _oLoadInProgressClassNameSet.get() ).remove( sClassName );
+      finally
+      {
+         ( ( Set ) _oLoadInProgressClassNameSet.get() ).remove( sClassName );
+      }
 
       return oClass;
    }

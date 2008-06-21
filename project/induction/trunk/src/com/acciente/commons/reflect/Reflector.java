@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A set of reflection utility methods.
+ * A set of reflection utility methods that use caching for improved performance
  *
  * Log
  * Mar 15, 2008 APR  -  created

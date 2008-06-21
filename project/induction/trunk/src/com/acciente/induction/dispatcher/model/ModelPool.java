@@ -2,11 +2,15 @@ package com.acciente.induction.dispatcher.model;
 
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.induction.util.MethodNotFoundException;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Hashtable;
 import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class manages access to the pool model objects
@@ -28,7 +32,7 @@ public class ModelPool
    }
 
    public Object getModel( String sModelClassName, HttpServletRequest oHttpServletRequest )
-      throws Exception
+      throws MethodNotFoundException, InvocationTargetException, ClassNotFoundException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       // first find the model definition object for this model class to determine the scope of this model
       Config.ModelDefs.ModelDef oModelDef = _oModelDefs.getModelDef( sModelClassName );
@@ -62,7 +66,7 @@ public class ModelPool
    }
 
    private Object getApplicationScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
-      throws Exception
+      throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       Object   oModel;
 
@@ -71,7 +75,7 @@ public class ModelPool
       // if the model has not yet been created, we use double-checked locking to ensure that
       // separate threads do not simultaneously instantiate multiple instances of the model
       // I do not think this code will have the potential incorrectness introduced by the
-      // double-checked locking, since the model map only contains fully constructed objects 
+      // double-checked locking, since the model map only contains fully constructed objects
       if ( oModel == null )
       {
          synchronized ( oModelDef )
@@ -110,7 +114,7 @@ public class ModelPool
    }
 
    private Object getSessionScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
-      throws Exception
+      throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       HttpSession oHttpSession;
       Object      oModel;
@@ -130,7 +134,7 @@ public class ModelPool
                oModel = _oModelFactory.createModel( oModelDef, oHttpServletRequest );
 
                oHttpSession.setAttribute( oModelDef.getModelClassName(), oModel );
-            }            
+            }
          }
       }
       else
@@ -154,7 +158,7 @@ public class ModelPool
    }
 
    private Object getRequestScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oRequest )
-      throws Exception
+      throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       // a request scope object essentially only lasts for the duration of the method invocation so
       // there is no need to pool a copy of the model instance for reuse

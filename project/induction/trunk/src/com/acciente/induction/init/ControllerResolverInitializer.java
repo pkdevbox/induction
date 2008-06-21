@@ -4,8 +4,11 @@ import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.URLPathControllerResolver;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This is helper class that focuses on setting up the controller resolver used
@@ -16,8 +19,11 @@ import javax.servlet.ServletConfig;
  */
 public class ControllerResolverInitializer
 {
-   public static ControllerResolver getControllerResolver( Config.ControllerResolver oControllerResolverConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
-      throws Exception
+   public static ControllerResolver getControllerResolver( Config.ControllerResolver   oControllerResolverConfig,
+                                                           ClassLoader                 oClassLoader,
+                                                           ServletConfig               oServletConfig,
+                                                           Logger                      oLogger ) 
+      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       ControllerResolver   oControllerResolver;
       String               sControllerResolverClassName = oControllerResolverConfig.getClassName();

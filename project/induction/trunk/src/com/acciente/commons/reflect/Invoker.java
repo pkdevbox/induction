@@ -2,10 +2,12 @@ package com.acciente.commons.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class contains java reflection helper methods to invoke constructors and
- * methods using supplied arguments being positioned using type compatibility.
+ * methods. The methods in this class are used to do constructor and method
+ * dependency injection based on type matching.
  *
  * Log
  * Mar 15, 2008 APR  -  created
@@ -27,10 +29,13 @@ public class Invoker
     * value of a parameter based on the parameter type
     * @return the new object instance created by calling the constructor
     *
-    * @throws Exception propagated from Constructor.newInstance() and ParameterProvider calls
+    * @throws InvocationTargetException propagated from Constructor.newInstance()
+    * @throws IllegalAccessException propagated from Constructor.newInstance()
+    * @throws InstantiationException propagated from Constructor.newInstance()
+    * @throws ParameterProviderException propagated from the supplied ParameterProvider instance
     */
    public static Object invoke( Constructor oConstructor, Object[] aoArgs, ParameterProvider oParameterProvider )
-      throws Exception
+      throws InvocationTargetException, IllegalAccessException, InstantiationException, ParameterProviderException
    {
       Class[]  aoParameterTypes  = oConstructor.getParameterTypes();
       Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
@@ -76,10 +81,12 @@ public class Invoker
     * value of a parameter based on the parameter type
     * @return the value returned by the called method
     *
-    * @throws Exception propagated from Method.invoke() and ParameterProvider calls
+    * @throws InvocationTargetException propagated from Constructor.newInstance()
+    * @throws IllegalAccessException propagated from Constructor.newInstance()
+    * @throws ParameterProviderException propagated from the supplied ParameterProvider instance
     */
    public static Object invoke( Method oMethod, Object oTarget, Object[] aoArgs, ParameterProvider oParameterProvider )
-      throws Exception
+      throws InvocationTargetException, IllegalAccessException, ParameterProviderException
    {
       Class[]  aoParameterTypes  = oMethod.getParameterTypes();
       Object[] aoParameterValues = new Object[ aoParameterTypes.length ];

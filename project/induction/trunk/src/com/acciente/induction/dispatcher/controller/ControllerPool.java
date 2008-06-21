@@ -4,6 +4,7 @@ import com.acciente.induction.controller.Controller;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -43,9 +44,10 @@ public class ControllerPool
     * @throws IllegalAccessException propagated exception
     * @throws ConstructorNotFoundException propagated exception
     * @throws InstantiationException propagated exception
+    * @throws ParameterProviderException propagated exception
     */
    public Controller getController( String sControllerClassName )
-      throws Exception
+      throws ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
       // the class definition may have changed so we have to load the class unconditionally our
       // classloader caches so if the class is unchanged this call just returns the last loaded class
@@ -81,7 +83,7 @@ public class ControllerPool
    }
 
    private Controller createController( Class oControllerClass )
-      throws Exception
+      throws InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       return ( Controller ) ObjectFactory.createObject( oControllerClass, new Object[]{ _oServletConfig }, null );
    }
