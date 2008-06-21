@@ -16,17 +16,23 @@ public class Cookies implements Controller
    public void handler( Request oRequest, Response oResponse )
       throws IOException
    {
-
-      for ( int i = 0; i < oRequest.getCookies().length; i++ )
+      if ( oRequest.getCookies() == null )
       {
-         Cookie oCookie = oRequest.getCookies()[ i ];
+         oResponse.out().println( "The request has no cookies!" );
+      }
+      else
+      {
+         for ( int i = 0; i < oRequest.getCookies().length; i++ )
+         {
+            Cookie oCookie = oRequest.getCookies()[ i ];
 
-         oResponse.out().println( "Name=" + oCookie.getName() );
-         oResponse.out().println( "Domain=" + oCookie.getDomain() );
-         oResponse.out().println( "Path=" + oCookie.getPath() );
-         oResponse.out().println( "Secure=" + oCookie.getSecure() );
-         oResponse.out().println( "Value=" + oCookie.getValue() );
-         oResponse.out().println( "Version=" + oCookie.getVersion() );
+            oResponse.out().println( "Name=" + oCookie.getName() );
+            oResponse.out().println( "Domain=" + oCookie.getDomain() );
+            oResponse.out().println( "Path=" + oCookie.getPath() );
+            oResponse.out().println( "Secure=" + oCookie.getSecure() );
+            oResponse.out().println( "Value=" + oCookie.getValue() );
+            oResponse.out().println( "Version=" + oCookie.getVersion() );
+         }
       }
    }
 }
