@@ -8,12 +8,9 @@ import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
-import com.acciente.induction.util.ConstructorNotFoundException;
-import com.acciente.induction.util.MethodNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class handles the resolution of parameter values used for injection into controller methods.
@@ -33,7 +30,7 @@ public class ParamResolver
    }
 
    public Object getParameterValue( Class oParamClass, HttpServletRequest oRequest, HttpServletResponse oResponse )
-      throws ClassNotFoundException, ConstructorNotFoundException, MethodNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException, ParamResolverException
+      throws Exception
    {
       Object   oParamValue = null;
 
@@ -63,7 +60,7 @@ public class ParamResolver
       else
       {
          // check to see if this is a model class
-         oParamValue = _oModelPool.getModel( oParamClass, oRequest );
+         oParamValue = _oModelPool.getModel( oParamClass.getName(), oRequest );
       }
 
       if ( oParamValue == null )

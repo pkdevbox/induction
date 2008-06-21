@@ -45,7 +45,7 @@ public class ControllerPool
     * @throws InstantiationException propagated exception
     */
    public Controller getController( String sControllerClassName )
-      throws ClassNotFoundException, ConstructorNotFoundException, InstantiationException, InvocationTargetException, IllegalAccessException
+      throws Exception
    {
       // the class definition may have changed so we have to load the class unconditionally our
       // classloader caches so if the class is unchanged this call just returns the last loaded class
@@ -81,9 +81,9 @@ public class ControllerPool
    }
 
    private Controller createController( Class oControllerClass )
-      throws ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws Exception
    {
-      return ( Controller ) ObjectFactory.createObject( oControllerClass, new Object[]{ _oServletConfig } );
+      return ( Controller ) ObjectFactory.createObject( oControllerClass, new Object[]{ _oServletConfig }, null );
    }
 }
 

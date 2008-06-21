@@ -72,6 +72,10 @@ public class ControllerExecutor
       {
          throw new ControllerExecutorException( "load: access exception", e );
       }
+      catch ( Exception e )
+      {
+         throw new ControllerExecutorException( "load: general exception", e );
+      }
 
       // use performance enhanced reflection to determine the methods in the controller with the specified name
       Method oControllerMethod;
@@ -125,6 +129,10 @@ public class ControllerExecutor
          catch ( ParamResolverException e )
          {
             throw new ControllerExecutorException( "model-load:  parameter resolution exception", e );
+         }
+         catch ( Exception e )
+         {
+            throw new ControllerExecutorException( "model-load:  general exception", e );
          }
       }
 

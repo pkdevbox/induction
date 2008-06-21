@@ -71,6 +71,8 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
       catch ( ConfigLoaderException e )
       {  throw new ServletException( "init-error: config-loader-initializer", e );    }
+      catch ( Exception e )
+      {  throw new ServletException( "init-error: config-loader-initializer", e );    }
 
       // setup up our classloader
       ClassLoader oClassLoader;
@@ -100,20 +102,20 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
+      catch ( Exception e )
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // the ParamResolver manages resolution of parameter values based on the parameter type
-      ParamResolver oParamResolver
-         =  new ParamResolver( new ModelPool( oConfig.getModelDefs(),
-                                              new ModelFactory( oClassLoader,
-                                                                oServletConfig,
-                                                                _oLogger
-                                                              )
-                                            ),
-                               oConfig.getFileUpload()
-                             );
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, _oLogger );
+      ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
+
+      // now set the pool for the model factory to use in model-to-model injection
+      oModelFactory.setModelPool( oModelPool );
+
+      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload() );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
@@ -139,6 +141,8 @@ public class HttpDispatcher extends HttpServlet
       catch ( InstantiationException e )
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
       catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      catch ( Exception e )
       {  throw new ServletException( "init-error: view-processor-initializer", e ); }
    }
 

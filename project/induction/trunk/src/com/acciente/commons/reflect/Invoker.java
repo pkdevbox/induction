@@ -1,11 +1,10 @@
 package com.acciente.commons.reflect;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class contains java reflection helper methods  to invoke constructors and
+ * This class contains java reflection helper methods to invoke constructors and
  * methods using supplied arguments being positioned using type compatibility.
  *
  * Log
@@ -24,14 +23,14 @@ public class Invoker
     * @param oConstructor a constructor object to be invoked
     * @param aoArgs an array containing a set of arguments each of a distinct type
     *
+    * @param oParameterProvider an interface that allows a developer to provide the
+    * value of a parameter based on the parameter type
     * @return the new object instance created by calling the constructor
     *
-    * @throws IllegalAccessException propagated from Constructor.newInstance() call
-    * @throws InstantiationException propagated from Constructor.newInstance() call
-    * @throws InvocationTargetException propagated from Constructor.newInstance() call
+    * @throws Exception propagated from Constructor.newInstance() and ParameterProvider calls
     */
-   public static Object invoke( Constructor oConstructor, Object[] aoArgs )
-      throws InvocationTargetException, IllegalAccessException, InstantiationException
+   public static Object invoke( Constructor oConstructor, Object[] aoArgs, ParameterProvider oParameterProvider )
+      throws Exception
    {
       Class[]  aoParameterTypes  = oConstructor.getParameterTypes();
       Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
@@ -42,7 +41,19 @@ public class Invoker
          // based matching up the parameter type to the type of the value provided
          for ( int i = 0; i < aoParameterValues.length; i++ )
          {
-            aoParameterValues[ i ] = getByType( aoArgs, aoParameterTypes[ i ] );
+            Object oArg = null;
+
+            if ( aoArgs != null )
+            {
+               oArg = getByType( aoArgs, aoParameterTypes[ i ] );
+            }
+
+            if ( oArg == null && oParameterProvider != null )
+            {
+               oArg = oParameterProvider.getParameter( aoParameterTypes[ i ] );
+            }
+
+            aoParameterValues[ i ] = oArg;
          }
       }
 
@@ -61,13 +72,14 @@ public class Invoker
     * @param oTarget the target object on which the method should be invoked
     * @param aoArgs an array containing a set of arguments each of a distinct type
     *
+    * @param oParameterProvider an interface that allows a developer to provide the
+    * value of a parameter based on the parameter type
     * @return the value returned by the called method
     *
-    * @throws IllegalAccessException propagated from Method.invoke()
-    * @throws InvocationTargetException propagated from Method.invoke()
+    * @throws Exception propagated from Method.invoke() and ParameterProvider calls
     */
-   public static Object invoke( Method oMethod, Object oTarget, Object[] aoArgs )
-      throws InvocationTargetException, IllegalAccessException
+   public static Object invoke( Method oMethod, Object oTarget, Object[] aoArgs, ParameterProvider oParameterProvider )
+      throws Exception
    {
       Class[]  aoParameterTypes  = oMethod.getParameterTypes();
       Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
@@ -78,7 +90,19 @@ public class Invoker
          // based matching up the parameter type to the type of the value provided
          for ( int i = 0; i < aoParameterValues.length; i++ )
          {
-            aoParameterValues[ i ] = getByType( aoArgs, aoParameterTypes[ i ] );
+            Object oArg = null;
+
+            if ( aoArgs != null )
+            {
+               oArg = getByType( aoArgs, aoParameterTypes[ i ] );
+            }
+
+            if ( oArg == null && oParameterProvider != null )
+            {
+               oArg = oParameterProvider.getParameter( aoParameterTypes[ i ] );
+            }
+
+            aoParameterValues[ i ] = oArg;
          }
       }
 

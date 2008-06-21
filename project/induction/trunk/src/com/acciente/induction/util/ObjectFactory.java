@@ -1,6 +1,7 @@
 package com.acciente.induction.util;
 
 import com.acciente.commons.reflect.Invoker;
+import com.acciente.commons.reflect.ParameterProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,10 +14,10 @@ import java.lang.reflect.Method;
  */
 public class ObjectFactory
 {
-   public static Object createObject( Class oClass, Object[] aoInitArgs )
-      throws ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+   public static Object createObject( Class oClass, Object[] aoInitArgs, ParameterProvider oParameterProvider )
+      throws Exception
    {
-      Object oObject = Invoker.invoke( ReflectUtils.getSingletonConstructor( oClass ), aoInitArgs );
+      Object oObject = Invoker.invoke( ReflectUtils.getSingletonConstructor( oClass ), aoInitArgs, oParameterProvider );
 
       Method oOptionalInitializer = null;
       try
@@ -31,7 +32,7 @@ public class ObjectFactory
       // if we found a single public method
       if ( oOptionalInitializer != null )
       {
-         Invoker.invoke( oOptionalInitializer, oObject, aoInitArgs );
+         Invoker.invoke( oOptionalInitializer, oObject, aoInitArgs, oParameterProvider );
       }
 
       return oObject;
