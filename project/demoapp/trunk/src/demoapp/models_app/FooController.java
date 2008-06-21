@@ -13,10 +13,10 @@ import java.io.IOException;
  */
 public class FooController implements Controller
 {
-   public void handler( Response oResponse, FooModel oFooModel, BarModel oBarModel ) throws IOException
+   public void handler( Response oResponse, BarModel oBarModel ) throws IOException
    {
       oResponse.setContentType( "text/plain" );
-      oResponse.out().println( "oFooModel=" + oFooModel );
+      //oResponse.out().println( "oFooModel=" + oFooModel );
       oResponse.out().println( "oBarModel=" + oBarModel );
       oResponse.out().println( "oBarModel.getFooModel()=" + oBarModel.getFooModel() );
    }
