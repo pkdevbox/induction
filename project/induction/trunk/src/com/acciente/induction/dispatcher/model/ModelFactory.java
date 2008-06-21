@@ -1,10 +1,10 @@
 package com.acciente.induction.dispatcher.model;
 
 import com.acciente.commons.reflect.Invoker;
+import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ConstructorNotFoundException;
-import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ReflectUtils;
 
@@ -24,6 +24,7 @@ public class ModelFactory
    private ServletConfig               _oServletConfig;
    private Logger                      _oLogger;
    private ConfiguredModelFactoryPool  _oConfiguredModelFactoryPool;
+   private ModelPool                   _oModelPool;
 
    public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
    {
@@ -34,12 +35,25 @@ public class ModelFactory
       _oConfiguredModelFactoryPool = new ConfiguredModelFactoryPool( oClassLoader, oServletConfig, oLogger );
    }
 
+   /**
+    * Used to set a model pool for use in model-to-model dendency injection (note the cyclic relationship
+    * between ModelFactory class and the ModelPool class, also a the same relationship between the object
+    * instances)
+    *
+    * @param oModelPool a model pool instance
+    */
+   public void setModelPool( ModelPool oModelPool )
+   {
+      _oModelPool = oModelPool;
+   }
+
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
-      throws ClassNotFoundException, MethodNotFoundException, ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws Exception
    {
       Object   oModel;
 
-      Object[] oInjectionValues = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
+      Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
+      ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
 
       // does this model class have a factory class defined?
       if ( ! oModelDef.hasModelFactoryClassName() )
@@ -48,7 +62,7 @@ public class ModelFactory
          // instantiate the model via a a direct parameter injected constructor call
          oModel
             =  ObjectFactory.createObject( _oClassLoader.loadClass( oModelDef.getModelClassName() ),
-                                           oInjectionValues );
+                                           oParameterValues, oModelParameterProvider );
       }
       else
       {
@@ -62,7 +76,8 @@ public class ModelFactory
             =  Invoker
                   .invoke( ReflectUtils.getSingletonMethod( oConfiguredModelFactory.getClass(), "createModel", true ),
                            oConfiguredModelFactory,
-                           oInjectionValues );
+                           oParameterValues,
+                           oModelParameterProvider );
       }
 
       return oModel;
@@ -84,6 +99,23 @@ public class ModelFactory
       }
 
       return bStale;
+   }
+
+   public static class ModelParameterProvider implements ParameterProvider
+   {
+      private ModelPool          _oModelPool;
+      private HttpServletRequest _oHttpServletRequest;
+
+      public ModelParameterProvider( ModelPool oModelPool, HttpServletRequest oHttpServletRequest )
+      {
+         _oModelPool = oModelPool;
+         _oHttpServletRequest = oHttpServletRequest;
+      }
+
+      public Object getParameter( Class oValueType ) throws Exception
+      {
+         return _oModelPool.getModel( oValueType.getName(), _oHttpServletRequest );
+      }
    }
 }
 

@@ -4,12 +4,9 @@ import com.acciente.commons.lang.Strings;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.template.FreemarkerTemplatingEngine;
 import com.acciente.induction.template.TemplatingEngine;
-import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class manages initialization of the templating engine based on the configured settings
@@ -20,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 public class TemplatingEngineInitializer
 {
    public static TemplatingEngine getTemplatingEngine( Config.Templating oTemplatingConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
-      throws IOException, ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, IllegalAccessException, InstantiationException
+      throws Exception
    {
       TemplatingEngine  oTemplatingEngine;
 
@@ -39,8 +36,8 @@ public class TemplatingEngineInitializer
                                            new Object[]{ oServletConfig,
                                                          oTemplatingConfig,
                                                          oClassLoader
-                                                       }
-                                         );
+                                                       },
+                                           null );
       }
 
       return oTemplatingEngine;

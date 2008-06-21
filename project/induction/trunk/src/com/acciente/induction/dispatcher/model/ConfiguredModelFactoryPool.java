@@ -1,11 +1,9 @@
 package com.acciente.induction.dispatcher.model;
 
 import com.acciente.induction.init.Logger;
-import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -33,7 +31,7 @@ public class ConfiguredModelFactoryPool
    }
 
    public Object getConfiguredModelFactory( String sModelFactoryClassName )
-      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws Exception
    {
       // first load the class (the class loader caches)
       Class oModelFactoryClass = _oClassLoader.loadClass( sModelFactoryClassName );
@@ -92,9 +90,9 @@ public class ConfiguredModelFactoryPool
    }
 
    private Object createConfiguredModelFactory( Class oModelFactoryClass )
-      throws ConstructorNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException
+      throws Exception
    {
-      return ObjectFactory.createObject( oModelFactoryClass, new Object[]{ _oServletConfig, _oLogger } );
+      return ObjectFactory.createObject( oModelFactoryClass, new Object[]{ _oServletConfig, _oLogger }, null );
    }
 }
 

@@ -56,7 +56,7 @@ public class ConfigLoaderInitializer
     * Mar 15, 2008 APR  -  created
     */
    public static ConfigLoader getConfigLoader( ServletConfig oServletConfig, Logger oLogger )
-      throws ClassNotFoundException, ConstructorNotFoundException, InvocationTargetException, IllegalAccessException, InstantiationException
+      throws Exception
    {
       ConfigLoader oConfigLoader;
       String         sConfigLoaderClassName;
@@ -84,7 +84,7 @@ public class ConfigLoaderInitializer
 
          // attempt to find and call the single public constructor
          oConfigLoader
-            =  ( ConfigLoader ) ObjectFactory.createObject( oConfigLoaderClass, new Object[]{ oServletConfig } );
+            =  ( ConfigLoader ) ObjectFactory.createObject( oConfigLoaderClass, new Object[]{ oServletConfig }, null );
       }
 
       return oConfigLoader;
