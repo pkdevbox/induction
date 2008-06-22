@@ -1,5 +1,7 @@
 package com.acciente.induction.dispatcher;
 
+import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.controller.Redirect;
 import com.acciente.induction.dispatcher.controller.ControllerExecutor;
 import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
@@ -14,9 +16,10 @@ import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.TemplatingEngineInitializer;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
+import com.acciente.induction.init.config.RedirectResolverInitializer;
 import com.acciente.induction.resolver.ControllerResolver;
+import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
-import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -33,6 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver   _oControllerResolver;
+   private  RedirectResolver     _oRedirectResolver;
    private  ControllerExecutor   _oControllerExecutor;
    private  ViewExecutor         _oViewExecutor;
    private  Logger               _oLogger;
@@ -106,6 +110,26 @@ public class HttpDispatcher extends HttpServlet
       catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
+      // setup a resolver that maps a redirect to a URL
+      try
+      {
+         _oRedirectResolver
+            =  RedirectResolverInitializer
+                  .getRedirectResolver( oConfig.getRedirectResolver(), oClassLoader, oServletConfig, _oLogger );
+      }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
@@ -172,13 +196,44 @@ public class HttpDispatcher extends HttpServlet
 
          if ( oControllerReturnValue != null )
          {
-            try
+            if ( oControllerReturnValue instanceof Redirect )
             {
-               _oViewExecutor.execute( oControllerReturnValue, oResponse );
+               Redirect oRedirect = ( Redirect ) oControllerReturnValue;
+
+               if ( oRedirect.getControllerClass() != null )
+               {
+                  if ( oRedirect.getControllerMethodName() != null )
+                  {
+                     oResponse.sendRedirect( _oRedirectResolver
+                                                .resolve(   oRedirect.getControllerClass(),
+                                                            oRedirect.getControllerMethodName() ) );
+                  }
+                  else
+                  {
+                     oResponse.sendRedirect( _oRedirectResolver
+                                                .resolve( oRedirect.getControllerClass() ) );
+                  }
+               }
+               else if ( oRedirect.getURL() != null )
+               {
+                  oResponse.sendRedirect( _oRedirectResolver
+                                             .resolve( oRedirect.getURL() ) );
+               }
+               else
+               {
+                  logAndRespond( oResponse, "redirect-resolve: invalid redirect request", null );
+               }
             }
-            catch ( ViewExecutorException e )
+            else
             {
-               logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+               try
+               {
+                  _oViewExecutor.execute( oControllerReturnValue, oResponse );
+               }
+               catch ( ViewExecutorException e )
+               {
+                  logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+               }
             }
          }
       }

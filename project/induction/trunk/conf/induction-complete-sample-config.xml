@@ -91,6 +91,10 @@ shown here. -->
 		<ignore-handler-method-case>true</ignore-handler-method-case>
 	</controller-resolver>
 	
+	<redirect-resolver>
+		<class>the_name_of_a_class_that_implements_a_redirect_resolver</class>
+	</redirect-resolver>
+
 	<file-upload>
 		<max-upload-size>10485760</max-upload-size>
 		<store-file-on-disk-threshold>20480</store-file-on-disk-threshold>

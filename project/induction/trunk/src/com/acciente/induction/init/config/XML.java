@@ -43,6 +43,9 @@ public class XML
    public static final XML Config_ControllerResolver_DefaultHandlerMethod        = new XML( "default-handler-method",      Config_ControllerResolver );
    public static final XML Config_ControllerResolver_IgnoreHandlerMethodCase     = new XML( "ignore-handler-method-case",  Config_ControllerResolver );
 
+   public static final XML Config_RedirectResolver                               = new XML( "redirect-resolver",           Config );
+   public static final XML Config_RedirectResolver_Class                         = new XML( "class",                       Config_RedirectResolver );
+
    public static final XML Config_FileUpload                                     = new XML( "file-upload",                    Config );
    public static final XML Config_FileUpload_MaxUploadSize                       = new XML( "max-upload-size",                Config_FileUpload );
    public static final XML Config_FileUpload_StoreFileOnDiskThreshold            = new XML( "store-file-on-disk-threshold",   Config_FileUpload );

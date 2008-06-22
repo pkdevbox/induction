@@ -83,6 +83,13 @@ public class DigesterFactory
          oDigester.addRule( XML.Config_ControllerResolver_IgnoreHandlerMethodCase.PATTERN,   oControllerResolverRule.createParamIgnoreHandlerMethodCaseRule() );
       }
 
+      // redirect-resolver config rules
+      {
+         RedirectResolverRule oRedirectResolverRule = new RedirectResolverRule( oConfig.getRedirectResolver() );
+         oDigester.addRule( XML.Config_RedirectResolver.PATTERN,                           oRedirectResolverRule );
+         oDigester.addRule( XML.Config_RedirectResolver_Class.PATTERN,                     oRedirectResolverRule.createParamClassRule() );
+      }
+
       // file-upload config rules
       {
          FileUploadRule oFileUploadRule = new FileUploadRule( oConfig.getFileUpload() );
