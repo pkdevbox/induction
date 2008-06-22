@@ -22,7 +22,7 @@ public class ControllerResolverInitializer
    public static ControllerResolver getControllerResolver( Config.ControllerResolver   oControllerResolverConfig,
                                                            ClassLoader                 oClassLoader,
                                                            ServletConfig               oServletConfig,
-                                                           Logger                      oLogger ) 
+                                                           Logger                      oLogger )
       throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       ControllerResolver   oControllerResolver;
@@ -34,7 +34,7 @@ public class ControllerResolverInitializer
       }
       else
       {
-         oLogger.log( "loading user-defined config loader class: " + sControllerResolverClassName );
+         oLogger.log( "loading user-defined controller resolver: " + sControllerResolverClassName );
 
          Class    oControllerResolverClass  = oClassLoader.loadClass( sControllerResolverClassName );
 

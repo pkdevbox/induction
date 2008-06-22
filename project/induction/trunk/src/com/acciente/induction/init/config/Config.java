@@ -24,6 +24,7 @@ public class Config
    private ModelDefs             _oModelDefs          = new ModelDefs();
    private Templating            _oTemplating         = new Templating();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
+   private RedirectResolver      _oRedirectResolver   = new RedirectResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
 
    /**
@@ -72,6 +73,16 @@ public class Config
    }
 
    /**
+    * This method is used to access the settings used to configure the redirect resolver.
+    *
+    * @return an object reference that keeps the redirect resolver config settings
+    */
+   public RedirectResolver getRedirectResolver()
+   {
+      return _oRedirectResolver;
+   }
+
+   /**
     * This method is used to access config parameters that control file uploads
     *
     * @return an object reference that keeps the file upload settings
@@ -81,7 +92,7 @@ public class Config
       return _oFileUpload;
    }
 
-   public String toString()
+   public String toString() 
    {
       return toXML();
    }
@@ -95,6 +106,7 @@ public class Config
       oBuffer.append( _oModelDefs.toXML() );
       oBuffer.append( _oTemplating.toXML() );
       oBuffer.append( _oControllerResolver.toXML() );
+      oBuffer.append( _oRedirectResolver.toXML() );
       oBuffer.append( _oFileUpload.toXML() );
       oBuffer.append( "\n" );
       oBuffer.append( XML.Config.CLOSE_IND );
@@ -860,6 +872,43 @@ public class Config
                        + XML.Config_ControllerResolver_DefaultHandlerMethod.toXML( _sDefaultHandlerMethodName )
                        + XML.Config_ControllerResolver_IgnoreHandlerMethodCase.toXML( _bIgnoreMethodNameCase )
                      );
+      }
+   }
+
+   public static class RedirectResolver
+   {
+      private String    _sClassName;
+
+      /**
+       * Used to set a fully qualified class name used to resolve a redirect request.
+       *
+       * @param sClassName a string representing fully qualified classname or null to use the default resolver
+       */
+      public void setClassName( String sClassName )
+      {
+         _sClassName = sClassName;
+      }
+
+      /**
+       * Returns the name of the class used to resolve a redirect request.
+       *
+       * @return a string representing a fully qualified class name
+       */
+      public String getClassName()
+      {
+         return _sClassName;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         return
+            XML.Config_RedirectResolver
+               .toXML( XML.Config_RedirectResolver_Class.toXML( _sClassName ) );
       }
    }
 
