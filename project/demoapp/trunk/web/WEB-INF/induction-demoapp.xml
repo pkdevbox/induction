@@ -55,4 +55,8 @@
 		<expose-public-fields>true</expose-public-fields>
 	</templating>
 
+	<redirect-resolver>
+		<class>com.acciente.induction.resolver.URLPathRedirectResolver</class>
+	</redirect-resolver>
+
 </config> 
