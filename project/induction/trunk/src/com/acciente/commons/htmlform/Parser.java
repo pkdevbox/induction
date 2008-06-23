@@ -1,3 +1,20 @@
+/**
+ *   Copyright 2008 Acciente, LLC
+ *
+ *   Acciente, LLC licenses this file to you under the
+ *   Apache License, Version 2.0 (the "License"); you
+ *   may not use this file except in compliance with the
+ *   License. You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in
+ *   writing, software distributed under the License is
+ *   distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+ *   OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing
+ *   permissions and limitations under the License.
+ */
 package com.acciente.commons.htmlform;
 
 import org.apache.commons.fileupload.FileItem;
@@ -266,7 +283,7 @@ public class Parser
     * @param sDefaultType specifies the parameter type that the parser should assume in the absence of a explicit
     * parameter type in the paramater spec's string definition (read via the passed in oReader), the value must
     * be null or one of the following values: string, int, float, boolean, file (the most current set is defined in
-    * com.acciente.commons.htmlform.Symbols). If null is specified the string type is assumed 
+    * com.acciente.commons.htmlform.Symbols). If null is specified the string type is assumed
     * @return a ParameterSpec structure describing the structure of the parameter
     * @throws ParserException if there was an error parsing the HTML form
     * @throws IOException  if there was an error reading the input character stream

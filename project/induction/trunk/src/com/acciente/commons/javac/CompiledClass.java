@@ -1,3 +1,20 @@
+/**
+ *   Copyright 2008 Acciente, LLC
+ *
+ *   Acciente, LLC licenses this file to you under the
+ *   Apache License, Version 2.0 (the "License"); you
+ *   may not use this file except in compliance with the
+ *   License. You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in
+ *   writing, software distributed under the License is
+ *   distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+ *   OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing
+ *   permissions and limitations under the License.
+ */
 package com.acciente.commons.javac;
 
 import org.apache.commons.io.FileUtils;
@@ -58,7 +75,7 @@ public class CompiledClass
 	 * @param oClassDir the root directory to load class files from
 	 * @param sParentPackageName an additional parent package name (without a trailing period)
 	 * that will be prepended to each class name
-	 * @return an array of CompiledClass objects 
+	 * @return an array of CompiledClass objects
 	 * @throws IOException
 	 */
 	public static CompiledClass[] getCompiledClasses( File oClassDir, String sParentPackageName )
@@ -99,7 +116,7 @@ public class CompiledClass
 					.addAll( getCompiledClassList(	oDirOrFile,
 																sPackageName.equals( "" )
 																? oDirOrFile.getName()
-																: sPackageName + "." + oDirOrFile.getName() 
+																: sPackageName + "." + oDirOrFile.getName()
 														  )
 							 );
 			}
@@ -111,7 +128,7 @@ public class CompiledClass
 					.add( new CompiledClass(	sPackageName.equals( "" )
 														?	sClassName
 														:	sPackageName + "." + sClassName,
-														FileUtils.readFileToByteArray( oDirOrFile )											
+														FileUtils.readFileToByteArray( oDirOrFile )
 												  )
 						 );
 			}
