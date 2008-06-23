@@ -1,8 +1,10 @@
 h1. Getting Started with Induction
 
+{toc}
+
 h2. Introduction
 
-Welcome to Induction! Induction is a powerful, lightweight framework for developing web applications using the Java(tm) programming language. Induction belongs to the class of web frameworks usually referred to as __request-based__ frameworks. Induction deploys as a servlet into a Java(tm) servlet container. Induction promotes the Model-View-Controller (MVC) approach to web application development. Some of the key design goals of Induction are:
+Welcome to Induction! Induction is a powerful, high-performance framework for developing web applications using the Java(tm) programming language. Induction belongs to the class of web frameworks usually referred to as __request-based__ frameworks. Induction deploys as a servlet into a Java(tm) servlet container. Induction promotes the Model-View-Controller (MVC) approach to web application development. Some of the key design goals of Induction are:
 
 * eliminate the need for web application reloads to test changes to models, views and controllers (we believe that a simple page refresh should suffice)
 
