@@ -18,10 +18,11 @@
 package com.acciente.induction.util;
 
 /**
- * This class ...
+ * Internal.
  *
- * Log
- * Mar 20, 2008 APR  -  created
+ * @created Mar 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ConstructorNotFoundException extends Exception
 {

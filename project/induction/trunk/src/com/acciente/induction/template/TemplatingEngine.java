@@ -18,25 +18,25 @@
 package com.acciente.induction.template;
 
 import com.acciente.induction.view.Template;
+import freemarker.template.TemplateException;
 
 import java.io.IOException;
 import java.io.Writer;
 
-import freemarker.template.TemplateException;
-
 /**
  * This interface is used to abstract access to templating engine used.
- *
+ * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:
- *   - the single constructor should accepts no arguments or
+ * adhering to the following convention:<p>
+ *   - the single constructor should accepts no arguments or<p>
  *   - the single constructor should declare formal parameters using only the
- *     following types,
- *     - javax.servlet.ServletConfig
- *     - com.acciente.induction.init.config.Config.Templating
+ *     following types:<p>
+ *     - javax.servlet.ServletConfig<p>
+ *     - com.acciente.induction.init.config.Config.Templating<p>
  *
- * Log
- * Apr 17, 2008 APR  -  created
+ * @created Apr 17, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface TemplatingEngine
 {

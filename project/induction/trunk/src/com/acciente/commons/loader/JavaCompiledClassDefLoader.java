@@ -20,8 +20,11 @@ package com.acciente.commons.loader;
 import java.io.File;
 
 /**
- * Log
- * Feb 29, 2008 APR  -  created
+ * A class definition loader that loads compiled Java class files.
+ *
+ * @created Feb 29, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class JavaCompiledClassDefLoader implements ClassDefLoader
 {

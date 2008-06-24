@@ -30,10 +30,12 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Internal.
  * This class manages initialization of the templating engine based on the configured settings
  *
- * Log
- * Apr 23, 2008 APR  -  created
+ * @created Apr 23, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class TemplatingEngineInitializer
 {

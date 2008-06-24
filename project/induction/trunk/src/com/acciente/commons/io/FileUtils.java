@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * Log
- * Feb 20, 2008 APR  -  created
+ * A collection of general purpose file utils.
+ *
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class FileUtils
 {

@@ -30,10 +30,12 @@ import java.util.Map;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Internal. 
  * This class manages access to the pool model objects
  *
- * Log
- * Mar 16, 2008 APR  -  created
+ * @created Mar 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ModelPool
 {

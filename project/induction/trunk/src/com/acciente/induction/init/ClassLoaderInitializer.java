@@ -24,11 +24,13 @@ import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
 
 /**
+ * Internal.
  * This is helper class that focuses on setting up the primary classloader used
  * by the dispatcher servlet.
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ClassLoaderInitializer
 {

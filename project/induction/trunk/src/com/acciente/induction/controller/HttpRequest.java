@@ -21,8 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
- * Log
- * Feb 18, 2008 APR  -  created
+ * Internal.
+ * Implementation backing the Request inteface.
+ * 
+ * @created Feb 18, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class HttpRequest extends HttpServletRequestWrapper implements Request
 {

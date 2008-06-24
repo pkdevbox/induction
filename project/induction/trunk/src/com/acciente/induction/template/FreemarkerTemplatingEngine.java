@@ -26,9 +26,8 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.cache.WebappTemplateLoader;
 import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.TemplateException;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.TemplateException;
 
 import javax.servlet.ServletConfig;
 import java.io.IOException;
@@ -38,10 +37,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class implements a template engine that uses the Freemarker templating engine
+ * An implementation of the Induction template engine interface that plugs in the Freemarker templating engine.
  *
- * Log
- * Apr 17, 2008 APR  -  created
+ * @created Apr 17, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class FreemarkerTemplatingEngine implements TemplatingEngine
 {

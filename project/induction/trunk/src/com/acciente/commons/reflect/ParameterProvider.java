@@ -18,10 +18,18 @@
 package com.acciente.commons.reflect;
 
 /**
- * This class ...
+ * This interface is used by the Invoker to allow its caller to provide parameter
+ * values based on parameter type. The Invoker calls the getParameter() method on
+ * the provided implementation once for each argument of a constructor or method
+ * for which the Invoker needs a value. The Invoker will not call getParameter()
+ * if the a value for a parameter could be determined based on the aoArgs array
+ * passed to an Invoker method. 
  *
- * Log
- * Jun 20, 2008 APR  -  created
+ * @see Invoker
+ *
+ * @created Jun 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface ParameterProvider
 {

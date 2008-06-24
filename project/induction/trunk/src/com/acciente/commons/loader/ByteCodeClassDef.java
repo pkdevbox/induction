@@ -18,7 +18,9 @@
 package com.acciente.commons.loader;
 
 /**
- * A simple implementation of ClassDef to hold a compiled java class file
+ * A simple implementation of ClassDef thats reads the definition from a compiled java class file.
+ *
+ * @author Adinath Raveendra Raj
  */
 class ByteCodeClassDef implements ClassDef
 {

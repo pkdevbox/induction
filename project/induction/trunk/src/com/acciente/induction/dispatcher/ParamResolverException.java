@@ -18,8 +18,11 @@
 package com.acciente.induction.dispatcher;
 
 /**
- * Log
- * Apr 14, 2008 APR  -  created
+ * Internal.
+ *
+ * @created Apr 14, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ParamResolverException extends Exception
 {

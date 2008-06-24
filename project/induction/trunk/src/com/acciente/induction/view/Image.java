@@ -18,10 +18,13 @@
 package com.acciente.induction.view;
 
 /**
- * This interface should be implemented by a view to render an image
+ * This view interface should be implemented to send an image to the browser.
  *
- * Log
- * Mar 9, 2008 APR  -  created
+ * @see ImageStream
+ *
+ * @created Mar 9, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Image
 {

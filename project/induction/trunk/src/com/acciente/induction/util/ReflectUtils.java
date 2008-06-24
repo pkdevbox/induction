@@ -23,13 +23,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 /**
- * Some useful reflection methods.
+ * Internal. Some useful reflection methods.
  *
- * (It is not convincing enough that these methods are general enough to be promoted to the
- * com.acciente.reflect package)
+ * (It is not convincing enough at this time that these methods are general enough to
+ * be promoted to the com.acciente.reflect package)
  *
- * Log
- * Mar 16, 2008 APR  -  created
+ * @created Mar 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ReflectUtils
 {

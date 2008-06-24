@@ -30,10 +30,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
- * This class ...
+ * Internal. 
  *
- * Log
- * Apr 17, 2008 APR  -  created
+ * @created Apr 17, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ViewExecutor
 {

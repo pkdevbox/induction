@@ -25,26 +25,27 @@ import javax.servlet.http.HttpServletRequest;
  * This class implements a controller resolver that maps the path info in the URL
  * to a controller class name and method name. On the path following the servlet's
  * context path is used. So assuming the servlet's context path is /myapp/cgi then
- * given the URL:
- *
- *    /myapp/cgi/myapp/cart/CartController/addItem?item_id=widget-202&qty=500
+ * given the URL:<p>
+ * <p>
+ *    /myapp/cgi/myapp/cart/CartController/addItem?item_id=widget-202&qty=500<p>
  *
  * the following part of the URL will be used for determining which controller/method
- * to invoke:
- *
- *    /myapp/cart/CartController/additem
- *
- * which would resolve to:
- *
- *    class-name:    myapp.cart.CartController
- *    method-name:   addItem
- *
+ * to invoke:<p>
+ * <p>
+ *    /myapp/cart/CartController/additem<p>
+ * <p>
+ * which would resolve to:<p>
+ * <p>
+ *    class-name:    myapp.cart.CartController<p>
+ *    method-name:   addItem<p>
+ * <p>
  * If the path ends with a trailing slash the, it is assumed that no method name is given
  * and the resolver will set the method name to null, which will cause the framework to
- * invoke a default user-configurable controller method name.
+ * invoke a default user-configurable controller method name.<p>
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class URLPathControllerResolver implements ControllerResolver
 {

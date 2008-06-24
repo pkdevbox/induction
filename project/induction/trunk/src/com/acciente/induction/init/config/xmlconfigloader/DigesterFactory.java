@@ -22,10 +22,12 @@ import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.XML;
 
 /**
+ * Internal.
  * DigesterFactory
  *
- * Log
- * May 1, 2008 APR  -  created
+ * @created May 1, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class DigesterFactory
 {

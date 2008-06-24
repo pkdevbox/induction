@@ -20,10 +20,12 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.induction.init.config.ConfigLoaderException;
 
 /**
+ * Internal.
  * XMLConfigLoaderException
  *
- * Log
- * May 8, 2008 APR  -  created
+ * @created May 8, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class XMLConfigLoaderException extends ConfigLoaderException
 {

@@ -2,8 +2,7 @@
 @rem Log
 @rem May 27, 2008 APR	created
 
-@rem startlocal
-@set path=%path%;c:\dev\j2sdk1.4.2_16\bin
+@set path=%path%;c:\dev\jdk1.6.0_04\bin
 
 @if exist c:\acciente\acciente-projects\software  goto :home_root
 @if exist t:\acciente-projects\software           goto :work_root
@@ -41,5 +40,4 @@
 
 :end_script
 
-@rem endlocal
 @pause

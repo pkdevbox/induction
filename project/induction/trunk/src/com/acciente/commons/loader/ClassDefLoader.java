@@ -18,11 +18,11 @@
 package com.acciente.commons.loader;
 
 /**
- * Class description goes here
- * <p/>
- * Log
- * Feb 27, 2008 APR  -  created
- * May 21, 2008 APR  -  getClassDef() can now return null
+ * This is an interface that abstracts the loading of class definitions. 
+ *
+ * @created Feb 27, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface ClassDefLoader
 {

@@ -22,10 +22,12 @@ import com.acciente.commons.lang.Strings;
 import org.apache.commons.digester.Rule;
 
 /**
+ * Internal.
  * RedirectResolverRule
  *
- * Log
- * Jun 21, 2008 APR  -  created
+ * @created Jun 21, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class RedirectResolverRule extends Rule
 {

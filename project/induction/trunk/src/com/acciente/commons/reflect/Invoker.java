@@ -26,8 +26,9 @@ import java.lang.reflect.InvocationTargetException;
  * methods. The methods in this class are used to do constructor and method
  * dependency injection based on type matching.
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Invoker
 {

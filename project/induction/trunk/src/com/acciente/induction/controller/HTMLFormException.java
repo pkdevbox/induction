@@ -18,10 +18,12 @@
 package com.acciente.induction.controller;
 
 /**
- * This class ...
+ * Internal.
+ * Exception thrown during HTML form processing.
  *
- * Log
- * Apr 16, 2008 APR  -  created
+ * @created Apr 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class HTMLFormException extends Exception
 {

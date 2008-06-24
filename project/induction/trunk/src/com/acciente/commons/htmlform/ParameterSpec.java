@@ -21,8 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Log
- * Feb 16, 2008 APR  -  created
+ * This class models a parameter on the HTML form. The form parser creates
+ * an instance of this class for parameter in the form.
+ *
+ * @created Feb 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ParameterSpec
 {

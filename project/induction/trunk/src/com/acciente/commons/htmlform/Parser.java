@@ -36,12 +36,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class implements a parser that parses the parameters submitted in an HTML form
+ * This class implements a parser that parses the parameters (and data) submitted in an HTML form
  * and populates a Map with the form data.
  *
- * Log
- * Feb 12, 2008 APR  -  created
- * Apr 04, 2008 APR  -  refactoring
+ * @created Feb 12, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Parser
 {

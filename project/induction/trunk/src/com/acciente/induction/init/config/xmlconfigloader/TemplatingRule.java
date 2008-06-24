@@ -25,13 +25,15 @@ import java.util.Locale;
 import java.io.File;
 
 /**
+ * Internal.
  * TemplatingRule
  *
  * NOTE: we do not extend Rule in this class, since this class while a rules "container",
  * but is not itself a rule
  *
- * Log
- * May 6, 2008 APR  -  created
+ * @created May 6, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class TemplatingRule
 {

@@ -18,12 +18,14 @@
 package com.acciente.induction.init;
 
 /**
+ * Internal.
  * This interface is used to provide access to centralized logger with having
  * to pass in the entire servlet object (which has the log() method) to each
  * class/method that needs access to the logger.
  *
- * Log
- * Mar 16, 2008 APR  -  created
+ * @created Mar 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 // todo: investigate the use of a more standard logging api
 public interface Logger

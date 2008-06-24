@@ -20,8 +20,9 @@ package com.acciente.commons.javac;
 import java.io.File;
 
 /**
- * Log
- * Feb 20, 2008 APR  -  created
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class JavaCompilerManager
 {

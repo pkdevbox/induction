@@ -23,8 +23,9 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Log
- * Feb 20, 2008 APR  -  created
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public abstract class JavaCompiler_JDK_Common
 {
@@ -41,7 +42,7 @@ public abstract class JavaCompiler_JDK_Common
 
 	/**
 	 * This noargs contructor is required to support dynamic instantiation
-	 * of this class by dragonFly
+	 * of this class by Induction
 	 */
 	public JavaCompiler_JDK_Common()
 	{

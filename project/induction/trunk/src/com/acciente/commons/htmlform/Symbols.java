@@ -18,8 +18,11 @@
 package com.acciente.commons.htmlform;
 
 /**
- * Log
- * Feb 16, 2008 APR  -  created
+ * Contains the set of symbols used by the parser to identify tokens. 
+ *
+ * @created Feb 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Symbols
 {
@@ -29,7 +32,7 @@ public interface Symbols
    char CHAR_OPEN_BRACKET    =  '[';
    char CHAR_CLOSE_BRACKET   =  ']';
 
-   // symbols used in DragonFly's URL encoded parameter syntax
+   // symbols used in Induction's URL encoded parameter syntax
 
    String TOKEN_COLON           =  ":";
    String TOKEN_EQUALS          =  "=";

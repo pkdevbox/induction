@@ -20,8 +20,11 @@ package com.acciente.induction.controller;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Log
- * Feb 25, 2008 APR  -  created
+ * Provides access to the servlet Request, this interface decorates the standard HttpServletRequest object.
+ *
+ * @created Feb 25, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Request extends HttpServletRequest
 {

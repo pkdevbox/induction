@@ -28,10 +28,12 @@ import java.util.Map;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Internal.
  * This class manages instances of the the model factory classes configured in the system.
  *
- * Log
- * Mar 25, 2008 APR  -  created
+ * @created Mar 25, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ConfiguredModelFactoryPool
 {

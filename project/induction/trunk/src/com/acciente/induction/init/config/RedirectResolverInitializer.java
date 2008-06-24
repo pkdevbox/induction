@@ -28,8 +28,11 @@ import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Log
- * Jun 21, 2008 APR  -  created
+ * Internal.
+ *
+ * @created Jun 21, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class RedirectResolverInitializer
 {

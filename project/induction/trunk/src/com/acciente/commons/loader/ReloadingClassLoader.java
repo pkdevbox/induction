@@ -27,17 +27,27 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * This classloader loads classes retrieved vis a class definition loader
+ * This classloader loads classes retrieved via a class definition loader
  * (aka ClassDefLoader). This class loader uses the methods provided by
- * a ClassDef to determine if the class has been modified and transparently
- * reloads the class if its modified.
+ * a ClassDef (a ClassDef is returned by the ClassDefLoader) to determine
+ * if the class has been modified and transparently reloads the class
+ * into the JVM if the ClassDef reports that the class has been modified.<p>
+ * <p>
+ * This class loader also reads dependency information from the ClassDef.
+ * When the load of a class, say A, is requested it recursively checks for
+ * modificiations to dependent classes. If any of the the dependent classes
+ * are modified it first reloads the dependent classes and then proceeds to
+ * reload the class A.  
  *
- * Log
- * Feb 23, 2008 APR  -  created
- * Feb 27, 2008 APR  -  refactored SourceClassLoader -> ReloadingClassLoader
- * May 21, 2008 APR  -  refactored to support a list of ClassDefLoaders to enable
- *                      searching in multiple load locations without the need to
- *                      to chain classloaders.
+ * @see ClassDefLoader
+ * @see ClassDef
+ *
+ * @created Feb 23, 2008
+ * @change-summary Feb 27, 2008 APR  refactored SourceClassLoader -> ReloadingClassLoader
+ * @change-summary May 21, 2008 APR  refactored to support a list of ClassDefLoaders to enable
+ * searching in multiple load locations without the need to to chain classloaders.
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ReloadingClassLoader extends SecureClassLoader
 {

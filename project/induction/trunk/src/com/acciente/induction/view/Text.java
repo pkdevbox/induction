@@ -18,10 +18,11 @@
 package com.acciente.induction.view;
 
 /**
- * This interface should be implemented by a view to output text directly
+ * This view interface should be implemented to output simple text to the browser.
  *
- * Log
- * Mar 10, 2008 APR  -  created
+ * @created Mar 10, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Text
 {

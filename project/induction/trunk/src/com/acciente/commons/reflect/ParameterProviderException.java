@@ -18,8 +18,13 @@
 package com.acciente.commons.reflect;
 
 /**
- * Log
- * Jun 21, 2008 APR  -  created
+ * An exception in which an exception thrown by a parameter provider should be wrapped.
+ *
+ * @see Invoker
+ *
+ * @created Jun 21, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ParameterProviderException extends Exception
 {

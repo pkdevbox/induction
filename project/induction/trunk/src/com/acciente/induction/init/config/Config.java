@@ -27,13 +27,14 @@ import java.util.Map;
 import java.util.Iterator;
 
 /**
- * This class stores all the configuration for a single dispatcher instance.
- * We use inner classes in this class to represent each type of configuration information,
- * sometimes there may be two identical looking inner classes but this is done since though
- * identical the two classes represent different concepts and as such may diverge in the future.
+ * This class is the container for the configuration information used by Induction.
+ * It uses inner classes to represent each type of category of configuration information,
+ * sometimes there may be two identical looking inner classes but this is done since, though
+ * identical, the two classes represent different concepts and as such may diverge in the future.
  *
- * Log
- * Feb 29, 2008 APR  -  created
+ * @created Feb 29, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Config
 {
@@ -132,7 +133,7 @@ public class Config
    }
 
    /**
-    * Inner classes used to structure the configuration information follows
+    * Modular configuration container
     */
    public static class JavaClassPath
    {
@@ -198,6 +199,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class CompiledDir
       {
          private  File     _oDir;
@@ -234,6 +238,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class SourceDir
       {
          private  File     _oDir;
@@ -270,6 +277,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class JavaCompiler
       {
          private static final String    DEFAULT = "com.acciente.commons.javac.JavaCompiler_JDK_1_4";
@@ -310,6 +320,9 @@ public class Config
       }
    }
 
+   /**
+    * Modular configuration container
+    */
    public static class ModelDefs
    {
       private Map _oModelDefMap = new HashMap();
@@ -375,6 +388,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class ModelDef
       {
          private String    _sModelClassName;
@@ -481,6 +497,9 @@ public class Config
       }
    }
 
+   /**
+    * Modular configuration container
+    */
    public static class Templating
    {
       private TemplatePath             _oTemplatePath       = new TemplatePath();
@@ -572,6 +591,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class TemplatingEngine
       {
          private String    _sClassName;
@@ -617,6 +639,9 @@ public class Config
          }
       }
 
+      /**
+       * Modular configuration container
+       */
       public static class TemplatePath
       {
          private  List _oTemplatePath = new ArrayList();
@@ -717,6 +742,9 @@ public class Config
             }
          }
 
+         /**
+          * Modular configuration container
+          */
          public static class Dir
          {
             private  File     _oDir;
@@ -743,6 +771,9 @@ public class Config
             }
          }
 
+         /**
+          * Modular configuration container
+          */
          public static class LoaderClass
          {
             private  String _sLoaderClassName;
@@ -779,6 +810,9 @@ public class Config
             }
          }
 
+         /**
+          * Modular configuration container
+          */
          public static class WebappPath
          {
             private String _sPath;
@@ -811,6 +845,9 @@ public class Config
       }
    }
 
+   /**
+    * Modular configuration container
+    */
    public static class ControllerResolver
    {
       private String    _sClassName;
@@ -892,6 +929,9 @@ public class Config
       }
    }
 
+   /**
+    * Modular configuration container
+    */
    public static class RedirectResolver
    {
       private String    _sClassName;
@@ -929,6 +969,9 @@ public class Config
       }
    }
 
+   /**
+    * Modular configuration container
+    */
    public static class FileUpload
    {
       private static final int _1_KB = 1024;

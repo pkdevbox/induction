@@ -26,8 +26,9 @@ import javax.servlet.ServletConfig;
  * in a manner consistent to the scheme used by the default ControllerResolver
  * class, URLPathControllerResolver.
  *
- * Log
- * Jun 21, 2008 APR  -  created
+ * @created Jun 21, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class URLPathRedirectResolver implements RedirectResolver
 {

@@ -32,10 +32,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class execute a specified method on a specified controller instance
+ * Internal.
+ * This class executes a specified method on a specified controller instance
  *
- * Log
- * Apr 17, 2008 APR  -  created
+ * @created Apr 17, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ControllerExecutor
 {
