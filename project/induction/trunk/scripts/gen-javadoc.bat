@@ -25,9 +25,11 @@
 
 @rem - generate javadocs for Acciente Commons
 @javadoc  %custom_tags% -public -classpath %classpath% -d ../../javadoc/commons -sourcepath ../src @commons-package-list.txt
+@pause
 
 @rem - remove old javadocs
 @rd ..\..\javadoc\induction /s/q
 
 @rem - generate javadocs for Acciente Induction
 @javadoc  %custom_tags% -public -classpath %classpath% -d ../../javadoc/induction -sourcepath ../src @induction-package-list.txt
+@pause

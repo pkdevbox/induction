@@ -34,18 +34,6 @@
 			<directory>\another\directory\with\class\files\to\be\reloaded\dynamically</directory>
 			<package-prefix>a.package.name</package-prefix>
 		</compiled-directory>
-		<source-directory>
-			<directory>\a\directory\with\java\source\files\to\be\compiled\dynamically</directory>
-			<!-- If the above directory points to a subfolder of the folder where the package
-			folder structure begins, then specify package represented by the subfolder -->
-			<package-prefix>a.package.name</package-prefix>
-		</source-directory>
-		<!-- It is possible to override the default java compiler used by Induction
-		to compile source files on the fly. A java compiler is only used if
-		source-directory entries are defined below. -->
-		<java-compiler>
-			<class>class_name_that_implements_the_induction_compiler_interface</class>
-		</java-compiler>
 	</java-class-path>
 
 	<!-- The following section allows you define the models used your application.
