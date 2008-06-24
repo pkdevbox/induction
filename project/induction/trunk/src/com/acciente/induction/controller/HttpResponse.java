@@ -23,8 +23,12 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 /**
- * Log
- * Feb 18, 2008 APR  -  created
+ * Internal.
+ * Implementation backing the Response inteface.
+ *
+ * @created Feb 18, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class HttpResponse extends HttpServletResponseWrapper implements Response
 {

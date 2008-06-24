@@ -22,11 +22,12 @@ import java.io.Reader;
 import java.io.StreamTokenizer;
 
 /**
- * This class tokenizes a URL encoded character stream, with additional consideration
- * of DragonFly support for an extended syntax for HTML form variables.
+ * This class tokenizes a URL encoded character stream, with additional considerations due
+ * to support for an extended syntax for HTML form variables in Induction.
  *
- * Log
- * Feb 15, 2008 APR  -  created
+ * @created Feb 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Tokenizer
 {

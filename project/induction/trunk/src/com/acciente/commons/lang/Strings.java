@@ -18,10 +18,11 @@
 package com.acciente.commons.lang;
 
 /**
- * This class has some frequently encountered string related methods
+ * This class has some frequently encountered string related utility methods.
  *
- * Log
- * Apr 23, 2008 APR  -  created
+ * @created Apr 23, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Strings
 {

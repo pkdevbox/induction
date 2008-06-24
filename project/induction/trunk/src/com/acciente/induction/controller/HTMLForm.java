@@ -29,8 +29,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Log
- * Feb 18, 2008 APR  -  created
+ * Internal.
+ * The implementation backing the the Form interface.
+ *
+ * @created Feb 18, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class HTMLForm implements Form
 {

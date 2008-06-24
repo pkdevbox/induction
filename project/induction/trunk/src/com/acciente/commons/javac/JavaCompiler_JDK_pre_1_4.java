@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * Log
- * Feb 20, 2008 APR  -  created
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class JavaCompiler_JDK_pre_1_4 extends JavaCompiler_JDK_Common implements JavaCompiler
 {

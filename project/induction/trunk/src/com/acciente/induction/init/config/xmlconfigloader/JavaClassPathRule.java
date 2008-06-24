@@ -24,10 +24,12 @@ import org.apache.commons.digester.Rule;
 import java.io.File;
 
 /**
+ * Internal.
  * JavaClassPathRule
  *
- * Log
- * May 1, 2008 APR  -  created
+ * @created May 1, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class JavaClassPathRule
 {

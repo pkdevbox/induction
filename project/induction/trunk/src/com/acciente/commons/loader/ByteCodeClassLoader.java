@@ -24,8 +24,9 @@ import java.util.Map;
 /**
  * A classloader to load a class using the byte code data
  *
- * Log
- * Feb 23, 2008 APR  -  created
+ * @created Feb 23, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ByteCodeClassLoader extends SecureClassLoader
 {

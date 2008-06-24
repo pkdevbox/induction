@@ -34,10 +34,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Internal.
  * This class handles the resolution of parameter values used for injection into controller methods.
  *
- * Log
- * Mar 16, 2008 APR  -  created
+ * @created Mar 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ParamResolver
 {

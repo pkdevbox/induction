@@ -21,18 +21,19 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * This interface is used to abstract the algorithm used to map a HTTP request to a specific
- * controller invocation.
- *
+ * controller invocation.<p>
+ * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:
- *   - the single constructor should accepts no arguments or
+ * adhering to the following convention:<p>
+ *   - the single constructor should accepts no arguments or<p>
  *   - the single constructor should declare formal parameters using only the
- *     following types,
- *     - javax.servlet.ServletContext
- *     - com.acciente.induction.init.config.Config.ControllerResolver
+ *     following types:<p>
+ *     - javax.servlet.ServletContext<p>
+ *     - com.acciente.induction.init.config.Config.ControllerResolver<p>
  *
- * Log
- * Mar 14, 2008 APR  -  created
+ * @created Mar 14, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface ControllerResolver
 {

@@ -18,8 +18,11 @@
 package com.acciente.commons.loader;
 
 /**
- * Log
- * Feb 23, 2008 APR  -  created
+ * An exception thrown to signal a compile error.
+ *
+ * @created Feb 23, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class CompileException extends Throwable
 {
@@ -33,3 +36,5 @@ public class CompileException extends Throwable
       super( sMessage, oCause );
    }
 }
+
+// EOF

@@ -18,8 +18,11 @@
 package com.acciente.induction.dispatcher.view;
 
 /**
- * Log
- * Apr 26, 2008 APR  -  created
+ * Internal.
+ * 
+ * @created Apr 26, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ViewExecutorException extends Exception
 {

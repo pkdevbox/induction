@@ -18,11 +18,11 @@
 package com.acciente.commons.htmlform;
 
 /**
- * This is parser that parses the variables submitted in an HTML form
- * and populates a Map with the form data.
+ * An exception thrown to signal a parse error. 
  *
- * Log
- * Feb 16, 2008 APR  -  created
+ * @created Feb 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ParserException extends Exception
 {

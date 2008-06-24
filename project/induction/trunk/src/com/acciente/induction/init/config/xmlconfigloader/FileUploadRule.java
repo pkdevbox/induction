@@ -24,10 +24,12 @@ import org.apache.commons.digester.Rule;
 import java.io.File;
 
 /**
+ * Internal.
  * FileUploadRule
  *
- * Log
- * May 8, 2008 APR  -  created
+ * @created May 8, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class FileUploadRule extends Rule
 {

@@ -38,10 +38,11 @@ import java.util.Set;
 /**
  * This class has methods to read information from a class file.
  *
- * (this class uses the Apache BCEL library to do the hard work)
+ * (this class makes heavy use of the Apache BCEL library)
  *
- * Log
- * Jun 5, 2008 APR  -  created
+ * @created Jun 5, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ClassFile
 {

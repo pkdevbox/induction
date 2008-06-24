@@ -22,10 +22,11 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 /**
- * Class description goes here
+ * Provides access to the servlet Response, this interface decorates the standards HttpServletResponse object.
  *
- * Log
- * Feb 25, 2008 APR -  created
+ * @created Feb 25, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Response extends HttpServletResponse
 {

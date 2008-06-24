@@ -22,11 +22,12 @@ import com.acciente.commons.javac.JavaCompilerManager;
 import java.io.File;
 
 /**
- * Class description goes here
- * <p/>
- * Log
- * Feb 27, 2008 APR -  created
- */
+ * An class definition loader that compiles and loads Java source files. 
+ *
+ * @created Feb 27, 2008
+ *
+ * @author Adinath Raveendra Raj
+*/
 public class JavaSourceClassDefLoader implements ClassDefLoader
 {
    private File                  _oSourceDirectory;

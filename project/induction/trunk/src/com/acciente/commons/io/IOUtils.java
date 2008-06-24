@@ -26,8 +26,10 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * Log
- * Feb 20, 2008 APR  -  created
+ * A collection of general purpose I/O utils.
+ *
+ * @created Feb 20, 2008
+ * @author APR
  */
 public class IOUtils
 {

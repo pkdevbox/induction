@@ -28,11 +28,13 @@ import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
 
 /**
+ * Internal.
  * This is helper class that focuses on setting up the controller resolver used
  * by the dispatcher servlet.
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ControllerResolverInitializer
 {

@@ -29,12 +29,14 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
+ * Internal.
  * This class manages a pool of Controller object instances. If a controller object is in the pool and it's underlying
  * class has not since reloaded the object in the pool is used, otherwise a new controller object is instantiated. There
  * is a single instance of this class per dispatcher servlet.
  *
- * Log
- * Mar 20, 2008 APR  -  created
+ * @created Mar 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ControllerPool
 {

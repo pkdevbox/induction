@@ -31,10 +31,12 @@ import java.io.InputStream;
  * An implementation of the ConfigLoader that loads the configuration from an
  * XML file.
  *
- * Log
- * Apr 26, 2008 APR  -  created
+ * @created Apr 26, 2008
+ *
+ * @author Adinath Raveendra Raj
+ *
+ * @todo support for a DTD validator to catch simple config errors, otherwise hard to trace
  */
-// todo: support for a DTD validator to catch simple config errors, otherwise hard to trace
 public class XMLConfigLoader implements ConfigLoader
 {
    private  ServletConfig  _oServletConfig;

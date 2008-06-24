@@ -19,18 +19,19 @@ package com.acciente.induction.init.config;
 
 /**
  * This interface abstracts the mechanism used to load the configuration settings
- * used by the dispatcher.
+ * used by the dispatcher.<p>
  *
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:
- *   - the single constructor should accepts no arguments or
+ * adhering to the following convention:<p>
+ *   - the single constructor should accepts no arguments or<p>
  *   - the single constructor should declare formal parameters using only the
- *     following types,
- *     - javax.servlet.ServletContext
- *     - javax.servlet.ServletConfig
+ *     following types:<p>
+ *     - javax.servlet.ServletContext<p>
+ *     - javax.servlet.ServletConfig<p>
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface ConfigLoader
 {

@@ -28,10 +28,11 @@ import java.io.Reader;
 import java.util.ArrayList;
 
 /**
- * Class definitions backed by Java source files
+ * Class definitions loaded directly from Java source files.
  *
- * Log
- * Feb 27, 2008 APR -  created
+ * @created Feb 27, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 class JavaSourceClassDef implements ClassDef
 {

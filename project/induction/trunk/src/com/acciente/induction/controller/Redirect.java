@@ -20,8 +20,9 @@ package com.acciente.induction.controller;
 /**
  * Used to instruct the client to redirect.
  *
- * Log
- * Jun 21, 2008 APR  -  created
+ * @created Jun 21, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Redirect
 {

@@ -19,19 +19,19 @@ package com.acciente.induction.controller;
 
 import com.acciente.commons.htmlform.FileHandle;
 import com.acciente.commons.htmlform.ParserException;
+import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
 import java.util.Set;
 
-import org.apache.commons.fileupload.FileUploadException;
-
 /**
- * This interface provides access to all parameters submitted as part of the request. Both GET and
+ * This interface provides access to the HTML form submitted as part of the request (if any). Both GET and
  * POST parameters are accesible. If the same parameter is defined via GET and POST the value sent
  * via POST prevails.
  *
- * Log
- * Feb 25, 2008 APR  -  created
+ * @created Feb 25, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Form
 {

@@ -24,8 +24,13 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Log
- * Feb 29, 2008 APR  -  created
+ * An implementation of a ClassDef backed by compiled Java class files.
+ *
+ * @see com.acciente.commons.loader.ClassDef
+ *
+ * @created Feb 29, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class JavaCompiledClassDef implements ClassDef
 {

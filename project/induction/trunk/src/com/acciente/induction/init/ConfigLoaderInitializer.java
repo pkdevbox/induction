@@ -49,8 +49,9 @@ import java.lang.reflect.InvocationTargetException;
  * dispatcher servlet is named myapp, the an example of a parameter name
  * in the web.xml would look like: myapp.config-loader-class
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ConfigLoaderInitializer
 {

@@ -1,0 +1,12 @@
+com.acciente.induction.controller
+com.acciente.induction.dispatcher
+com.acciente.induction.dispatcher.controller
+com.acciente.induction.dispatcher.model
+com.acciente.induction.dispatcher.view
+com.acciente.induction.init
+com.acciente.induction.init.config
+com.acciente.induction.init.config.xmlconfigloader
+com.acciente.induction.resolver
+com.acciente.induction.template
+com.acciente.induction.util
+com.acciente.induction.view

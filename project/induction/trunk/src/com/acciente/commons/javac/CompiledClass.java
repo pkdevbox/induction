@@ -32,8 +32,9 @@ import java.util.List;
  * subdirectory in which the .class is found.
  *
  *
- * Log
- * Feb 20, 2008 APR  -  created
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class CompiledClass
 {

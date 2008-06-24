@@ -20,16 +20,17 @@ package com.acciente.induction.view;
 import java.io.OutputStream;
 
 /**
- * This interface should be implemented by a view to render an image. This interface
- * provided maximum control over how the image data is handed over to induction
+ * This view interface should be implemented to send an image to the browser. This interface
+ * provided maximum control over how the image data is handed over to Induction.
  *
- * Log
- * Mar 9, 2008 APR  -  created
+ * @created Mar 9, 2008
+
+ * @author Adinath Raveendra Raj
  */
 public interface ImageStream
 {
    /**
-    * This method when called by dragonFly, should write the image contents
+    * This method when called by Induction, should write the image contents
     * to the output stream passed to the method
     *
     * @param oOutputStream the output stream to which the image data should be written out to

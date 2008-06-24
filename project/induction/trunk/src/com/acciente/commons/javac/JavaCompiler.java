@@ -27,8 +27,9 @@ import java.io.IOException;
  * Sun JDK versions: 1.3.x, 1.4.x and 1.6.x, I discovered the apache-commons-jci
  * project a day after I wrote this, but decided to use this implementation for now.
  *
- * Log
- * Feb 20, 2008 APR  -  created
+ * @created Feb 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface JavaCompiler
 {

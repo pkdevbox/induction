@@ -34,10 +34,12 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
+ * Internal.
  * This class is the factory used to instantiate new Model object instances
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ModelFactory
 {
@@ -144,6 +146,9 @@ public class ModelFactory
       return bStale;
    }
 
+   /**
+    * Internal.
+    */
    public static class ModelParameterProvider implements ParameterProvider
    {
       private ModelPool          _oModelPool;

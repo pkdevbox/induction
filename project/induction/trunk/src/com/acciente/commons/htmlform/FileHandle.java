@@ -23,11 +23,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class is a facade to isolate from any fileupload implementation provided by the
- * the multi-part parser used.
+ * This class is a facade to isolate the fileupload implementation from the multi-part parser used.
  *
- * Log
- * Apr 5, 2008 APR  -  created
+ * @created Apr 5, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class FileHandle
 {

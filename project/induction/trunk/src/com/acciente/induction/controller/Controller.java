@@ -20,28 +20,29 @@ package com.acciente.induction.controller;
 /**
  * This interface is used to mark a specific class as a controller. This interface exists
  * primarily to enhance security by explicitly marking a class that may be invoked as a
- * controller by the framework.
+ * controller by the framework.<p>
  *
  * A class implementing this interface is expected to have a single public contructor
- * with its formal parameter list observing the following convention:
- *   - the single constructor should accept no formal parameters or
- *   - the single constructor should declare formal parameters using only the
- *     following types,
- *     - javax.servlet.ServletContext
- *     - javax.servlet.ServletConfig
+ * with its formal parameter list observing the following convention:<p>
+ *   - the single constructor should accept no formal parameters or<p>
+ *   - the single constructor should declare formal parameters using only the<p>
+ *     following types:<p>
+ *     - javax.servlet.ServletContext<p>
+ *     - javax.servlet.ServletConfig<p>
  *
  * A class implementing this interface may optionally define a single public method
  * named init(). If defined this method will be called after the controller is
  * created using the constructor. The init() method if defined should have its
- * formal parameter list observe the convention described above for the constructor.
+ * formal parameter list observe the convention described above for the constructor.<p>
  *
  * A class implementing this interface may optionally define a single public method
  * named destroy(). If defined this method will be called when the controller instance is
  * taken out of service. If there is more than one destroy method or if it the single
- * destroy method requires arguments then the method will be ignored.
+ * destroy method requires arguments then the method will be ignored.<p>
  *
- * Log
- * Mar 14, 2008 APR  -  created
+ * @created Mar 14, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Controller
 {

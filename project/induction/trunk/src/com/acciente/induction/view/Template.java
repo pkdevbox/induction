@@ -18,11 +18,11 @@
 package com.acciente.induction.view;
 
 /**
- * This interface should be implemented by a view to render a text template
- * the view.
+ * This view interface should be implemented to render a text template to the browser.
  *
- * Log
- * Mar 9, 2008 APR  -  created
+ * @created Mar 9, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface Template
 {

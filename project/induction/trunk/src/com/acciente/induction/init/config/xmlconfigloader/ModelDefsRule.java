@@ -22,10 +22,12 @@ import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
 
 /**
+ * Internal.
  * ModelDefsRule
  *
- * Log
- * May 3, 2008 APR  -  created
+ * @created May 3, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ModelDefsRule extends Rule
 {

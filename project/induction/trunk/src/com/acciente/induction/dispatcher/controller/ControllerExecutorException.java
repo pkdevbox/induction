@@ -18,10 +18,11 @@
 package com.acciente.induction.dispatcher.controller;
 
 /**
- * This class ...
+ * Internal.
  *
- * Log
- * Apr 17, 2008 APR  -  created
+ * @created Apr 17, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ControllerExecutorException extends Exception
 {

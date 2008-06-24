@@ -47,8 +47,11 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Log
- * Feb 29, 2008 APR  -  created
+ * This is the Induction dispatcher servlet.
+ *
+ * @created Feb 29, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class HttpDispatcher extends HttpServlet
 {

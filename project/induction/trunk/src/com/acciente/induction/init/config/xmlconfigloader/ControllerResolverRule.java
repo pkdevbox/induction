@@ -22,13 +22,15 @@ import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
 
 /**
+ * Internal.
  * ControllerResolverRule
  *
  * NOTE: we do not extend Rule in this class, since this class while a rules "container",
  * but is not itself a rule
  *
- * Log
- * May 8, 2008 APR  -  created
+ * @created May 8, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ControllerResolverRule extends Rule
 {

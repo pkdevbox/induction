@@ -25,10 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class creates (and destroys) objects using a uniform convention
+ * Internal. This class creates (and destroys) objects using a uniform convention.
  *
- * Log
- * Mar 25, 2008 APR  -  created
+ * @created Mar 25, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class ObjectFactory
 {

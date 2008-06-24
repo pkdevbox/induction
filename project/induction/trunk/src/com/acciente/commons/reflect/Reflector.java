@@ -23,10 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A set of reflection utility methods that use caching for improved performance
+ * A set of reflection utility methods that use caching for high performance.
  *
- * Log
- * Mar 15, 2008 APR  -  created
+ * @created Mar 15, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class Reflector
 {

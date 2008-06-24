@@ -19,16 +19,17 @@ package com.acciente.induction.resolver;
 
 /**
  * This interface is used to abstract the algorithm used to map a redirect request to an actual URL
- *
+ * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:
- *   - the single constructor should accepts no arguments or
+ * adhering to the following convention:<p>
+ *   - the single constructor should accepts no arguments or<p>
  *   - the single constructor should declare formal parameters using only the
- *     following types,
- *     - javax.servlet.ServletContext
+ *     following types:<p>
+ *     - javax.servlet.ServletContext<p>
+ * 
+ * @created Jun 21, 2008
  *
- * Log
- * Jun 21, 2008 APR  -  created
+ * @author Adinath Raveendra Raj
  */
 public interface RedirectResolver
 {

@@ -22,8 +22,9 @@ package com.acciente.commons.loader;
  * a java class definition. An example of such an object is a java source file, another
  * example is a java class file.
  *
- * Log
- * Feb 27, 2008 APR -  created
+ * @created Feb 27, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public interface ClassDef
 {
