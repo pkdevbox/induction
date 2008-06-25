@@ -18,6 +18,7 @@
 package com.acciente.induction.resolver;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * This interface is used to abstract the algorithm used to map a HTTP request to a specific
@@ -48,16 +49,55 @@ public interface ControllerResolver
    Resolution resolve( HttpServletRequest oRequest );
 
    /**
-    * Log
-    * Mar 14, 2008 APR  -  created
+    * A container object containg the resolution information.
+    * 
+    * @created Mar 14, 2008
+    * @author Adinath Raveendra Raj
     */
    public static class Resolution
    {
       private String    _sClassName;
       private String    _sMethodName;
       private boolean   _bIsIgnoreMethodNameCase;
+      private Map       _oOptions;
 
+      /**
+       * Creates a resolution object.
+       *
+       * @param sClassName the fully qualified name of the controller class
+       * @param sMethodName the name of the method to invoke in the controller class
+       */
+      public Resolution( String sClassName, String sMethodName )
+      {
+         this( sClassName, sMethodName, false, null );
+      }
+
+      /**
+       * Creates a resolution object.
+       *
+       * @param sClassName the fully qualified name of the controller class
+       * @param sMethodName the name of the method to invoke in the controller class
+       * @param bIsIgnoreMethodNameCase tells Induction to ignore case when attempting to find a match for the
+       * method name in this resolution.
+       */
       public Resolution( String sClassName, String sMethodName, boolean bIsIgnoreMethodNameCase )
+      {
+         this( sClassName, sMethodName, bIsIgnoreMethodNameCase, null );
+      }
+
+      /**
+       * Creates a resolution object.
+       *
+       * @param sClassName the fully qualified name of the controller class
+       * @param sMethodName the name of the method to invoke in the controller class
+       * @param bIsIgnoreMethodNameCase tells Induction to ignore case when attempting to find a match for the
+       * method name in this resolution. 
+       * @param oOptions is an optional map (may be null) containing data that the resolver wishes to store as part 
+       * of the resolution. The controller's handler can access this data by choosing have the resolution object
+       * injected. This options maps is useful if the resolver is used to map a wide range of requests to a small
+       * number of controllers whose behaviour is parameterized by the options map.
+       */
+      public Resolution( String sClassName, String sMethodName, boolean bIsIgnoreMethodNameCase, Map oOptions )
       {
          if ( sClassName == null )
          {
@@ -67,7 +107,9 @@ public interface ControllerResolver
          _sClassName                =  sClassName;
          _sMethodName               =  sMethodName;
          _bIsIgnoreMethodNameCase   =  bIsIgnoreMethodNameCase;
+         _oOptions                  =  oOptions;
       }
+
 
       public String getClassName()
       {
@@ -83,5 +125,12 @@ public interface ControllerResolver
       {
          return _bIsIgnoreMethodNameCase;
       }
+
+      public Map getOptions()
+      {
+         return _oOptions;
+      }
    }
 }
+
+// EOF

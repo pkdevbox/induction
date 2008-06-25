@@ -120,7 +120,11 @@ public class ControllerExecutor
 
          try
          {
-            aoParameterValues[ i ] = _oParamResolver.getParameterValue( oParameterType, oRequest, oResponse );
+            aoParameterValues[ i ]
+               = _oParamResolver.getParameterValue( oParameterType, 
+                                                    oRequest,
+                                                    oResponse,
+                                                    oResolution );
          }
          catch ( ClassNotFoundException e )
          {
