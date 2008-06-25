@@ -19,6 +19,7 @@ package demoapp.models_app;
 
 import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Response;
+import com.acciente.induction.resolver.ControllerResolver;
 
 import java.io.IOException;
 
@@ -30,12 +31,17 @@ import java.io.IOException;
  */
 public class FooController implements Controller
 {
-   public void handler( Response oResponse, BarModel oBarModel ) throws IOException
+   public void handler( Response oResponse, BarModel oBarModel, ControllerResolver.Resolution oResolution ) throws IOException
    {
       oResponse.setContentType( "text/plain" );
-      //oResponse.out().println( "oFooModel=" + oFooModel );
-      oResponse.out().println( "oBarModel=" + oBarModel );
-      oResponse.out().println( "oBarModel.getFooModel()=" + oBarModel.getFooModel() );
+
+      oResponse.out().println( "barModel               : " + oBarModel );
+      oResponse.out().println( "barModel.getFooModel() : " + oBarModel.getFooModel() );
+
+
+      oResponse.out().println( "resolution.className  : " + oResolution.getClassName() );
+      oResponse.out().println( "resolution.methodName : " + oResolution.getMethodName() );
+      oResponse.out().println( "resolution.options    : " + oResolution.getOptions() );
    }
 }
 
