@@ -22,9 +22,10 @@ import com.acciente.induction.init.config.Config;
 import javax.servlet.ServletConfig;
 
 /**
- * This class is simple implementation of a default RedirectResolver that works
+ * This class is an illustrative implementation of a RedirectResolver that works
  * in a manner consistent to the scheme used by the default ControllerResolver
- * class, URLPathControllerResolver.
+ * class, URLPathControllerResolver. If you are going to use Induction redirect support
+ * please replace this class with an implementation that would make sense for your application.
  *
  * @created Jun 21, 2008
  *
