@@ -20,6 +20,7 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.commons.lang.Strings;
 import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
+import org.xml.sax.Attributes;
 
 import java.io.File;
 
@@ -66,6 +67,13 @@ public class JavaClassPathRule
    {
       private  File        _oDir;
       private  String      _sPackageNamePrefix;
+
+      public void begin( String sNamespace, String sName, Attributes oAttributes )
+      {
+         // reset data stored in rule
+         _oDir                = null;
+         _sPackageNamePrefix  = null;
+      }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
@@ -123,6 +131,13 @@ public class JavaClassPathRule
    {
       private  File        _oDir;
       private  String      _sPackageNamePrefix;
+
+      public void begin( String sNamespace, String sName, Attributes oAttributes )
+      {
+         // reset data stored in rule
+         _oDir                = null;
+         _sPackageNamePrefix  = null;
+      }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {

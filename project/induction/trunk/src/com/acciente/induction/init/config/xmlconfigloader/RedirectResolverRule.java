@@ -20,6 +20,7 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.induction.init.config.Config;
 import com.acciente.commons.lang.Strings;
 import org.apache.commons.digester.Rule;
+import org.xml.sax.Attributes;
 
 /**
  * Internal.
@@ -37,6 +38,12 @@ public class RedirectResolverRule extends Rule
    public RedirectResolverRule( Config.RedirectResolver oRedirectResolver )
    {
       _oRedirectResolver = oRedirectResolver;
+   }
+
+   public void begin( String sNamespace, String sName, Attributes oAttributes )
+   {
+      // reset data stored in rule
+      _sClassName = null;
    }
 
    public void end( String sNamespace, String sName ) throws XMLConfigLoaderException

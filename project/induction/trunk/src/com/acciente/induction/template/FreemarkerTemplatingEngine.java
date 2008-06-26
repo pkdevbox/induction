@@ -47,7 +47,11 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 {
    private  Configuration  _oConfiguration;
 
-   public FreemarkerTemplatingEngine( Config.Templating oConfig, ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger ) throws IOException, ClassNotFoundException
+   public FreemarkerTemplatingEngine( Config.Templating        oConfig,
+                                      ClassLoader              oClassLoader,
+                                      ServletConfig            oServletConfig,
+                                      Logger                   oLogger )
+      throws IOException, ClassNotFoundException
    {
       _oConfiguration = new Configuration();
 
@@ -121,16 +125,23 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       }
    }
 
-   public void process( Template oTemplate, Writer oWriter ) throws IOException, TemplateException
+   public void process( Template oTemplate, Writer oWriter ) throws TemplatingEngineException, IOException
    {
       if ( oTemplate.getTemplateName() == null )
       {
          throw new IllegalArgumentException( "Templating must specify a template name" );
       }
 
-      _oConfiguration
+      try
+      {
+         _oConfiguration
          .getTemplate( oTemplate.getTemplateName() )
-            .process( oTemplate, oWriter );
+               .process( oTemplate, oWriter );
+      }
+      catch ( TemplateException e )
+      {
+         throw new TemplatingEngineException( "Freemaker threw exception during template processing: ", e );
+      }
    }
 }
 

@@ -20,6 +20,7 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.commons.lang.Strings;
 import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
+import org.xml.sax.Attributes;
 
 /**
  * Internal.
@@ -50,6 +51,17 @@ public class ModelDefsRule extends Rule
       private boolean   _bIsApplicationScope;
       private boolean   _bIsSessionScope;
       private boolean   _bIsRequestScope;
+
+      public void begin( String sNamespace, String sName, Attributes oAttributes )
+      {
+         // reset data stored in rule
+         _sModelClassName        = null;
+         _sModelFactoryClassName = null;
+         _bIsApplicationScope    = false;
+         _bIsSessionScope        = false;
+         _bIsRequestScope        = false;
+
+      }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
@@ -102,19 +114,13 @@ public class ModelDefsRule extends Rule
             if ( "application".equalsIgnoreCase( sText ) )
             {
                _bIsApplicationScope = true;
-               _bIsSessionScope     = false;
-               _bIsRequestScope     = false;
             }
             else if ( "session".equalsIgnoreCase( sText ) )
             {
-               _bIsApplicationScope = false;
                _bIsSessionScope     = true;
-               _bIsRequestScope     = false;
             }
             else if ( "request".equalsIgnoreCase( sText ) )
             {
-               _bIsApplicationScope = false;
-               _bIsSessionScope     = false;
                _bIsRequestScope     = true;
             }
             else

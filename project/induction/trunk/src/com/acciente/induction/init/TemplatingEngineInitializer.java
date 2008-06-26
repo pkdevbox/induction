@@ -61,7 +61,8 @@ public class TemplatingEngineInitializer
                ObjectFactory.createObject( oTemplatingEngineClass,
                                            new Object[]{ oServletConfig,
                                                          oTemplatingConfig,
-                                                         oClassLoader
+                                                         oClassLoader,
+                                                         oLogger
                                                        },
                                            null );
       }
