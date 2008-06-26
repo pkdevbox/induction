@@ -18,16 +18,30 @@
 package demoapp.models_app;
 
 /**
- * This class ...
+ * This is a simple model class. This model illustrates how Induction can create instances of
+ * a model by calling the model's public ocnstructor (no factory class is needed).<p>
+ * <p>
+ * This model also illustrates <b>model-to-model injection<b>, the instance of BarModel
+ * required by the FooModel constructor below is automatically injected since BarModel
+ * is also a know model class declared in the Induction configuration XML.
  *
  * Log
  * Jun 20, 2008 APR  -  created
  */
 public class FooModel
 {
-   public FooModel()
+   private BarModel _oBarModel;
+
+   public FooModel( BarModel oBarModel )
    {
-      System.out.println( "FooModel - constructor called" );
+      _oBarModel = oBarModel;
+
+      System.out.println( "just created a FooModel!" );
+   }
+
+   public BarModel getBarModel()
+   {
+      return _oBarModel;
    }
 }
 

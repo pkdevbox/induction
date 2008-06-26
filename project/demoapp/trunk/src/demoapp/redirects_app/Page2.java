@@ -15,7 +15,7 @@
  *   See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-package demoapp.redirect_app;
+package demoapp.redirects_app;
 
 import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Response;
