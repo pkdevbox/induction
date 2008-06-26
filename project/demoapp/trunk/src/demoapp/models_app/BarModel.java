@@ -18,25 +18,20 @@
 package demoapp.models_app;
 
 /**
- * This class ...
+ * This is also a simple model class, but in this case we illustrate the use of a model factory.<p>
+ * <p>
+ * The BarModel constructor requires the current time as a long, since Induction will not be able to
+ * infer this injection we will use our factory class to do it.
  *
- * Log
- * Jun 20, 2008 APR  -  created
+ * @created Jun 20, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class BarModel
 {
-   private FooModel _oFooModel;
-
-   public BarModel( FooModel oFooModel )
+   public BarModel( long iCurrentTime )
    {
-      _oFooModel = oFooModel;
-
-      System.out.println( "BarModel - constructor called" );
-   }
-
-   public FooModel getFooModel()
-   {
-      return _oFooModel;
+      System.out.println( "just created a BarModel, the current time is: " + iCurrentTime );
    }
 }
 

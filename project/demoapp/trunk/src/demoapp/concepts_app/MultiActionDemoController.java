@@ -39,7 +39,7 @@ public class MultiActionDemoController implements Controller
    public void action_2( Form form, Response response )
       throws IOException, FileUploadException, ParserException, HTMLFormException
    {
-      response.out().println( "Hello " + form.getString( "name" ) + " using dragonFly form support" );
+      response.out().println( "Hello " + form.getString( "name" ) + " using Induction form support" );
    }
 
    public void action_3( Request request, Response response ) throws IOException

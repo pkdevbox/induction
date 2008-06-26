@@ -60,6 +60,7 @@
 		<model-def>
 			<class>demoapp.models_app.BarModel</class>
 			<scope>session</scope>
+			<factory-class>demoapp.models_app.BarModelFactory</factory-class>
 		</model-def>
 	</model-defs>
 

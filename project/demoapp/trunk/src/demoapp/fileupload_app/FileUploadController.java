@@ -17,28 +17,28 @@
  */
 package demoapp.fileupload_app;
 
-import com.acciente.induction.controller.Response;
+import com.acciente.commons.htmlform.FileHandle;
+import com.acciente.commons.htmlform.ParserException;
 import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Form;
-import com.acciente.commons.htmlform.ParserException;
-import com.acciente.commons.htmlform.FileHandle;
+import com.acciente.induction.controller.Response;
+import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.File;
-
-import org.apache.commons.fileupload.FileUploadException;
 
 /**
  * This class ...
  *
- * Log
- * Apr 16, 2008 APR  -  created
+ * @created Apr 16, 2008
+ *
+ * @author Adinath Raveendra Raj
  */
 public class FileUploadController implements Controller
 {
    public void handler( Response oResponse, Form oForm ) throws Exception, FileUploadException, ParserException
    {
       oResponse.setContentType( "text/plain" );
-      oResponse.out().println( "DragonFly - File Upload Test - Response" );
+      oResponse.out().println( "Induction - File Upload Test - Response" );
       oResponse.out().println( "----------------------------------------" );
 
       oResponse.out().println( "" );
