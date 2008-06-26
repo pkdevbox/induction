@@ -18,11 +18,11 @@
 package com.acciente.induction.dispatcher.view;
 
 import com.acciente.induction.template.TemplatingEngine;
+import com.acciente.induction.template.TemplatingEngineException;
 import com.acciente.induction.view.Image;
 import com.acciente.induction.view.ImageStream;
 import com.acciente.induction.view.Template;
 import com.acciente.induction.view.Text;
-import freemarker.template.TemplateException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
@@ -30,7 +30,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
- * Internal. 
+ * Internal.
  *
  * @created Apr 17, 2008
  *
@@ -79,9 +79,9 @@ public class ViewExecutor
          {
             throw new ViewExecutorException( "exec: unable to load definition", e );
          }
-         catch ( TemplateException e )
+         catch ( TemplatingEngineException e )
          {
-            throw new ViewExecutorException( "exec: template exception", e );
+            throw new ViewExecutorException( "exec: templating engine exception", e.getCause() );
          }
       }
    }
@@ -151,7 +151,7 @@ public class ViewExecutor
       }
    }
 
-   private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws IOException, TemplateException
+   private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws TemplatingEngineException, IOException
    {
       oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
 

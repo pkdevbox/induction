@@ -20,6 +20,7 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.induction.init.config.Config;
 import com.acciente.commons.lang.Strings;
 import org.apache.commons.digester.Rule;
+import org.xml.sax.Attributes;
 
 import java.io.File;
 
@@ -42,6 +43,13 @@ public class FileUploadRule extends Rule
    public FileUploadRule( Config.FileUpload oFileUpload )
    {
       _oFileUpload = oFileUpload;
+   }
+
+   public void begin( String sNamespace, String sName, Attributes oAttributes )
+   {
+      _oMaxUploadSize            = null;
+      _oStoreFileOnDiskThreshold = null;
+      _oUploadedFileStorageDir   = null;
    }
 
    public void end( String sNamespace, String sName ) throws XMLConfigLoaderException

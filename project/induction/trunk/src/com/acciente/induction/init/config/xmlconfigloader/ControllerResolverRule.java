@@ -20,6 +20,7 @@ package com.acciente.induction.init.config.xmlconfigloader;
 import com.acciente.commons.lang.Strings;
 import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
+import org.xml.sax.Attributes;
 
 /**
  * Internal.
@@ -43,6 +44,14 @@ public class ControllerResolverRule extends Rule
    public ControllerResolverRule( Config.ControllerResolver oControllerResolver )
    {
       _oControllerResolver = oControllerResolver;
+   }
+
+   public void begin( String sNamespace, String sName, Attributes oAttributes )
+   {
+      // reset data stored in rule
+      _sClassName                = null;
+      _sDefaultHandlerMethodName = null;
+      _oIgnoreMethodNameCase     = null;
    }
 
    public void end( String sNamespace, String sName ) throws XMLConfigLoaderException

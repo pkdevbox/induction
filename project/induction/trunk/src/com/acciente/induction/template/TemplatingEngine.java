@@ -18,7 +18,6 @@
 package com.acciente.induction.template;
 
 import com.acciente.induction.view.Template;
-import freemarker.template.TemplateException;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -44,7 +43,7 @@ public interface TemplatingEngine
     * This method is used to process a template via this instance of the templating engine
     * @param oTemplate the template object to process
     */
-   public void process( Template oTemplate, Writer oWriter ) throws IOException, TemplateException;
+   public void process( Template oTemplate, Writer oWriter ) throws TemplatingEngineException, IOException;
 }
 
 // EOF
