@@ -79,7 +79,7 @@
 
 @rem -- make a release of Acciente DemoApp
 @xcopy %demoapp_root%\subversion\src	%release_root%\demoapp\src		/s /i /exclude:src-excludes.txt /q
-@xcopy %demoapp_root%\subversion\web	%release_root%\demoapp\web		/s /i /exclude:src-excludes.txt /q
+@xcopy %demoapp_root%\subversion\conf	%release_root%\demoapp\conf		/s /i /exclude:src-excludes.txt /q
 
 @rem -- remove temp copy sources
 @rd %tmp_src_root% /s/q
