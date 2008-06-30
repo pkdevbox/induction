@@ -60,8 +60,8 @@
 @xcopy %src_root%	%tmp_src_root%	/s /i /exclude:src-excludes.txt /q
 
 @rem -- copy the LICENSE.txt, NOTICE.txt to the distribution root
-@copy %license_file%								%release_root%
-@copy %notice_file%								%release_root%
+@copy %license_root%\LICENSE.txt						%release_root%
+@copy %license_root%\NOTICE.txt							%release_root%
 
 @rem -- copy a sample Induction config file to the distribution root
 @copy %sample_conf_file%							%release_root%
@@ -90,7 +90,7 @@
 @:error_usage
 @echo INFO: Usage:
 @echo INFO: make-release-latest version-number-or-name
-@echo INFO: e.g: make-release-latest beta-1.1.0
+@echo INFO: e.g: make-release-latest 1.1.0b
 @echo .
 @goto end_script
 
@@ -99,7 +99,7 @@
 @goto end_script
 
 @:error_root
-@echo ERROR: none of exected root path(s) found
+@echo ERROR: none of the standard Acciente root path(s) found
 @goto :end_script
 
 @:end_script
