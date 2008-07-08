@@ -1,6 +1,15 @@
 @rem - This scripts generates javadocs for the Induction project
 @rem - Log
-@rem - Jun 23, 2008 APR
+@rem - Jun 23, 2008 APR created
+@rem - Jul 03, 2008 APR updated
+
+@rem -- check if the user specified a release-name, otherwise complain
+@if %1_==_ goto :error_usage
+@set release_version=%1
+
+@rem -- check if the release root already exists, if it does complain and exit!
+@if exist ..\..\javadoc\commons\%release_version% goto :error_version_exists
+@if exist ..\..\javadoc\induction\%release_version% goto :error_version_exists
 
 @set path=%path%;c:\dev\jdk1.6.0_04\bin
 
@@ -19,17 +28,30 @@
 @set classpath=%classpath%;../../class
 
 @set custom_tags=-tag created:X -tag change-summary:X
-
-@rem - remove old javadocs
-@rd ..\..\javadoc\commons /s/q
+@set custom_header_footer=-header "<a href="http://www.inductionframework.org" target="_top">Return to www.inductionframework.org</a>" -bottom "<a href="http://www.acciente.com" target="_top">Copyright (c) 2008 Acciente, LLC. All rights reserved.</a>"
 
 @rem - generate javadocs for Acciente Commons
-@javadoc  %custom_tags% -public -classpath %classpath% -d ../../javadoc/commons -sourcepath ../src @commons-package-list.txt
-@pause
-
-@rem - remove old javadocs
-@rd ..\..\javadoc\induction /s/q
+@set custom_title=-doctitle "<h1>Acciente Commons v%release_version% API Documentation</h1>" -windowtitle "Commons v%release_version% API Documentation"
+@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d ../../javadoc/commons/%release_version%/api -sourcepath ../src @commons-package-list.txt
 
 @rem - generate javadocs for Acciente Induction
-@javadoc  %custom_tags% -public -classpath %classpath% -d ../../javadoc/induction -sourcepath ../src @induction-package-list.txt
+@set custom_title=-doctitle "<h1>Acciente Induction v%release_version% API Documentation</h1>" -windowtitle "Induction v%release_version% API Documentation"
+@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d ../../javadoc/induction/%release_version%/api -sourcepath ../src @induction-package-list.txt
+
+@echo INFO: javadocs packaged for version: %release_version%
+@goto :end_script
+
+@:error_usage
+@echo INFO: Usage:
+@echo INFO: gen-javadoc version-number-or-name
+@echo INFO: e.g: gen-javadoc 1.1.0b
+@echo .
+@goto end_script
+
+@:error_version_exists
+@echo ERROR: there is already javadocs for a version named %release_version%
+@goto end_script
+
+@:end_script
+
 @pause

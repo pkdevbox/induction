@@ -24,7 +24,7 @@
 
 @:end_root
 
-@call gen-javadoc.bat
+@call gen-javadoc.bat %release_version%
 
 @echo INFO: Using root %common_root%
 
