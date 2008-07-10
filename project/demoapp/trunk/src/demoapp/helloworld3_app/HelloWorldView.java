@@ -20,21 +20,16 @@ package demoapp.helloworld3_app;
 import com.acciente.induction.view.Template;
 
 /**
- * Log
- * Apr 26, 2008 APR  -  created
+ * A HelloWorld view using a freemarker tenplate
+ *
+ * @created Apr 26, 2008
+ * @author Adinath Raveendra Raj
  */
 public class HelloWorldView implements Template
 {
-   public String samplePublic = "What can I say?";
-
    public String getTemplateName()
    {
       return "HelloWorld.ftl";
-   }
-
-   public String getSampleValue()
-   {
-      return "FooBar Flintstone";
    }
 
    public String getMimeType()
