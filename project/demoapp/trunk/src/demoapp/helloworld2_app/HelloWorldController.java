@@ -22,15 +22,15 @@ import com.acciente.induction.controller.Controller;
 /**
  * A simple controller that uses a Text view to display hello world
  *
- * Log
- * Apr 23, 2008 APR  -  created
+ * @created Apr 23, 2008
+ * @author Adinath Raveendra Raj
  */
 public class HelloWorldController implements Controller
 {
    public HelloWorldView handler()
    {
       // typically we would do some processing of the user input here
-
+      // and pass some data into the view via its constructor
       return new HelloWorldView();
    }
 }
