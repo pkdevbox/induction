@@ -183,7 +183,7 @@ public class ModelFactory
 
    private static class ModelClassNameSet extends ThreadLocal
    {
-      public synchronized Set initialValue()
+      public synchronized Object initialValue()
       {
          return new HashSet();
       }

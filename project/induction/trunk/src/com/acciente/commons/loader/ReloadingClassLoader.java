@@ -37,7 +37,7 @@ import java.util.Set;
  * When the load of a class, say A, is requested it recursively checks for
  * modificiations to dependent classes. If any of the the dependent classes
  * are modified it first reloads the dependent classes and then proceeds to
- * reload the class A.  
+ * reload the class A.
  *
  * @see ClassDefLoader
  * @see ClassDef
@@ -417,7 +417,7 @@ public class ReloadingClassLoader extends SecureClassLoader
 
    private static class ClassNameSet extends ThreadLocal
    {
-      public synchronized Set initialValue()
+      public synchronized Object initialValue()
       {
          return new HashSet();
       }
