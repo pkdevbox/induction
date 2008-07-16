@@ -88,7 +88,7 @@ public class ClassFile
                      oConstantPool
                         .getConstant( ( ( ConstantClass ) oConstant ).getNameIndex() );
 
-            String sReferencedClassname = oConstantUtf8.getBytes().replace( "/", "." );
+            String sReferencedClassname = oConstantUtf8.getBytes().replace( '/', '.' );
 
             oReferences.add( sReferencedClassname );
          }
@@ -132,7 +132,7 @@ public class ClassFile
          String   sReferencedClassname;
 
          sSignature           = oType.getSignature();
-         sReferencedClassname = sSignature.substring( 1, sSignature.length() - 1 ).replace( "/", "." );
+         sReferencedClassname = sSignature.substring( 1, sSignature.length() - 1 ).replace( '/', '.' );
 
          oReferences.add( sReferencedClassname );
       }

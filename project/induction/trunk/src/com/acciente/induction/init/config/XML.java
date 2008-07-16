@@ -121,7 +121,7 @@ public class XML
 
    public String toXML( int iValue )
    {
-      return toXML( Integer.valueOf( iValue ) );
+      return toXML( new Integer( iValue ) );
    }
 
    public String toXML( boolean iValue )
