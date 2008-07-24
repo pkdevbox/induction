@@ -160,7 +160,7 @@ public class Invoker
       {
          for ( int i = 0; i < aoArgs.length; i++ )
          {
-            if ( aoArgs[ i ] != null && aoArgs[ i ].getClass().equals( oType ) )
+            if ( aoArgs[ i ] != null && oType.isAssignableFrom( aoArgs[ i ].getClass() ) )
             {
                oArgMatch = aoArgs[ i ];
                break;
