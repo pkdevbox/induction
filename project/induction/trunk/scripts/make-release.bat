@@ -24,15 +24,13 @@
 
 @:end_root
 
-@call gen-javadoc.bat %release_version%
-
 @echo INFO: Using root %common_root%
 
 @rem -- target folder containing this release
 @set release_root=%common_root%\release\induction\%release_version%
 
 @rem -- source folder for (induction+commons) compiled class files 
-@set classes_root=%common_root%\project\induction\class
+@set classes_root=%common_root%\project\induction\class_release
 
 @rem -- source folder for (induction+commons) source files
 @set src_root=%common_root%\project\induction\subversion\src
@@ -53,6 +51,8 @@
 @rem -- check if the release root already exists, if it does complain and exit!
 @if exist %release_root% goto :error_version_exists
 
+@call gen-javadoc.bat %release_version%
+
 @rem -- otherwise create the release root
 @md %release_root%
 
@@ -67,12 +67,14 @@
 @copy %sample_conf_file%							%release_root%
 
 @rem -- create jars for Acciente Commons
-@jar -cfM %release_root%\acciente-commons-%release_version%.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%		/com/acciente/commons
+@jar -cfM %release_root%\acciente-commons-%release_version%-jdk1_4.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/commons
+@jar -cfM %release_root%\acciente-commons-%release_version%-jdk1_6.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/commons
 @jar -cfM %release_root%\acciente-commons-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/commons
 @jar -cfM %release_root%\acciente-commons-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/commons	/
 
 @rem -- create jars for Acciente Induction
-@jar -cfM %release_root%\acciente-induction-%release_version%.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%		/com/acciente/induction
+@jar -cfM %release_root%\acciente-induction-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/induction
+@jar -cfM %release_root%\acciente-induction-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/induction
 @jar -cfM %release_root%\acciente-induction-%release_version%-sources.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/induction
 @jar -cfM %release_root%\acciente-induction-%release_version%-javadoc.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/induction	/
 
