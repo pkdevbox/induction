@@ -1,5 +1,8 @@
 package demoapp.models_app;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * This class is an Induction model factory. The only requirement is that this class have single
  * method named createMmodel().
@@ -16,8 +19,11 @@ public class BarModelFactory
     *
     * @return a BarModel object
     */
-   public BarModel createModel()
+   public BarModel createModel( HttpServletRequest oRequest, ServletConfig oConfig )
    {
+      System.out.println( "request=" + oRequest  );
+      System.out.println( "config=" + oConfig  );
+
       return new BarModel( System.currentTimeMillis() );
    }
 }
