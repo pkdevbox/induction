@@ -90,7 +90,12 @@ public class ClassFile
 
             String sReferencedClassname = oConstantUtf8.getBytes().replace( '/', '.' );
 
-            oReferences.add( sReferencedClassname );
+            // only consider the class if it is not an array, since classloaders do not
+            // handle arrays, the JVM does this directly
+            if ( ! sReferencedClassname.startsWith( "[" ))
+            {
+               oReferences.add( sReferencedClassname );
+            }
          }
       }
 
