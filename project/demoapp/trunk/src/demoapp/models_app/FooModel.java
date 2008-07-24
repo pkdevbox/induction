@@ -23,7 +23,7 @@ package demoapp.models_app;
  * <p>
  * This model also illustrates <b>model-to-model injection<b>, the instance of BarModel
  * required by the FooModel constructor below is automatically injected since BarModel
- * is also a know model class declared in the Induction configuration XML.
+ * is also a known model class declared in the Induction configuration XML.
  *
  * Log
  * Jun 20, 2008 APR  -  created
@@ -36,7 +36,7 @@ public class FooModel
    {
       _oBarModel = oBarModel;
 
-      System.out.println( "just created a FooModel!" );
+      System.out.println( "FooModel: constructor called @time: " + System.currentTimeMillis() );
    }
 
    public BarModel getBarModel()

@@ -62,6 +62,10 @@
 			<scope>session</scope>
 			<factory-class>demoapp.models_app.BarModelFactory</factory-class>
 		</model-def>
+		<model-def>
+			<class>demoapp.models_app.TarModel</class>
+			<scope>application</scope>
+		</model-def>
 	</model-defs>
 
 	<!-- The following section configures the templating engine -->

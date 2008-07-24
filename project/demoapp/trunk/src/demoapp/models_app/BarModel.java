@@ -31,7 +31,7 @@ public class BarModel
 {
    public BarModel( long iCurrentTime )
    {
-      System.out.println( "just created a BarModel, the current time is: " + iCurrentTime );
+      System.out.println( "BarModel: constructor called @time: " + iCurrentTime );
    }
 }
 

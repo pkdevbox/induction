@@ -18,7 +18,7 @@ public class BarController implements Controller
    {
       oResponse.setContentType( "text/plain" );
 
-      oResponse.out().println( "BarModel               : " + oBarModel );
+      oResponse.out().println( "BarModel : " + oBarModel );
    }
 }
 
