@@ -55,6 +55,8 @@
 
 @rem -- otherwise create the release root
 @md %release_root%
+@md %release_root%\jdk1_4-compile
+@md %release_root%\jdk1_6-compile
 
 @rem -- make a temp copy of the sources to exclude .svn files in .jar
 @xcopy %src_root%	%tmp_src_root%	/s /i /exclude:src-excludes.txt /q
@@ -67,16 +69,16 @@
 @copy %sample_conf_file%							%release_root%
 
 @rem -- create jars for Acciente Commons
-@jar -cfM %release_root%\acciente-commons-%release_version%-jdk1_4.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/commons
-@jar -cfM %release_root%\acciente-commons-%release_version%-jdk1_6.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/commons
-@jar -cfM %release_root%\acciente-commons-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/commons
-@jar -cfM %release_root%\acciente-commons-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/commons	/
+@jar -cfM %release_root%\jdk1_4-compile\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/commons
+@jar -cfM %release_root%\jdk1_6-compile\acciente-commons-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/commons
+@jar -cfM %release_root%\acciente-commons-%release_version%-sources.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/commons
+@jar -cfM %release_root%\acciente-commons-%release_version%-javadoc.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/commons	/
 
 @rem -- create jars for Acciente Induction
-@jar -cfM %release_root%\acciente-induction-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/induction
-@jar -cfM %release_root%\acciente-induction-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/induction
-@jar -cfM %release_root%\acciente-induction-%release_version%-sources.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/induction
-@jar -cfM %release_root%\acciente-induction-%release_version%-javadoc.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/induction	/
+@jar -cfM %release_root%\jdk1_4-compile\acciente-induction-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/induction
+@jar -cfM %release_root%\jdk1_6-compile\acciente-induction-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/induction
+@jar -cfM %release_root%\acciente-induction-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/induction
+@jar -cfM %release_root%\acciente-induction-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/induction	/
 
 
 @rem -- make a release of Acciente DemoApp
