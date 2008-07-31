@@ -46,7 +46,7 @@
 @set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.txt 
 @set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.xml 
 @7z a -tzip    %induction_distrib_core_file% %induction_distrib_core_content%
-@7z a -tzip -r %induction_distrib_core_file% %release_root%\*.jar
+@7z u -tzip -r %induction_distrib_core_file% %release_root%\*.jar
 
 @rem -- create the distribution for the supporting libs
 @set induction_distrib_req_libs_content=
