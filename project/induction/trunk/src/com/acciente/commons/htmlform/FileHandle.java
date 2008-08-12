@@ -21,6 +21,7 @@ import org.apache.commons.fileupload.FileItem;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class is a facade to isolate the fileupload implementation from the multi-part parser used.
@@ -84,9 +85,10 @@ public class FileHandle
     * Returns an input stream that may used to read the contents of the uploaded file
     *
     * @throws IOException if an error occurs
+    * @return an inputstream that provides access to the uploaded file
     */
-   public void getInputStream() throws IOException
+   public InputStream getInputStream() throws IOException
    {
-      _oFileItem.getInputStream();
+      return _oFileItem.getInputStream();
    }
 }
