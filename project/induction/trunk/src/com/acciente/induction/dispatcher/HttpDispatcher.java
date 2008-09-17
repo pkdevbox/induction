@@ -31,9 +31,9 @@ import com.acciente.induction.init.ConfigLoaderInitializer;
 import com.acciente.induction.init.ControllerResolverInitializer;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.TemplatingEngineInitializer;
+import com.acciente.induction.init.RedirectResolverInitializer;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
-import com.acciente.induction.init.config.RedirectResolverInitializer;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
@@ -110,12 +110,20 @@ public class HttpDispatcher extends HttpServlet
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: class-loader-initializer", e );    }
 
+      // we setup the model factory and pool managers early since we now support inject models into the
+      // controller and redirect resolver initializers
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, _oLogger );
+      ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
+
+      // now set the pool for the model factory to use in model-to-model injection
+      oModelFactory.setModelPool( oModelPool );
+
       // setup a resolver that maps a request to a controller
       try
       {
          _oControllerResolver
             =  ControllerResolverInitializer
-                  .getControllerResolver( oConfig.getControllerResolver(), oClassLoader, oServletConfig, _oLogger );
+                  .getControllerResolver( oConfig.getControllerResolver(), oModelPool, oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
@@ -135,7 +143,7 @@ public class HttpDispatcher extends HttpServlet
       {
          _oRedirectResolver
             =  RedirectResolverInitializer
-                  .getRedirectResolver( oConfig.getRedirectResolver(), oClassLoader, oServletConfig, _oLogger );
+                  .getRedirectResolver( oConfig.getRedirectResolver(), oModelPool, oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
@@ -150,17 +158,11 @@ public class HttpDispatcher extends HttpServlet
       catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
+      // the ParamResolver manages resolution of parameter values based on the parameter type
+      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload() );
+
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
-
-      // the ParamResolver manages resolution of parameter values based on the parameter type
-      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, _oLogger );
-      ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
-
-      // now set the pool for the model factory to use in model-to-model injection
-      oModelFactory.setModelPool( oModelPool );
-
-      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload() );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );

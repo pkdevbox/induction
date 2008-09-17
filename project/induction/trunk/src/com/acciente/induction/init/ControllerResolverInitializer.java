@@ -17,12 +17,13 @@
  */
 package com.acciente.induction.init;
 
+import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.URLPathControllerResolver;
-import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ConstructorNotFoundException;
-import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 public class ControllerResolverInitializer
 {
    public static ControllerResolver getControllerResolver( Config.ControllerResolver   oControllerResolverConfig,
+                                                           ModelPool                   oModelPool, 
                                                            ClassLoader                 oClassLoader,
                                                            ServletConfig               oServletConfig,
                                                            Logger                      oLogger )
@@ -62,7 +64,8 @@ public class ControllerResolverInitializer
             =  ( ControllerResolver )
                ObjectFactory.createObject( oControllerResolverClass,
                                            new Object[]{ oServletConfig,
-                                                         oControllerResolverConfig }, null );
+                                                         oControllerResolverConfig },
+                                           new InitializerParameterProvider( oModelPool, "controller-resolver-init" ) );
       }
 
       return oControllerResolver;
