@@ -162,22 +162,24 @@ public class ModelFactory
 
       public Object getParameter( Class oValueType ) throws ParameterProviderException
       {
+         final String sMessagePrefix = "model-factory: error resolving value for type: ";
+
          try
          {
             return _oModelPool.getModel( oValueType.getName(), _oHttpServletRequest );
          }
          catch ( MethodNotFoundException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
          catch ( InvocationTargetException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
          catch ( ClassNotFoundException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
          catch ( ConstructorNotFoundException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
          catch ( IllegalAccessException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
          catch ( InstantiationException e )
-         {  throw new ParameterProviderException( "Error resolving value for type: " + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
       }
    }
 
