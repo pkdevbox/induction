@@ -38,6 +38,17 @@ public interface ClassDefLoader
     */
    ClassDef    getClassDef( String sClassName )
       throws ClassNotFoundException;
+
+   /**
+    * Load the data and other information about the specified resource
+    *
+    * @param sResourceName the name of the class for which a definition is requested
+    * @return a resource definition if this class definition loader is able to locate and successfully
+    * load the data for the resource. If the resource could not be located a null is returned, if the
+    * resource was located but the load failed again a null is returned (since the getResource() and
+    * getResourceAsStreamMethods() do not have checked exceptions in their signature).
+    */
+   ResourceDef    getResourceDef( String sResourceName );
 }
 
 // EOF

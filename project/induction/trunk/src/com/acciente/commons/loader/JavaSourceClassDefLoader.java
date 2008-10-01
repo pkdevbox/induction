@@ -68,6 +68,12 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
       return oClassDef;
    }
 
+   public ResourceDef getResourceDef( String sResourceName )
+   {
+      // not implemented at this time since this class def loader is not currently used/supported
+      return null;
+   }
+
    private String getFileNameFromClassName( String sClassName )
    {
       String   sFilename;

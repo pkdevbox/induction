@@ -17,6 +17,8 @@
  */
 package com.acciente.commons.loader;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,6 +57,7 @@ public class ReloadingClassLoader extends SecureClassLoader
    private  Map            _oClassControlBlockMap        = new HashMap();
    private  Set            _oIgnoredClassNameSet         = new HashSet();
    private  List           _oIgnoredClassNamePrefixList  = new ArrayList();
+   private  Map            _oResourceDefMap              = new HashMap();
 
    private  ThreadLocal    _oLoadInProgressClassNameSet  = new ClassNameSet();
 
@@ -141,6 +144,68 @@ public class ReloadingClassLoader extends SecureClassLoader
    public Collection getIgnoredClassNamePrefixes()
    {
       return _oIgnoredClassNamePrefixList;
+   }
+
+   /**
+    * Used to load a resource via this classloader
+    *
+    * @return an input stream, or null if the resource could not be loaded
+    */
+   public InputStream getResourceAsStream( String sResourceName )
+   {
+      ResourceDef oResourceDef = ( ResourceDef ) _oResourceDefMap.get( sResourceName );
+
+      if ( oResourceDef == null )
+      {
+         // first try using the standard implementation that delegates to the parent classloaders
+         InputStream oInputStream = super.getResourceAsStream( sResourceName );
+
+         if ( oInputStream != null )
+         {
+            return oInputStream;
+         }
+         else
+         {
+            oResourceDef = loadResourceDef( sResourceName );
+
+            if ( oResourceDef != null )
+            {
+               _oResourceDefMap.put( sResourceName, oResourceDef );
+
+               return new ByteArrayInputStream( oResourceDef.getContent() );
+            }
+            else
+            {
+               return null;
+            }
+         }
+      }
+      else
+      {
+         if ( oResourceDef.isModified() )
+         {
+            oResourceDef.reload();
+         }
+
+         return new ByteArrayInputStream( oResourceDef.getContent() );
+      }
+   }
+
+   private ResourceDef loadResourceDef( String sResourceName )
+   {
+      ResourceDef oResourceDef = null;
+
+      for ( int i = 0; i < _oClassDefLoaderList.size(); i++ )
+      {
+         ClassDefLoader oClassDefLoader = ( ClassDefLoader ) _oClassDefLoaderList.get( i );
+
+         if ( ( oResourceDef = oClassDefLoader.getResourceDef( sResourceName ) ) != null )
+         {
+            break;
+         }
+      }
+
+      return oResourceDef;
    }
 
    public Class loadClass( String sClassName, boolean bResolve )
