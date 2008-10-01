@@ -44,10 +44,10 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
    {
       if ( sClassName == null )
       {
-         throw new IllegalArgumentException( "class definition loader requires a classname, none specified!" );
+         throw new IllegalArgumentException( "class definition loader requires a class name, none specified!" );
       }
 
-      File oCompiledFile = new File( _oCompiledDirectory, getFileNameFromClassName( sClassName ) );
+      File oCompiledFile = new File( _oCompiledDirectory, getFileName( sClassName, false ) );
 
       JavaCompiledClassDef oClassDef = null;
 
@@ -59,28 +59,70 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       return oClassDef;
    }
 
-   private String getFileNameFromClassName( String sClassName )
+   public ResourceDef getResourceDef( String sResourceName )
+   {
+      if ( sResourceName == null )
+      {
+         throw new IllegalArgumentException( "class definition loader requires a resource name, none specified!" );
+      }
+
+      File oResourceFile = new File( _oCompiledDirectory, getFileName( sResourceName, true ) );
+
+      FileResourceDef oClassDef = null;
+
+      if ( oResourceFile.exists() )
+      {
+         oClassDef = new FileResourceDef( sResourceName, oResourceFile );
+      }
+
+      return oClassDef;
+   }
+
+   private String getFileName( String sClassOrResourceName, boolean bIsResourceName )
    {
       String   sFilename;
 
       if ( _sPackageNamePrefix == null )
       {
-         sFilename = sClassName.replace( '.', '/' ) + ".class";
+         if ( bIsResourceName )
+         {
+            sFilename = sClassOrResourceName;
+         }
+         else
+         {
+            sFilename = sClassOrResourceName.replace( '.', '/' ) + ".class";
+         }
       }
       else
       {
          // first check if the classname is ok
-         if ( ! sClassName.startsWith( _sPackageNamePrefix ) )
+         if ( ! sClassOrResourceName.startsWith( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "class definition loader is restricted to classnames that start with: " + _sPackageNamePrefix + ", classname: " + sClassName );
+            throw new IllegalArgumentException( "class definition loader is restricted to "
+                                                + ( bIsResourceName ? "resource names" : "class names" )
+                                                + " that start with: "
+                                                + _sPackageNamePrefix
+                                                + ", "
+                                                + ( bIsResourceName ? "resource name" : "class name" )
+                                                + ": "
+                                                + sClassOrResourceName );
          }
 
-         if ( sClassName.equals( _sPackageNamePrefix ) )
+         if ( sClassOrResourceName.equals( _sPackageNamePrefix ) )
          {
-            throw new IllegalArgumentException( "specified classname is identical to package name prefix!" );
+            throw new IllegalArgumentException( "specified "
+                                                + ( bIsResourceName ? "resource name" : "class name" )
+                                                + " is identical to package name prefix!" );
          }
 
-         sFilename = sClassName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) + ".class";
+         if ( bIsResourceName )
+         {
+            sFilename = sClassOrResourceName;
+         }
+         else
+         {
+            sFilename = sClassOrResourceName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) + ".class";
+         }
       }
 
       return sFilename;
