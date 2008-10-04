@@ -22,16 +22,17 @@ import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.config.Config;
+import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ReflectUtils;
-import com.acciente.induction.util.MethodNotFoundException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Internal.
@@ -45,15 +46,17 @@ public class ModelFactory
 {
    private  ClassLoader                   _oClassLoader;
    private  ServletConfig                 _oServletConfig;
+   private  TemplatingEngine              _oTemplatingEngine;
    private  Logger                        _oLogger;
    private  ConfiguredModelFactoryPool    _oConfiguredModelFactoryPool;
    private  ModelPool                     _oModelPool;
    private  ThreadLocal                   _oCreateInProgressModelClassNameSet  = new ModelClassNameSet();
 
-   public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+   public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, TemplatingEngine oTemplatingEngine, Logger oLogger )
    {
       _oClassLoader      = oClassLoader;
       _oServletConfig    = oServletConfig;
+      _oTemplatingEngine = oTemplatingEngine;
       _oLogger           = oLogger;
 
       _oConfiguredModelFactoryPool = new ConfiguredModelFactoryPool( oClassLoader, oServletConfig, oLogger );
@@ -92,7 +95,7 @@ public class ModelFactory
 
       try
       {
-         Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest };
+         Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest, _oTemplatingEngine };
          ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
 
          // does this model class have a factory class defined?
