@@ -37,6 +37,7 @@ import com.acciente.induction.init.config.ConfigLoaderException;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.induction.template.TemplatingEngine;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -110,9 +111,36 @@ public class HttpDispatcher extends HttpServlet
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: class-loader-initializer", e );    }
 
+      // we instantiate the templating engine early since we now support injecting the
+      // TemplatingEngine instance into models
+      TemplatingEngine oTemplatingEngine;
+      try
+      {
+         oTemplatingEngine
+         =  TemplatingEngineInitializer
+               .getTemplatingEngine( oConfig.getTemplating(),
+                                     oClassLoader,
+                                     oServletConfig,
+                                     _oLogger );
+      }
+      catch ( IOException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+
       // we setup the model factory and pool managers early since we now support inject models into the
       // controller and redirect resolver initializers
-      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, _oLogger );
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
       ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
 
       // now set the pool for the model factory to use in model-to-model injection
@@ -168,29 +196,7 @@ public class HttpDispatcher extends HttpServlet
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
 
       // the ViewExecutor manages the processing any view returned by a controller
-      try
-      {
-         _oViewExecutor
-            =  new ViewExecutor( TemplatingEngineInitializer
-                                    .getTemplatingEngine( oConfig.getTemplating(),
-                                                          oClassLoader,
-                                                          oServletConfig,
-                                                          _oLogger ) );
-      }
-      catch ( IOException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( ClassNotFoundException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( InvocationTargetException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( IllegalAccessException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( InstantiationException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( ConstructorNotFoundException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
-      catch ( ParameterProviderException e )
-      {  throw new ServletException( "init-error: view-processor-initializer", e ); }
+      _oViewExecutor = new ViewExecutor( oTemplatingEngine );
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
