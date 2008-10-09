@@ -66,10 +66,17 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
          {
             Config.Templating.TemplatePath.Dir oDir = ( Config.Templating.TemplatePath.Dir ) oLoaderPathItem;
 
-            oTemplateLoaderList.add( new FileTemplateLoader( oDir.getDir() ) );
-
-            oLogger.log( "freemarker > template load path > adding directory > "
-                           + oDir.getDir() );
+            if ( ! oDir.getDir().exists() )
+            {
+               oLogger.log( "freemarker > template load path > ignoring missing directory > "
+                              + oDir.getDir() );
+            }
+            else
+            {
+               oLogger.log( "freemarker > template load path > adding directory > "
+                              + oDir.getDir() );
+               oTemplateLoaderList.add( new FileTemplateLoader( oDir.getDir() ) );
+            }
          }
          else if ( oLoaderPathItem instanceof Config.Templating.TemplatePath.LoaderClass )
          {
@@ -77,22 +84,22 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 
             Class oClass = Class.forName( oLoaderClass.getLoaderClassName() );
 
-            oTemplateLoaderList.add( new ClassTemplateLoader( oClass, oLoaderClass.getPath() ) );
-
             oLogger.log( "freemarker > template load path > adding class > "
                            + oLoaderClass.getLoaderClassName()
                            + ", prefix: "
                            + oLoaderClass.getPath() );
+
+            oTemplateLoaderList.add( new ClassTemplateLoader( oClass, oLoaderClass.getPath() ) );
          }
          else if ( oLoaderPathItem instanceof Config.Templating.TemplatePath.WebappPath )
          {
             Config.Templating.TemplatePath.WebappPath oWebappPath = ( Config.Templating.TemplatePath.WebappPath ) oLoaderPathItem;
 
-            oTemplateLoaderList.add( new WebappTemplateLoader( oServletConfig.getServletContext(),
-                                                               oWebappPath.getPath() ) );
-
             oLogger.log( "freemarker > template load path > adding webapp path > "
                            + oWebappPath.getPath() );
+
+            oTemplateLoaderList.add( new WebappTemplateLoader( oServletConfig.getServletContext(),
+                                                               oWebappPath.getPath() ) );
          }
          else
          {

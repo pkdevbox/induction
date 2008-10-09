@@ -95,7 +95,7 @@ public class ModelFactory
 
       try
       {
-         Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest, _oTemplatingEngine };
+         Object[]                oParameterValues        = new Object[]{ _oServletConfig, _oLogger,  oModelDef, oHttpServletRequest, _oTemplatingEngine, _oClassLoader };
          ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
 
          // does this model class have a factory class defined?
