@@ -35,8 +35,8 @@
 @rem -- source folder for (induction+commons) source files
 @set src_root=%common_root%\project\induction\subversion\src
 
-@rem -- source folder for (induction+commons) javadoc files
-@set javadoc_root=%common_root%\project\induction\javadoc
+@rem -- temp folder for (induction+commons) javadoc generation
+@set javadoc_root=%release_root%\tmp-javadoc
 
 @rem -- source folder for (demoapp) files 
 @set demoapp_root=%common_root%\project\demoapp
@@ -51,12 +51,37 @@
 @rem -- check if the release root already exists, if it does complain and exit!
 @if exist %release_root% goto :error_version_exists
 
-@call gen-javadoc.bat %release_version%
-
-@rem -- otherwise create the release root
+@rem -- otherwise create the release folders
 @md %release_root%
 @md %release_root%\jdk1_4-compile
 @md %release_root%\jdk1_6-compile
+
+@rem -- generate the javadocs
+
+@rem setup the classpath for javadoc generation
+@set classpath=
+@set classpath=%classpath%;../../../../lib/apache-bcel/5.2/bcel-5.2.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-collections/3.2.1/commons-collections-3.2.1.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-digester/1.8/commons-digester-1.8.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-fileupload/1.2.1/commons-fileupload-1.2.1.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-io/1.4/commons-io-1.4.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-1.1.1.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-adapters-1.1.1.jar
+@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-api-1.1.1.jar
+@set classpath=%classpath%;../../../../lib/freemarker/2.3.12/freemarker-2.3.12.jar
+@set classpath=%classpath%;../../../../lib/j2ee/1.3.1/j2ee-1.3.1.jar
+@set classpath=%classpath%;../../class
+
+@set custom_tags=-tag created:X -tag change-summary:X
+@set custom_header_footer=-header "<a href="http://www.inductionframework.org" target="_top">Return to www.inductionframework.org</a>" -bottom "<a href="http://www.acciente.com" target="_top">Copyright (c) 2008 Acciente, LLC. All rights reserved.</a>"
+
+@rem generate javadocs for Acciente Commons
+@set custom_title=-doctitle "<h1>Acciente Commons v%release_version% API Documentation</h1>" -windowtitle "Commons v%release_version% API Documentation"
+@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d %javadoc_root%/commons   -sourcepath %src_root%  @commons-package-list.txt
+
+@rem generate javadocs for Acciente Induction
+@set custom_title=-doctitle "<h1>Acciente Induction v%release_version% API Documentation</h1>" -windowtitle "Induction v%release_version% API Documentation"
+@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d %javadoc_root%/induction -sourcepath %src_root%  @induction-package-list.txt
 
 @rem -- make a temp copy of the sources to exclude .svn files in .jar
 @xcopy %src_root%	%tmp_src_root%	/s /i /exclude:src-excludes.txt /q
@@ -85,8 +110,9 @@
 @xcopy %demoapp_root%\subversion\src	%release_root%\demoapp\src		/s /i /exclude:src-excludes.txt /q
 @xcopy %demoapp_root%\subversion\conf	%release_root%\demoapp\conf		/s /i /exclude:src-excludes.txt /q
 
-@rem -- remove temp copy sources
+@rem -- remove temp copy of sources, and java docs
 @rd %tmp_src_root% /s/q
+@rd %javadoc_root% /s/q
 
 @echo INFO: released package to: %release_root%
 @goto :end_script
