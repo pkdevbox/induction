@@ -136,14 +136,15 @@ public class ModelFactory
    {
       boolean bStale;
 
-      // first check if the model class has been reloaded since this model was created
-      bStale = _oClassLoader.loadClass( oModelDef.getModelClassName() ).hashCode() != oModel.getClass().hashCode();
-
-      if ( ! bStale && oModelDef.hasModelFactoryClassName() )
+      if ( oModelDef.hasModelFactoryClassName() )
       {
-         // todo: reinspect below
          // we have a factory class, also check if the factory class reloaded since the model was created
-         bStale = _oConfiguredModelFactoryPool.isConfiguredModelFactoryStale( oModelDef.getModelFactoryClassName() );
+         bStale = _oConfiguredModelFactoryPool.isConfiguredModelFactoryStale( oModelDef.getModelFactoryClassName() ); // todo: reinspect this line
+      }
+      else
+      {
+         // first check if the model class has been reloaded since this model was created
+         bStale = _oClassLoader.loadClass( oModelDef.getModelClassName() ).hashCode() != oModel.getClass().hashCode();
       }
 
       return bStale;
