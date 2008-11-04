@@ -89,14 +89,14 @@ public class HTMLForm implements Form
    {
       parseForm();
 
-      return _oFormParams.keySet();
+      return _oFormParams == null ? null : _oFormParams.keySet();
    }
 
    public boolean containsParam( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
    {
       parseForm();
 
-      return _oFormParams.containsKey( sParamName );
+      return _oFormParams != null && _oFormParams.containsKey( sParamName );
    }
 
    private Object getParamValue( String sParamName )
