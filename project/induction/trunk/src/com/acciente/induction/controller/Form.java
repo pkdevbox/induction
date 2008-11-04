@@ -32,6 +32,8 @@ import java.util.Set;
  * @created Feb 25, 2008
  *
  * @author Adinath Raveendra Raj
+ *
+ * todo: remove dependency on FileUploadException 
  */
 public interface Form
 {
