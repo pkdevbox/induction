@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class is an Induction model factory. The only requirement is that this class have single
- * method named createMmodel().
+ * method named createModel().
  *
  * @created Jun 26, 2008
  *
