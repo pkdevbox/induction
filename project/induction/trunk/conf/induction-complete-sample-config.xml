@@ -1,6 +1,6 @@
 <!-- induction-complete-sample-config.xml
 
-     Copyright 2008 Acciente, LLC
+     Copyright 2009 Acciente, LLC
   
      Acciente, LLC licenses this file to you under the
      Apache License, Version 2.0 (the "License"); you
@@ -35,6 +35,12 @@
 			<package-prefix>a.package.name</package-prefix>
 		</compiled-directory>
 	</java-class-path>
+
+
+	<!-- This directive loads config information from the specified file. This directive must occur as a 
+	     direct child of <config>.
+	-->
+	<include-config resource="induction-complete-sample-config-include.xml" />
 
 	<!-- The following section allows you define the models used your application.
 	A model definition must specify a <class> and a <scope>. The <class> specifies

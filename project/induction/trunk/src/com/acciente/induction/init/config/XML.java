@@ -28,6 +28,8 @@ public class XML
 {
    public static final XML Config                                                = new XML( "config" );
 
+   public static final XML Config_IncludeConfig                                  = new XML( "include-config", Config );
+
    public static final XML Config_JavaClassPath                                  = new XML( "java-class-path",    Config );
    public static final XML Config_JavaClassPath_CompiledDirectory                = new XML( "compiled-directory", Config_JavaClassPath );
    public static final XML Config_JavaClassPath_CompiledDirectory_Directory      = new XML( "directory",          Config_JavaClassPath_CompiledDirectory );

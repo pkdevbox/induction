@@ -17,9 +17,9 @@
  */
 package com.acciente.induction.init.config.xmlconfigloader;
 
-import org.apache.commons.digester.Digester;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.XML;
+import org.apache.commons.digester.Digester;
 
 /**
  * Internal.
@@ -31,7 +31,17 @@ import com.acciente.induction.init.config.XML;
  */
 public class DigesterFactory
 {
-   public static Digester getDigester( Config oConfig )
+   public static Digester getDigester( Config oConfig, ResourceLoader oResourceLoader )
+   {
+      Digester oDigester = createBasicDigester( oConfig );
+
+      // include config rules
+      oDigester.addRule( XML.Config_IncludeConfig.PATTERN, new IncludeConfigRule( oConfig, oResourceLoader ) );
+
+      return oDigester;
+   }
+
+   public static Digester createBasicDigester( Config oConfig )
    {
       Digester oDigester = new Digester();
 

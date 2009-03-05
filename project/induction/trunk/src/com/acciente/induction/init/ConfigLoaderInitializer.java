@@ -89,7 +89,8 @@ public class ConfigLoaderInitializer
       if ( sConfigLoaderClassName == null )
       {
          // no custom loader defined, use the default XML loader (this is the typical case)
-         oConfigLoader = new XMLConfigLoader( oServletConfig );
+         oConfigLoader = new XMLConfigLoader( "induction-" + oServletConfig.getServletName() + ".xml",
+                                              oServletConfig );
 
          oLogger.log( "using default XML config loader" );
       }
