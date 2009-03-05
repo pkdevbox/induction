@@ -46,7 +46,8 @@
 
 @rem -- full file names for (induction+commons) LICENSE.txt, NOTICE.txt and induction-complete-sample-config.xml
 @set license_root=%common_root%\project\induction\subversion
-@set sample_conf_file=%common_root%\project\induction\subversion\conf\induction-complete-sample-config.xml
+@set sample_conf_file1=%common_root%\project\induction\subversion\conf\induction-complete-sample-config.xml
+@set sample_conf_file2=%common_root%\project\induction\subversion\conf\induction-complete-sample-config-include.xml
 
 @rem -- check if the release root already exists, if it does complain and exit!
 @if exist %release_root% goto :error_version_exists
@@ -91,7 +92,8 @@
 @copy %license_root%\NOTICE.txt							%release_root%
 
 @rem -- copy a sample Induction config file to the distribution root
-@copy %sample_conf_file%							%release_root%
+@copy %sample_conf_file1%							%release_root%
+@copy %sample_conf_file2%							%release_root%
 
 @rem -- create jars for Acciente Commons
 @jar -cfM %release_root%\jdk1_4-compile\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/commons

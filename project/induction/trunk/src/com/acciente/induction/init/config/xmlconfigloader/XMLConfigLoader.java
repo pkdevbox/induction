@@ -23,7 +23,6 @@ import com.acciente.induction.init.config.ConfigLoaderException;
 import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,85 +38,74 @@ import java.io.InputStream;
  */
 public class XMLConfigLoader implements ConfigLoader
 {
-   private  ServletConfig  _oServletConfig;
-   private  File           _oConfigFile;
+   private  String         _sResourceName;
+   private  ResourceLoader _oResourceLoader;
 
-   public XMLConfigLoader( ServletConfig oServletConfig )
+   public XMLConfigLoader( String sResourceName )
    {
-      _oServletConfig = oServletConfig;
+      _sResourceName   = sResourceName;
+      _oResourceLoader = ResourceLoader.getResourceLoader();
    }
 
-   /**
-    * This constructor was written to faciliate testing the config loader
-    * by loading a file directly from the filesystem.
-    *
-    * @param oConfigFile
-    */
-   public XMLConfigLoader( File oConfigFile )
+   public XMLConfigLoader( String sResourceName, ServletConfig oServletConfig )
    {
-      _oConfigFile = oConfigFile;
+      _sResourceName   = sResourceName;
+      _oResourceLoader = ResourceLoader.getResourceLoader( oServletConfig.getServletContext() );
    }
 
    public Config getConfig() throws ConfigLoaderException
    {
-      Config   oConfig;
+      InputStream oResourceStream = null;
+      Config      oConfig;
+
+      if ( _sResourceName == null )
+      {
+         throw new ConfigLoaderException( "config-load: no resource to load the config specified!" );
+      }
 
       try
       {
-         if ( _oServletConfig != null )
+         oResourceStream = _oResourceLoader.getResourceAsStream( _sResourceName );
+
+         if ( oResourceStream == null )
          {
-            // first compute the expected name of config file name
-            String   sConfigFileName = "/WEB-INF/induction-" + _oServletConfig.getServletName() + ".xml";
-
-            InputStream oConfigStream;
-
-            oConfigStream = _oServletConfig.getServletContext().getResourceAsStream( sConfigFileName );
-
-            if ( oConfigStream == null )
-            {
-               throw new ConfigLoaderException( "config-load: error opening: " + sConfigFileName );
-            }
-
-            oConfig = readConfigFile( oConfigStream );
+            throw new ConfigLoaderException( "config-load: error opening: " + _sResourceName );
          }
-         else if ( _oConfigFile != null )
-         {
-            oConfig = readConfigFile( _oConfigFile );
-         }
-         else
-         {
-            throw new ConfigLoaderException( "config-load: internal error, unrecognized config source" );
-         }
+
+         // load the configuration into a new Config object
+         DigesterFactory.getDigester( oConfig = new Config(), _oResourceLoader ).parse( oResourceStream );
       }
       catch ( IOException e )
       {
-         throw new ConfigLoaderException( "config-load: I/O error", e );
+         throw new ConfigLoaderException( "config-load: I/O error on: " + _sResourceName, e );
       }
       catch ( SAXException e )
       {
-         throw new ConfigLoaderException( "config-load: XML parse error", e );
+         throw new ConfigLoaderException( "config-load: XML parse error in: " + _sResourceName, e );
       }
-
-      return oConfig;
-   }
-
-   private Config readConfigFile( InputStream oConfigStream ) throws IOException, SAXException
-   {
-      Config   oConfig = new Config();
-
-      DigesterFactory.getDigester( oConfig ).parse( oConfigStream );
-
-      return oConfig;
-   }
-
-   private Config readConfigFile( File oConfigFile ) throws IOException, SAXException
-   {
-      Config   oConfig = new Config();
-
-      DigesterFactory.getDigester( oConfig ).parse( oConfigFile );
+      finally
+      {
+         try
+         {
+            if ( oResourceStream != null )
+            {
+               oResourceStream.close();
+            }
+         }
+         catch ( IOException e )
+         {
+            throw new ConfigLoaderException( "config-load: stream close error on: " + _sResourceName, e );
+         }
+      }
 
       return oConfig;
    }
 }
 
 // EOF
+
+
+
+
+
+
