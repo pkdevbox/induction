@@ -150,6 +150,15 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
          throw new TemplatingEngineException( "Freemaker threw exception during template processing: ", e );
       }
    }
+
+   /**
+    * This method was added to allow classes to extend this class to modify the Freemarker configuration
+    * @return
+    */
+   public Configuration getConfiguration()
+   {
+      return _oConfiguration;
+   }
 }
 
 // EOF
