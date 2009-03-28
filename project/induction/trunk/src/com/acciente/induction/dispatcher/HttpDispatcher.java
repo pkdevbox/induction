@@ -187,7 +187,7 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
       // the ParamResolver manages resolution of parameter values based on the parameter type
-      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload() );
+      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload(), oTemplatingEngine );
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );

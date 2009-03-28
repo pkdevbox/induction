@@ -28,6 +28,7 @@ import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.resolver.ControllerResolver;
+import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,11 +47,13 @@ public class ParamResolver
 {
    private ModelPool          _oModelPool;
    private Config.FileUpload  _oFileUploadConfig;
+   private TemplatingEngine   _oTemplatingEngine;
 
-   public ParamResolver( ModelPool oModelPool, Config.FileUpload oFileUploadConfig )
+   public ParamResolver( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, TemplatingEngine oTemplatingEngine )
    {
       _oModelPool          = oModelPool;
       _oFileUploadConfig   = oFileUploadConfig;
+      _oTemplatingEngine   = oTemplatingEngine;
    }
 
    public Object getParameterValue( Class                            oParamClass,
@@ -87,6 +90,10 @@ public class ParamResolver
       else if ( oParamClass.isAssignableFrom( ControllerResolver.Resolution.class ) )
       {
          oParamValue = oResolution;
+      }
+      else if ( oParamClass.isAssignableFrom( TemplatingEngine.class ) )
+      {
+         oParamValue = _oTemplatingEngine;
       }
       else
       {
