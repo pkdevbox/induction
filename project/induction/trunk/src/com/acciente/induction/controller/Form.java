@@ -1,5 +1,5 @@
 /**
- *   Copyright 2008 Acciente, LLC
+ *   Copyright 2009 Acciente, LLC
  *
  *   Acciente, LLC licenses this file to you under the
  *   Apache License, Version 2.0 (the "License"); you
@@ -33,7 +33,7 @@ import java.util.Set;
  *
  * @author Adinath Raveendra Raj
  *
- * todo: remove dependency on FileUploadException 
+ * todo: remove dependency on FileUploadException
  */
 public interface Form
 {

@@ -1,5 +1,5 @@
 /**
- *   Copyright 2008 Acciente, LLC
+ *   Copyright 2009 Acciente, LLC
  *
  *   Acciente, LLC licenses this file to you under the
  *   Apache License, Version 2.0 (the "License"); you
@@ -26,7 +26,7 @@ package com.acciente.induction.resolver;
  *   - the single constructor should declare formal parameters using only the
  *     following types:<p>
  *     - javax.servlet.ServletContext<p>
- * 
+ *
  * @created Jun 21, 2008
  *
  * @author Adinath Raveendra Raj

@@ -1,5 +1,5 @@
 /**
- *   Copyright 2008 Acciente, LLC
+ *   Copyright 2009 Acciente, LLC
  *
  *   Acciente, LLC licenses this file to you under the
  *   Apache License, Version 2.0 (the "License"); you
@@ -22,7 +22,7 @@ import com.acciente.commons.javac.JavaCompilerManager;
 import java.io.File;
 
 /**
- * An class definition loader that compiles and loads Java source files. 
+ * An class definition loader that compiles and loads Java source files.
  *
  * @created Feb 27, 2008
  *
