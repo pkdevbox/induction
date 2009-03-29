@@ -1,5 +1,5 @@
 /**
- *   Copyright 2008 Acciente, LLC
+ *   Copyright 2009 Acciente, LLC
  *
  *   Acciente, LLC licenses this file to you under the
  *   Apache License, Version 2.0 (the "License"); you
@@ -23,7 +23,7 @@ package com.acciente.commons.reflect;
  * the provided implementation once for each argument of a constructor or method
  * for which the Invoker needs a value. The Invoker will not call getParameter()
  * if the a value for a parameter could be determined based on the aoArgs array
- * passed to an Invoker method. 
+ * passed to an Invoker method.
  *
  * @see Invoker
  *

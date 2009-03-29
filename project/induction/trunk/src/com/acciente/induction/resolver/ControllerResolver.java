@@ -1,5 +1,5 @@
 /**
- *   Copyright 2008 Acciente, LLC
+ *   Copyright 2009 Acciente, LLC
  *
  *   Acciente, LLC licenses this file to you under the
  *   Apache License, Version 2.0 (the "License"); you
@@ -50,7 +50,7 @@ public interface ControllerResolver
 
    /**
     * A container object containg the resolution information.
-    * 
+    *
     * @created Mar 14, 2008
     * @author Adinath Raveendra Raj
     */
@@ -91,8 +91,8 @@ public interface ControllerResolver
        * @param sClassName the fully qualified name of the controller class
        * @param sMethodName the name of the method to invoke in the controller class
        * @param bIsIgnoreMethodNameCase tells Induction to ignore case when attempting to find a match for the
-       * method name in this resolution. 
-       * @param oOptions is an optional map (may be null) containing data that the resolver wishes to store as part 
+       * method name in this resolution.
+       * @param oOptions is an optional map (may be null) containing data that the resolver wishes to store as part
        * of the resolution. The controller's handler can access this data by choosing have the resolution object
        * injected. This options maps is useful if the resolver is used to map a wide range of requests to a small
        * number of controllers whose behaviour is parameterized by the options map.
