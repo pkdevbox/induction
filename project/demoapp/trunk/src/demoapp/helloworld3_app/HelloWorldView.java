@@ -27,6 +27,14 @@ import com.acciente.induction.view.Template;
  */
 public class HelloWorldView implements Template
 {
+   // bean attributes
+   public String getFirstName()
+   {
+      return "John Doe";
+   }
+
+   // Template methods
+
    public String getTemplateName()
    {
       return "HelloWorld.ftl";
@@ -34,6 +42,6 @@ public class HelloWorldView implements Template
 
    public String getMimeType()
    {
-      return "text/plain";
+      return "text/html";
    }
 }

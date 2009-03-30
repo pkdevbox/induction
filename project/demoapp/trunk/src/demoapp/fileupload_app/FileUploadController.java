@@ -38,7 +38,7 @@ public class FileUploadController implements Controller
    public void handler( Response oResponse, Form oForm ) throws Exception, FileUploadException, ParserException
    {
       oResponse.setContentType( "text/plain" );
-      oResponse.out().println( "Induction - File Upload Test - Response" );
+      oResponse.out().println( "Induction - File Upload Demo - Response" );
       oResponse.out().println( "----------------------------------------" );
 
       oResponse.out().println( "" );
