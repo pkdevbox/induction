@@ -52,10 +52,10 @@ public class URLPathControllerResolver implements ControllerResolver
    private String    _sDefaultHandlerMethodName;
    private boolean   _bIsIgnoreMethodNameCase;
 
-   public URLPathControllerResolver( Config.ControllerResolver oConfig )
+   public URLPathControllerResolver( Config.ControllerMapping  oControllerMappingConfig )
    {
-      _sDefaultHandlerMethodName = oConfig.getDefaultHandlerMethodName();
-      _bIsIgnoreMethodNameCase   = oConfig.isIgnoreMethodNameCase();
+      _sDefaultHandlerMethodName = oControllerMappingConfig.getDefaultHandlerMethodName();
+      _bIsIgnoreMethodNameCase   = oControllerMappingConfig.isIgnoreMethodNameCase();
    }
 
    public Resolution resolve( HttpServletRequest oRequest )

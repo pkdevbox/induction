@@ -36,11 +36,11 @@ public interface ParameterProvider
    /**
     * Returns the value for a parameter given the Parameter type
     *
-    * @param oValueType a class object representing the parameter type
+    * @param oParamClass a class object representing the parameter type
     * @return null or an object representing the parameter type
     * @throws ParameterProviderException should be used to wrap any exception that the implementation class may wish to propagate
     */
-   public Object getParameter( Class oValueType ) throws ParameterProviderException;
+   public Object getParameter( Class oParamClass ) throws ParameterProviderException;
 }
 
 // EOF

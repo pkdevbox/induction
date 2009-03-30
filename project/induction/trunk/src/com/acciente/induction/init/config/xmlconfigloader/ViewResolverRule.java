@@ -22,39 +22,41 @@ import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
 import org.xml.sax.Attributes;
 
+// EOF
+
 /**
  * Internal.
- * ControllerResolverRule
+ * ViewResolverRule
  *
  * @created May 8, 2008
  *
  * @author Adinath Raveendra Raj
  */
-public class ControllerResolverRule extends Rule
+public class ViewResolverRule extends Rule
 {
-   private  Config.ControllerResolver  _oControllerResolver;
+   private  Config.ViewResolver  _oViewResolver;
 
-   private  String                     _sClassName;
+   private  String               _sClassName;
 
-   public ControllerResolverRule( Config.ControllerResolver oControllerResolver )
+   public ViewResolverRule( Config.ViewResolver oViewResolver )
    {
-      _oControllerResolver = oControllerResolver;
+      _oViewResolver = oViewResolver;
    }
 
    public void begin( String sNamespace, String sName, Attributes oAttributes )
    {
       // reset data stored in rule
-      _sClassName                = null;
+      _sClassName = null;
    }
 
    public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
    {
       if ( Strings.isEmpty( _sClassName ) )
       {
-         throw new XMLConfigLoaderException( "config > controller-resolver > class: must specify a class name" );
+         throw new XMLConfigLoaderException( "config > view-resolver > class: must specify a class name" );
       }
 
-      _oControllerResolver.setClassName( _sClassName );
+      _oViewResolver.setClassName( _sClassName );
    }
 
    public ParamClassRule createParamClassRule()
@@ -70,5 +72,3 @@ public class ControllerResolverRule extends Rule
       }
    }
 }
-
-// EOF

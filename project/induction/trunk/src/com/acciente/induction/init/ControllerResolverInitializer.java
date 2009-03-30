@@ -40,6 +40,7 @@ import java.lang.reflect.InvocationTargetException;
 public class ControllerResolverInitializer
 {
    public static ControllerResolver getControllerResolver( Config.ControllerResolver   oControllerResolverConfig,
+                                                           Config.ControllerMapping    oControllerMappingConfig,
                                                            ModelPool                   oModelPool,
                                                            ClassLoader                 oClassLoader,
                                                            ServletConfig               oServletConfig,
@@ -51,7 +52,7 @@ public class ControllerResolverInitializer
 
       if ( sControllerResolverClassName == null )
       {
-         oControllerResolver = new URLPathControllerResolver( oControllerResolverConfig );
+         oControllerResolver = new URLPathControllerResolver( oControllerMappingConfig );
       }
       else
       {
@@ -64,7 +65,8 @@ public class ControllerResolverInitializer
             =  ( ControllerResolver )
                ObjectFactory.createObject( oControllerResolverClass,
                                            new Object[]{ oServletConfig,
-                                                         oControllerResolverConfig },
+                                                         oControllerResolverConfig,
+                                                         oControllerMappingConfig },
                                            new InitializerParameterProvider( oModelPool, "controller-resolver-init" ) );
       }
 

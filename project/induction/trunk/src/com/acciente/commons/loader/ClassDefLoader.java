@@ -17,6 +17,8 @@
  */
 package com.acciente.commons.loader;
 
+import java.util.Collection;
+
 /**
  * This is an interface that abstracts the loading of class definitions.
  *
@@ -49,6 +51,15 @@ public interface ClassDefLoader
     * getResourceAsStreamMethods() do not have checked exceptions in their signature).
     */
    ResourceDef    getResourceDef( String sResourceName );
+
+   /**
+    * Searches for class names that match the specified regex. This method is expected to search and
+    * return a list of fully qualified classnames.
+    *
+    * @param sClassNamePattern a java regex that defines the classnames that match the search
+    * @return a collection of string classnames that match the specified regex
+    */
+   Collection<String>   findClassNames( String sClassNamePattern );
 }
 
 // EOF

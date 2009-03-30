@@ -20,6 +20,7 @@ package com.acciente.commons.loader;
 import com.acciente.commons.javac.JavaCompilerManager;
 
 import java.io.File;
+import java.util.Collection;
 
 /**
  * An class definition loader that compiles and loads Java source files.
@@ -69,6 +70,12 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
    }
 
    public ResourceDef getResourceDef( String sResourceName )
+   {
+      // not implemented at this time since this class def loader is not currently used/supported
+      return null;
+   }
+
+   public Collection<String> findClassNames( String sClassNamePattern )
    {
       // not implemented at this time since this class def loader is not currently used/supported
       return null;

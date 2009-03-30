@@ -92,6 +92,16 @@ public class ReloadingClassLoader extends SecureClassLoader
    }
 
    /**
+    * A list of ClassDefLoaders searched by this class loader.
+    *
+    * @return a list containing (in order of search) the classdefloader in use
+    */
+   public List getClassDefLoaders()
+   {
+      return _oClassDefLoaderList;
+   }
+
+   /**
     * This method is used to add to the list classnames that should be "ignored" as regards the
     * dependency checking.
     *

@@ -17,6 +17,7 @@
  */
 package com.acciente.induction.dispatcher.view;
 
+import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.template.TemplatingEngineException;
 import com.acciente.induction.view.Image;
@@ -24,6 +25,7 @@ import com.acciente.induction.view.ImageStream;
 import com.acciente.induction.view.Template;
 import com.acciente.induction.view.Text;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
@@ -38,13 +40,26 @@ import java.io.IOException;
  */
 public class ViewExecutor
 {
-   // todo: consider refactoring handling each view type into a separate class
-
-   private TemplatingEngine _oTemplatingEngine;
+   private  ViewFactory          _oViewFactory;
+   private  TemplatingEngine     _oTemplatingEngine;
 
    public ViewExecutor( TemplatingEngine oTemplatingEngine )
    {
       _oTemplatingEngine = oTemplatingEngine;
+   }
+
+   public void execute( ViewResolver.Resolution    oResolution,
+                        HttpServletRequest         oRequest,
+                        HttpServletResponse        oResponse ) throws ViewExecutorException
+   {
+      Object oView;
+
+//      oView = _oViewFactory.getView( oResolution.getClassName(),
+//                                     oRequest,
+//                                     oResponse,
+//                                     oResolution );
+
+      // now process using logic below
    }
 
    public void execute( Object oControllerReturnValue, HttpServletResponse oResponse ) throws ViewExecutorException
