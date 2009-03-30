@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * This interface is used to abstract the algorithm used to map a HTTP request to a specific
- * controller invocation.<p>
+ * view invocation.<p>
  * <p>
  * A class implementing this interface is expected to have a single public contructor
  * adhering to the following convention:<p>
@@ -30,22 +30,22 @@ import java.util.Map;
  *   - the single constructor should declare formal parameters using only the
  *     following types:<p>
  *     - javax.servlet.ServletConfig<p>
- *     - com.acciente.induction.init.config.Config.ControllerResolver<p>
+ *     - com.acciente.induction.init.config.Config.ViewResolver<p>
  *     - java.lang.ClassLoader (to get the Induction reloading classloader)
  *     - any user defined model class (to get the respective model object)
  *
- * @created Mar 14, 2008
+ * @created Mar 29, 2009
  *
  * @author Adinath Raveendra Raj
  */
-public interface ControllerResolver
+public interface ViewResolver
 {
    /**
-    * This method should resolve the class name of the controller and method name within same
+    * This method should resolve the class name of the view and method name within same
     * to be invoked in response to the specified HTTP request
     *
     * @param oRequest the HTTP request context in which the resolution is requested
-    * @return  an object containing the class name of the controller to be invoked and
+    * @return  an object containing the class name of the view to be invoked and
     *          the method name within same
     */
    Resolution resolve( HttpServletRequest oRequest );
@@ -59,56 +59,36 @@ public interface ControllerResolver
    public static class Resolution
    {
       private String    _sClassName;
-      private String    _sMethodName;
-      private boolean   _bIsIgnoreMethodNameCase;
       private Map       _oOptions;
 
       /**
        * Creates a resolution object.
        *
-       * @param sClassName the fully qualified name of the controller class
-       * @param sMethodName the name of the method to invoke in the controller class
+       * @param sClassName the fully qualified name of the view class
        */
-      public Resolution( String sClassName, String sMethodName )
+      public Resolution( String sClassName )
       {
-         this( sClassName, sMethodName, false, null );
+         this( sClassName, null );
       }
 
       /**
        * Creates a resolution object.
        *
-       * @param sClassName the fully qualified name of the controller class
-       * @param sMethodName the name of the method to invoke in the controller class
-       * @param bIsIgnoreMethodNameCase tells Induction to ignore case when attempting to find a match for the
-       * method name in this resolution.
-       */
-      public Resolution( String sClassName, String sMethodName, boolean bIsIgnoreMethodNameCase )
-      {
-         this( sClassName, sMethodName, bIsIgnoreMethodNameCase, null );
-      }
-
-      /**
-       * Creates a resolution object.
-       *
-       * @param sClassName the fully qualified name of the controller class
-       * @param sMethodName the name of the method to invoke in the controller class
-       * @param bIsIgnoreMethodNameCase tells Induction to ignore case when attempting to find a match for the
+       * @param sClassName the fully qualified name of the view class
        * method name in this resolution.
        * @param oOptions is an optional map (may be null) containing data that the resolver wishes to store as part
-       * of the resolution. The controller's handler can access this data by choosing have the resolution object
+       * of the resolution. The view's handler can access this data by choosing have the resolution object
        * injected. This options maps is useful if the resolver is used to map a wide range of requests to a small
-       * number of controllers whose behaviour is parameterized by the options map.
+       * number of views whose behaviour is parameterized by the options map.
        */
-      public Resolution( String sClassName, String sMethodName, boolean bIsIgnoreMethodNameCase, Map oOptions )
+      public Resolution( String sClassName, Map oOptions )
       {
          if ( sClassName == null )
          {
-            throw new IllegalArgumentException( "Controller resolution must define a class name" );
+            throw new IllegalArgumentException( "View resolution must define a class name" );
          }
 
          _sClassName                =  sClassName;
-         _sMethodName               =  sMethodName;
-         _bIsIgnoreMethodNameCase   =  bIsIgnoreMethodNameCase;
          _oOptions                  =  oOptions;
       }
 
@@ -118,21 +98,9 @@ public interface ControllerResolver
          return _sClassName;
       }
 
-      public String getMethodName()
-      {
-         return _sMethodName;
-      }
-
-      public boolean isIgnoreMethodNameCase()
-      {
-         return _bIsIgnoreMethodNameCase;
-      }
-
       public Map getOptions()
       {
          return _oOptions;
       }
    }
 }
-
-// EOF

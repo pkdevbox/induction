@@ -30,14 +30,15 @@ import com.acciente.induction.init.ClassLoaderInitializer;
 import com.acciente.induction.init.ConfigLoaderInitializer;
 import com.acciente.induction.init.ControllerResolverInitializer;
 import com.acciente.induction.init.Logger;
-import com.acciente.induction.init.TemplatingEngineInitializer;
 import com.acciente.induction.init.RedirectResolverInitializer;
+import com.acciente.induction.init.TemplatingEngineInitializer;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.RedirectResolver;
-import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
+import com.acciente.induction.util.ConstructorNotFoundException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -56,17 +57,22 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class HttpDispatcher extends HttpServlet
 {
+   private  ClassLoader          _oClassLoader;
+
    private  ControllerResolver   _oControllerResolver;
+   private  ViewResolver         _oViewResolver;
    private  RedirectResolver     _oRedirectResolver;
+
    private  ControllerExecutor   _oControllerExecutor;
    private  ViewExecutor         _oViewExecutor;
+
    private  Logger               _oLogger;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
     *
     * @param oServletConfig web container-provided access to this servlet's configuration
-    * @throws ServletException
+    * @throws javax.servlet.ServletException
     */
    public void init( ServletConfig oServletConfig )
       throws   ServletException
@@ -101,10 +107,9 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: config-loader", e );    }
 
       // setup up our classloader
-      ClassLoader oClassLoader;
       try
       {
-         oClassLoader
+         _oClassLoader
          =  ClassLoaderInitializer
                   .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader(), _oLogger );
       }
@@ -119,7 +124,7 @@ public class HttpDispatcher extends HttpServlet
          oTemplatingEngine
          =  TemplatingEngineInitializer
                .getTemplatingEngine( oConfig.getTemplating(),
-                                     oClassLoader,
+                                     _oClassLoader,
                                      oServletConfig,
                                      _oLogger );
       }
@@ -140,7 +145,7 @@ public class HttpDispatcher extends HttpServlet
 
       // we setup the model factory and pool managers early since we now support inject models into the
       // controller and redirect resolver initializers
-      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
+      ModelFactory   oModelFactory  = new ModelFactory( _oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
       ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
 
       // now set the pool for the model factory to use in model-to-model injection
@@ -151,7 +156,12 @@ public class HttpDispatcher extends HttpServlet
       {
          _oControllerResolver
             =  ControllerResolverInitializer
-                  .getControllerResolver( oConfig.getControllerResolver(), oModelPool, oClassLoader, oServletConfig, _oLogger );
+                  .getControllerResolver( oConfig.getControllerResolver(),
+                                          oConfig.getControllerMapping(),
+                                          oModelPool,
+                                          _oClassLoader,
+                                          oServletConfig,
+                                          _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
@@ -171,7 +181,7 @@ public class HttpDispatcher extends HttpServlet
       {
          _oRedirectResolver
             =  RedirectResolverInitializer
-                  .getRedirectResolver( oConfig.getRedirectResolver(), oModelPool, oClassLoader, oServletConfig, _oLogger );
+                  .getRedirectResolver( oConfig.getRedirectResolver(), oModelPool, _oClassLoader, oServletConfig, _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
@@ -190,7 +200,7 @@ public class HttpDispatcher extends HttpServlet
       ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload(), oTemplatingEngine );
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
-      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
+      ControllerPool oControllerPool = new ControllerPool( _oClassLoader, oServletConfig, _oLogger );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
@@ -208,14 +218,15 @@ public class HttpDispatcher extends HttpServlet
    public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )
       throws IOException
    {
-      // ask the resolver what controller should be invoked
-      ControllerResolver.Resolution oResolution = _oControllerResolver.resolve( oRequest );
-      if ( oResolution != null )
+      // first try to resolve the request to a controller
+      ControllerResolver.Resolution oControllerResolution = _oControllerResolver.resolve( oRequest );
+
+      if ( oControllerResolution != null )
       {
          Object   oControllerReturnValue = null;
          try
          {
-            oControllerReturnValue = _oControllerExecutor.execute( oResolution, oRequest, oResponse );
+            oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse );
          }
          catch ( ControllerExecutorException e )
          {
@@ -267,7 +278,24 @@ public class HttpDispatcher extends HttpServlet
       }
       else
       {
-         logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
+         // next try to resolve the request to a controller
+         ViewResolver.Resolution oViewResolution = _oViewResolver.resolve( oRequest );
+
+         if ( oViewResolution != null )
+         {
+            try
+            {
+               _oViewExecutor.execute( oViewResolution, oResponse );
+            }
+            catch ( ViewExecutorException e )
+            {
+               logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            }
+         }
+         else
+         {
+            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
+         }
       }
    }
 

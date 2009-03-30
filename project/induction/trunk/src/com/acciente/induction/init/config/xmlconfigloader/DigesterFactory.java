@@ -103,20 +103,61 @@ public class DigesterFactory
          }
       }
 
+      // controller-mapping config rules
+      {
+         ControllerMappingRule oControllerMappingRule = new ControllerMappingRule( oConfig.getControllerMapping() );
+         oDigester.addRule( XML.Config_ControllerMapping.PATTERN,                           oControllerMappingRule );
+         oDigester.addRule( XML.Config_ControllerMapping_DefaultHandlerMethod.PATTERN,      oControllerMappingRule.createSetDefaultHandlerMethodRule() );
+         oDigester.addRule( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.PATTERN,   oControllerMappingRule.createSetIgnoreHandlerMethodCaseRule() );
+         {
+            ControllerMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oControllerMappingRule.createAddURLToClassMapRule();
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap.PATTERN,              oAddURLToClassMapRule );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_URLPattern.PATTERN,   oAddURLToClassMapRule.createParamURLPatternRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPattern.PATTERN, oAddURLToClassMapRule.createParamClassPatternRule() );
+         }
+      }
+
+      // view-mapping config rules
+      {
+         ViewMappingRule oViewMappingRule = new ViewMappingRule( oConfig.getViewMapping() );
+         {
+            ViewMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oViewMappingRule.createAddURLToClassMapRule();
+            oDigester.addRule( XML.Config_ViewMapping_URLToClassMap.PATTERN,                    oAddURLToClassMapRule );
+            oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_URLPattern.PATTERN,         oAddURLToClassMapRule.createParamURLPatternRule() );
+            oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassPattern.PATTERN,       oAddURLToClassMapRule.createParamClassPatternRule() );
+         }
+      }
+
+      // redirect-mapping config rules
+      {
+         RedirectMappingRule oRedirectMappingRule = new RedirectMappingRule( oConfig.getRedirectMapping() );
+         {
+            RedirectMappingRule.AddClassToURLMapRule oAddClassToURLMapRule = oRedirectMappingRule.createAddClassToURLMapRule();
+            oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap.PATTERN,                oAddClassToURLMapRule );
+            oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.PATTERN,   oAddClassToURLMapRule.createParamClassPatternRule() );
+            oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormat.PATTERN,      oAddClassToURLMapRule.createParamURLFormatRule() );
+         }
+      }
+
       // controller-resolver config rules
       {
          ControllerResolverRule oControllerResolverRule = new ControllerResolverRule( oConfig.getControllerResolver() );
-         oDigester.addRule( XML.Config_ControllerResolver.PATTERN,                           oControllerResolverRule );
-         oDigester.addRule( XML.Config_ControllerResolver_Class.PATTERN,                     oControllerResolverRule.createParamClassRule() );
-         oDigester.addRule( XML.Config_ControllerResolver_DefaultHandlerMethod.PATTERN,      oControllerResolverRule.createParamDefaultHandlerMethodRule() );
-         oDigester.addRule( XML.Config_ControllerResolver_IgnoreHandlerMethodCase.PATTERN,   oControllerResolverRule.createParamIgnoreHandlerMethodCaseRule() );
+         oDigester.addRule( XML.Config_ControllerResolver.PATTERN,         oControllerResolverRule );
+         oDigester.addRule( XML.Config_ControllerResolver_Class.PATTERN,   oControllerResolverRule.createParamClassRule() );
+      }
+
+      // view-resolver config rules
+      {
+         ViewResolverRule oViewResolverRule = new ViewResolverRule( oConfig.getViewResolver() );
+         oDigester.addRule( XML.Config_ViewResolver.PATTERN,               oViewResolverRule );
+         oDigester.addRule( XML.Config_ViewResolver_Class.PATTERN,         oViewResolverRule.createParamClassRule() );
       }
 
       // redirect-resolver config rules
       {
          RedirectResolverRule oRedirectResolverRule = new RedirectResolverRule( oConfig.getRedirectResolver() );
-         oDigester.addRule( XML.Config_RedirectResolver.PATTERN,                           oRedirectResolverRule );
-         oDigester.addRule( XML.Config_RedirectResolver_Class.PATTERN,                     oRedirectResolverRule.createParamClassRule() );
+         oDigester.addRule( XML.Config_RedirectResolver.PATTERN,           oRedirectResolverRule );
+         oDigester.addRule( XML.Config_RedirectResolver_Class.PATTERN,     oRedirectResolverRule.createParamClassRule() );
       }
 
       // file-upload config rules

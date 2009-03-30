@@ -60,10 +60,28 @@ public class XML
    public static final XML Config_Templating_TemplatingEngine                    = new XML( "templating-engine",     Config_Templating );
    public static final XML Config_Templating_TemplatingEngine_Class              = new XML( "class",                 Config_Templating_TemplatingEngine );
 
+   public static final XML Config_ControllerMapping                              = new XML( "controller-mapping",          Config );
+   public static final XML Config_ControllerMapping_URLToClassMap                = new XML( "url-to-class-map",            Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_URLToClassMap_URLPattern     = new XML( "url-pattern",                 Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassPattern   = new XML( "class-pattern",               Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_DefaultHandlerMethod         = new XML( "default-handler-method",      Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_IgnoreHandlerMethodCase      = new XML( "ignore-handler-method-case",  Config_ControllerMapping );
+
+   public static final XML Config_ViewMapping                                    = new XML( "view-mapping",                Config );
+   public static final XML Config_ViewMapping_URLToClassMap                      = new XML( "url-to-class-map",            Config_ViewMapping );
+   public static final XML Config_ViewMapping_URLToClassMap_URLPattern           = new XML( "url-pattern",                 Config_ViewMapping_URLToClassMap );
+   public static final XML Config_ViewMapping_URLToClassMap_ClassPattern         = new XML( "class-pattern",               Config_ViewMapping_URLToClassMap );
+
+   public static final XML Config_RedirectMapping                                = new XML( "redirect-mapping",            Config );
+   public static final XML Config_RedirectMapping_ClassToURLMap                  = new XML( "class-to-url-map",            Config_RedirectMapping );
+   public static final XML Config_RedirectMapping_ClassToURLMap_ClassPattern     = new XML( "class-pattern",               Config_RedirectMapping_ClassToURLMap );
+   public static final XML Config_RedirectMapping_ClassToURLMap_URLFormat        = new XML( "url-format",                  Config_RedirectMapping_ClassToURLMap );
+
    public static final XML Config_ControllerResolver                             = new XML( "controller-resolver",         Config );
    public static final XML Config_ControllerResolver_Class                       = new XML( "class",                       Config_ControllerResolver );
-   public static final XML Config_ControllerResolver_DefaultHandlerMethod        = new XML( "default-handler-method",      Config_ControllerResolver );
-   public static final XML Config_ControllerResolver_IgnoreHandlerMethodCase     = new XML( "ignore-handler-method-case",  Config_ControllerResolver );
+
+   public static final XML Config_ViewResolver                                   = new XML( "view-resolver",               Config );
+   public static final XML Config_ViewResolver_Class                             = new XML( "class",                       Config_ViewResolver );
 
    public static final XML Config_RedirectResolver                               = new XML( "redirect-resolver",           Config );
    public static final XML Config_RedirectResolver_Class                         = new XML( "class",                       Config_RedirectResolver );

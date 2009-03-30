@@ -18,6 +18,9 @@
 package com.acciente.commons.loader;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 /**
  * A class definition loader that loads compiled Java class files.
@@ -76,6 +79,66 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       }
 
       return oClassDef;
+   }
+
+   public Collection<String> findClassNames( String sClassNamePattern )
+   {
+      return findClassNames( _oCompiledDirectory,
+                             _sPackageNamePrefix,
+                             Pattern.compile( sClassNamePattern ) );
+   }
+
+   private Collection<String> findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern )
+   {
+      Collection<String> oClassNameList = new LinkedList<String>();
+
+      // iterate thru the classes in this directory
+      for ( File oFile : oPath.listFiles() )
+      {
+         if ( oFile.isDirectory() )
+         {
+            if ( sPackageName == null )
+            {
+               oClassNameList.addAll( findClassNames( oFile, oFile.getName(), oClassNamePattern ) );
+            }
+            else
+            {
+               oClassNameList.addAll( findClassNames( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern ) );
+            }
+         }
+         else if ( oFile.isFile() )
+         {
+            String   sClassName;
+
+            if ( sPackageName == null )
+            {
+               sClassName = getClassName( oFile );
+            }
+            else
+            {
+               sClassName = sPackageName + "." + getClassName( oFile );
+            }
+
+            if ( oClassNamePattern.matcher( sClassName ).matches() )
+            {
+               oClassNameList.add( sClassName );
+            }
+         }
+      }
+
+      return oClassNameList;
+   }
+
+   private String getClassName( File oFile )
+   {
+      String sFileName = oFile.getName();
+
+      if ( sFileName.endsWith( ".class" ) )
+      {
+         return sFileName.substring( 0, sFileName.length() - ".class".length() );
+      }
+
+      return sFileName;
    }
 
    private String getFileName( String sClassOrResourceName, boolean bIsResourceName )

@@ -21,10 +21,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Iterator;
+import java.util.regex.Pattern;
 
 /**
  * This class is the container for the configuration information used by Induction.
@@ -41,7 +42,11 @@ public class Config
    private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
    private ModelDefs             _oModelDefs          = new ModelDefs();
    private Templating            _oTemplating         = new Templating();
+   private ControllerMapping     _oControllerMapping  = new ControllerMapping();
+   private ViewMapping           _oViewMapping        = new ViewMapping();
+   private RedirectMapping       _oRedirectMapping    = new RedirectMapping();
    private ControllerResolver    _oControllerResolver = new ControllerResolver();
+   private ViewResolver          _oViewResolver       = new ViewResolver();
    private RedirectResolver      _oRedirectResolver   = new RedirectResolver();
    private FileUpload            _oFileUpload         = new FileUpload();
 
@@ -81,6 +86,36 @@ public class Config
    }
 
    /**
+    * This method is used to access the settings used to configure the controller mapping.
+    *
+    * @return an object reference that keeps the controller mapping config settings
+    */
+   public ControllerMapping getControllerMapping()
+   {
+      return _oControllerMapping;
+   }
+
+   /**
+    * This method is used to access the settings used to configure the view mapping.
+    *
+    * @return an object reference that keeps the view mapping config settings
+    */
+   public ViewMapping getViewMapping()
+   {
+      return _oViewMapping;
+   }
+
+   /**
+    * This method is used to access the settings used to configure the redirect mapping.
+    *
+    * @return an object reference that keeps the redirect mapping config settings
+    */
+   public RedirectMapping getRedirectMapping()
+   {
+      return _oRedirectMapping;
+   }
+
+   /**
     * This method is used to access the settings used to configure the controller resolver.
     *
     * @return an object reference that keeps the controller resolver config settings
@@ -88,6 +123,16 @@ public class Config
    public ControllerResolver getControllerResolver()
    {
       return _oControllerResolver;
+   }
+
+   /**
+    * This method is used to access the settings used to configure the view resolver.
+    *
+    * @return an object reference that keeps the view resolver config settings
+    */
+   public ViewResolver getViewResolver()
+   {
+      return _oViewResolver;
    }
 
    /**
@@ -120,11 +165,19 @@ public class Config
       StringBuffer   oBuffer = new StringBuffer();
 
       oBuffer.append( XML.Config.OPEN_IND );
+
       oBuffer.append( _oJavaClassPath.toXML() );
       oBuffer.append( _oModelDefs.toXML() );
       oBuffer.append( _oTemplating.toXML() );
+
+      oBuffer.append( _oControllerMapping.toXML() );
+      oBuffer.append( _oViewMapping.toXML() );
+      oBuffer.append( _oRedirectMapping.toXML() );
+
       oBuffer.append( _oControllerResolver.toXML() );
+      oBuffer.append( _oViewResolver.toXML() );
       oBuffer.append( _oRedirectResolver.toXML() );
+
       oBuffer.append( _oFileUpload.toXML() );
       oBuffer.append( "\n" );
       oBuffer.append( XML.Config.CLOSE_IND );
@@ -187,7 +240,20 @@ public class Config
 
             for ( Iterator oIter = _oDirList.iterator(); oIter.hasNext(); )
             {
-               oBuffer.append ( oIter.next().toString() );
+               Object oPathItem = oIter.next();
+
+               if ( oPathItem instanceof CompiledDir )
+               {
+                  oBuffer.append ( ( ( CompiledDir ) oPathItem ).toXML() );
+               }
+               else if ( oPathItem instanceof SourceDir )
+               {
+                  oBuffer.append ( ( ( SourceDir ) oPathItem ).toXML() );
+               }
+               else
+               {
+                  throw new IllegalArgumentException( "config: internal error: unknown java class path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
+               }
             }
 
             oBuffer.append( sXML_JavaCompiler );
@@ -848,32 +914,20 @@ public class Config
    /**
     * Modular configuration container
     */
-   public static class ControllerResolver
+   public static class ControllerMapping
    {
-      private String    _sClassName;
+      private List      _oURLToClassMapList        = new ArrayList();
       private String    _sDefaultHandlerMethodName = "handler";
-      private boolean   _bIgnoreMethodNameCase = false;
+      private boolean   _bIgnoreMethodNameCase     = false;
 
-      /**
-       * Used to set a fully qualified class name used to resolve a HTTP request to a controller name (and method).
-       * This parameter is usually not set. When not set, a default controller resolver that maps a URL path to
-       * a controller name and method is used.
-       *
-       * @param sClassName a string representing fully qualified classname or null to use the default resolver
-       */
-      public void setClassName( String sClassName )
+      public void addURLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
       {
-         _sClassName = sClassName;
+         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, oClassPattern ) );
       }
 
-      /**
-       * Returns the name of the class used to resolve a HTTP request to a controller name (and method).
-       *
-       * @return a string representing a fully qualified class name
-       */
-      public String getClassName()
+      public List getURLToClassMapList()
       {
-         return _sClassName;
+         return _oURLToClassMapList;
       }
 
       public String getDefaultHandlerMethodName()
@@ -920,12 +974,306 @@ public class Config
 
       public String toXML()
       {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_ControllerMapping.OPEN_IND );
+
+         for ( Iterator oIter = _oURLToClassMapList.iterator(); oIter.hasNext(); )
+         {
+            oBuffer.append ( ( ( URLToClassMap ) oIter.next() ).toXML() );
+         }
+
+         oBuffer.append( XML.Config_ControllerMapping_DefaultHandlerMethod.toXML( _sDefaultHandlerMethodName ) );
+         oBuffer.append( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.toXML( _bIgnoreMethodNameCase ) );
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_ControllerMapping.CLOSE_IND );
+
+         return oBuffer.toString();
+      }
+
+      /**
+       * Modular configuration container
+       */
+      public static class URLToClassMap
+      {
+         private Pattern   _oURLPattern;
+         private Pattern   _oClassPattern;
+
+         private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+         {
+            _oURLPattern   = oURLPattern;
+            _oClassPattern = oClassPattern;
+         }
+
+         public Pattern getURLPattern()
+         {
+            return _oURLPattern;
+         }
+
+         public Pattern getClassPattern()
+         {
+            return _oClassPattern;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_ControllerMapping_URLToClassMap
+                  .toXML( XML.Config_ControllerMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
+                          + XML.Config_ControllerMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
+                        );
+         }
+      }
+   }
+
+   /**
+    * Modular configuration container
+    */
+   public static class ViewMapping
+   {
+      private List      _oURLToClassMapList        = new ArrayList();
+
+      public void addURLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+      {
+         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, oClassPattern ) );
+      }
+
+      public List getURLToClassMapList()
+      {
+         return _oURLToClassMapList;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_ViewMapping.OPEN_IND );
+
+         for ( Iterator oIter = _oURLToClassMapList.iterator(); oIter.hasNext(); )
+         {
+            oBuffer.append ( ( ( URLToClassMap ) oIter.next() ).toXML() );
+         }
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_ViewMapping.CLOSE_IND );
+
+         return oBuffer.toString();
+      }
+
+      /**
+       * Modular configuration container
+       */
+      public static class URLToClassMap
+      {
+         private Pattern   _oURLPattern;
+         private Pattern   _oClassPattern;
+
+         private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+         {
+            _oURLPattern   = oURLPattern;
+            _oClassPattern = oClassPattern;
+         }
+
+         public Pattern getURLPattern()
+         {
+            return _oURLPattern;
+         }
+
+         public Pattern getClassPattern()
+         {
+            return _oClassPattern;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_ViewMapping_URLToClassMap
+                  .toXML( XML.Config_ViewMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
+                          + XML.Config_ViewMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
+                        );
+         }
+      }
+   }
+
+   /**
+    * Modular configuration container
+    */
+   public static class RedirectMapping
+   {
+      private List _oClassToURLMapList = new ArrayList();
+
+      public void addClassToURLMap( Pattern oClassPattern, String sURLFormat )
+      {
+         _oClassToURLMapList.add( new ClassToURLMap( oClassPattern, sURLFormat ) );
+      }
+
+      public List getClassToURLMapList()
+      {
+         return _oClassToURLMapList;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         StringBuffer   oBuffer = new StringBuffer();
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_RedirectMapping.OPEN_IND );
+
+         for ( Iterator oIter = _oClassToURLMapList.iterator(); oIter.hasNext(); )
+         {
+            oBuffer.append ( ( ( ClassToURLMap ) oIter.next() ).toXML() );
+         }
+
+         oBuffer.append( "\n" );
+         oBuffer.append( XML.Config_RedirectMapping.CLOSE_IND );
+
+         return oBuffer.toString();
+      }
+
+      /**
+       * Modular configuration container
+       */
+      public static class ClassToURLMap
+      {
+         private Pattern   _oClassPattern;
+         private String    _sURLFormat;
+
+         private ClassToURLMap( Pattern oClassPattern, String sURLFormat )
+         {
+            _oClassPattern = oClassPattern;
+            _sURLFormat    = sURLFormat;
+         }
+
+         public Pattern getClassPattern()
+         {
+            return _oClassPattern;
+         }
+
+         public String getURLFormat()
+         {
+            return _sURLFormat;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_RedirectMapping_ClassToURLMap
+                  .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern )
+                          + XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat )
+                        );
+         }
+      }
+   }
+
+   /**
+    * Modular configuration container
+    */
+   public static class ControllerResolver
+   {
+      private String    _sClassName;
+
+      /**
+       * Used to set a fully qualified class name used to resolve a HTTP request to a controller name (and method).
+       * This parameter is usually not set. When not set, a default controller resolver that maps a URL path to
+       * a controller name and method is used.
+       *
+       * @param sClassName a string representing fully qualified classname or null to use the default resolver
+       */
+      public void setClassName( String sClassName )
+      {
+         _sClassName = sClassName;
+      }
+
+      /**
+       * Returns the name of the class used to resolve a HTTP request to a controller name (and method).
+       *
+       * @return a string representing a fully qualified class name
+       */
+      public String getClassName()
+      {
+         return _sClassName;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
          return
             XML.Config_ControllerResolver
-               .toXML( XML.Config_ControllerResolver_Class.toXML( _sClassName )
-                       + XML.Config_ControllerResolver_DefaultHandlerMethod.toXML( _sDefaultHandlerMethodName )
-                       + XML.Config_ControllerResolver_IgnoreHandlerMethodCase.toXML( _bIgnoreMethodNameCase )
-                     );
+               .toXML( XML.Config_ControllerResolver_Class.toXML( _sClassName ) );
+      }
+   }
+
+   /**
+    * Modular configuration container
+    */
+   public static class ViewResolver
+   {
+      private String    _sClassName;
+
+      /**
+       * Used to set a fully qualified class name used to resolve a HTTP request to a view name (and method).
+       * This parameter is usually not set. When not set, a default view resolver that maps a URL path to
+       * a view name and method is used.
+       *
+       * @param sClassName a string representing fully qualified classname or null to use the default resolver
+       */
+      public void setClassName( String sClassName )
+      {
+         _sClassName = sClassName;
+      }
+
+      /**
+       * Returns the name of the class used to resolve a HTTP request to a view name (and method).
+       *
+       * @return a string representing a fully qualified class name
+       */
+      public String getClassName()
+      {
+         return _sClassName;
+      }
+
+      public String toString()
+      {
+         return toXML();
+      }
+
+      public String toXML()
+      {
+         return
+            XML.Config_ViewResolver
+               .toXML( XML.Config_ViewResolver_Class.toXML( _sClassName ) );
       }
    }
 
