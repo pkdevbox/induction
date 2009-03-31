@@ -38,16 +38,45 @@ import java.util.regex.Pattern;
  */
 public class RedirectMappingRule extends Rule
 {
-   private  Config.RedirectMapping   _oRedirectMapping;
+   private  Config.RedirectMapping  _oRedirectMapping;
+
+   private  String                  _sURLBase;
 
    public RedirectMappingRule( Config.RedirectMapping oRedirectMapping )
    {
       _oRedirectMapping = oRedirectMapping;
    }
 
+   public SetURLBaseRule createSetURLBaseRule()
+   {
+      return new SetURLBaseRule();
+   }
+
    public AddClassToURLMapRule createAddClassToURLMapRule()
    {
       return new AddClassToURLMapRule();
+   }
+
+   public void begin( String sNamespace, String sName, Attributes oAttributes )
+   {
+      // reset data stored in rule
+      _sURLBase = null;
+   }
+
+   public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
+   {
+      if ( _sURLBase != null )
+      {
+         _oRedirectMapping.setURLBase( _sURLBase.trim() );
+      }
+   }
+
+   private class SetURLBaseRule extends Rule
+   {
+      public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
+      {
+         _sURLBase = sText;
+      }
    }
 
    public class AddClassToURLMapRule extends Rule

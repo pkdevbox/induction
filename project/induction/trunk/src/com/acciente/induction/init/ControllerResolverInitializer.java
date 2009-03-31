@@ -21,7 +21,7 @@ import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ControllerResolver;
-import com.acciente.induction.resolver.URLPathControllerResolver;
+import com.acciente.induction.resolver.FullyQualifiedClassnameControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
@@ -52,7 +52,7 @@ public class ControllerResolverInitializer
 
       if ( sControllerResolverClassName == null )
       {
-         oControllerResolver = new URLPathControllerResolver( oControllerMappingConfig );
+         oControllerResolver = new FullyQualifiedClassnameControllerResolver( oControllerMappingConfig );
       }
       else
       {
@@ -73,5 +73,3 @@ public class ControllerResolverInitializer
       return oControllerResolver;
    }
 }
-
-// EOF

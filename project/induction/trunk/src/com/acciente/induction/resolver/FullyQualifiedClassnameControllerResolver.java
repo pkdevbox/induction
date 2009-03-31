@@ -23,14 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class implements a controller resolver that maps the path info in the URL
- * to a controller class name and method name. On the path following the servlet's
- * context path is used. So assuming the servlet's context path is /myapp/cgi then
- * given the URL:<p>
+ * to a controller class name and method name. Only the path returned by the servlet
+ * API call getPathInfo() is used. So assuming the servlet's context path is /myapp/cgi
+ * then given a request URL:<p>
  * <p>
  *    /myapp/cgi/myapp/cart/CartController/addItem?item_id=widget-202&qty=500<p>
  *
- * the following part of the URL will be used for determining which controller/method
- * to invoke:<p>
+ * the getPathInfo() API call returns the following part of the URL (which will be used for
+ * determining which controller/method to invoke):<p>
  * <p>
  *    /myapp/cart/CartController/additem<p>
  * <p>
@@ -47,12 +47,12 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Adinath Raveendra Raj
  */
-public class URLPathControllerResolver implements ControllerResolver
+public class FullyQualifiedClassnameControllerResolver implements ControllerResolver
 {
    private String    _sDefaultHandlerMethodName;
    private boolean   _bIsIgnoreMethodNameCase;
 
-   public URLPathControllerResolver( Config.ControllerMapping  oControllerMappingConfig )
+   public FullyQualifiedClassnameControllerResolver( Config.ControllerMapping  oControllerMappingConfig )
    {
       _sDefaultHandlerMethodName = oControllerMappingConfig.getDefaultHandlerMethodName();
       _bIsIgnoreMethodNameCase   = oControllerMappingConfig.isIgnoreMethodNameCase();
@@ -60,13 +60,12 @@ public class URLPathControllerResolver implements ControllerResolver
 
    public Resolution resolve( HttpServletRequest oRequest )
    {
-      Resolution oResolution = null;
-      String     sClassName, sMethodName;
-
       String   sPath = oRequest.getPathInfo();
 
-      if ( sPath != null && sPath.length() > 1 )
+      if ( sPath != null && sPath.length() > 1 && sPath.indexOf( "Controller" ) != -1 )
       {
+         String   sClassName, sMethodName;
+
          if ( sPath.endsWith( "/" ) )
          {
             // no method name specified
@@ -94,10 +93,10 @@ public class URLPathControllerResolver implements ControllerResolver
             }
          }
 
-         oResolution = new Resolution( sClassName, sMethodName, _bIsIgnoreMethodNameCase );
+         return new Resolution( sClassName, sMethodName, _bIsIgnoreMethodNameCase );
       }
 
-      return oResolution;
+      return null;
    }
 }
 

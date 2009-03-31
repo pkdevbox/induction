@@ -22,8 +22,6 @@ import com.acciente.induction.init.config.Config;
 import org.apache.commons.digester.Rule;
 import org.xml.sax.Attributes;
 
-// EOF
-
 /**
  * Internal.
  * ViewResolverRule

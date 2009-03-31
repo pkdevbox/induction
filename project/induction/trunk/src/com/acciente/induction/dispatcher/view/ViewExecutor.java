@@ -24,12 +24,15 @@ import com.acciente.induction.view.Image;
 import com.acciente.induction.view.ImageStream;
 import com.acciente.induction.view.Template;
 import com.acciente.induction.view.Text;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
@@ -43,141 +46,238 @@ public class ViewExecutor
    private  ViewFactory          _oViewFactory;
    private  TemplatingEngine     _oTemplatingEngine;
 
-   public ViewExecutor( TemplatingEngine oTemplatingEngine )
+   public ViewExecutor( ViewFactory oViewFactory, TemplatingEngine oTemplatingEngine )
    {
+      _oViewFactory      = oViewFactory;
       _oTemplatingEngine = oTemplatingEngine;
    }
 
-   public void execute( ViewResolver.Resolution    oResolution,
+   public void execute( ViewResolver.Resolution    oViewResolution,
                         HttpServletRequest         oRequest,
                         HttpServletResponse        oResponse ) throws ViewExecutorException
    {
-      Object oView;
-
-//      oView = _oViewFactory.getView( oResolution.getClassName(),
-//                                     oRequest,
-//                                     oResponse,
-//                                     oResolution );
-
-      // now process using logic below
+      execute( getView( oViewResolution.getClassName(), oRequest, oResponse, oViewResolution ), oResponse );
    }
 
-   public void execute( Object oControllerReturnValue, HttpServletResponse oResponse ) throws ViewExecutorException
+   /**
+    * This method is used to execute a view specified in terms of a type (Class object), this method
+    * is used to support processing view types (i.e. class objects) returned from a controller, this is in
+    * addition to the current support for processing a view object returned from a controller.
+    * 
+    * @param oViewClass a class object representing a type that implements a view class
+    * @param oRequest the servlet request object
+    * @param oResponse the servlet response object
+    * @throws ViewExecutorException thrown if an error occurs during view processing
+    */
+   public void execute( Class                      oViewClass,
+                        HttpServletRequest         oRequest,
+                        HttpServletResponse        oResponse ) throws ViewExecutorException
    {
-      if ( oControllerReturnValue != null )
+      if ( Text.class.isAssignableFrom( oViewClass ) )
       {
-         try
-         {
-            if ( oControllerReturnValue instanceof Text )
-            {
-               processText( oResponse, ( Text ) oControllerReturnValue );
-            }
-            else if ( oControllerReturnValue instanceof Image )
-            {
-               processImage( oResponse, ( Image ) oControllerReturnValue );
-            }
-            else if ( oControllerReturnValue instanceof ImageStream )
-            {
-               processImageStream( oResponse, ( ImageStream ) oControllerReturnValue );
-            }
-            else if ( oControllerReturnValue instanceof Template )
-            {
-               processTemplate( oResponse, ( Template ) oControllerReturnValue );
-            }
-            else
-            {
-               // just print the object to the response
-               oResponse.getWriter().print( oControllerReturnValue );
-            }
-         }
-         catch ( IOException e )
-         {
-            throw new ViewExecutorException( "exec: unable to load definition", e );
-         }
-         catch ( TemplatingEngineException e )
-         {
-            throw new ViewExecutorException( "exec: templating engine exception", e.getCause() );
-         }
+         processText( oResponse, ( Text ) getView( oViewClass.getName(), oRequest, oResponse, null ) );
+      }
+      else if ( Image.class.isAssignableFrom( oViewClass ) )
+      {
+         processImage( oResponse, ( Image ) getView( oViewClass.getName(), oRequest, oResponse, null ) );
+      }
+      else if ( ImageStream.class.isAssignableFrom( oViewClass ) )
+      {
+         processImageStream( oResponse, ( ImageStream ) getView( oViewClass.getName(), oRequest, oResponse, null ) );
+      }
+      else if ( Template.class.isAssignableFrom( oViewClass ) )
+      {
+         processTemplate( oResponse, ( Template ) getView( oViewClass.getName(), oRequest, oResponse, null ) );
       }
    }
 
-   private void processText( HttpServletResponse oResponse, Text oText ) throws IOException
+   public void execute( Object oViewObject, HttpServletResponse oResponse ) throws ViewExecutorException
    {
-      oResponse.setContentType( oText.getMimeType() == null ? "text/plain": oText.getMimeType() );
+      if ( oViewObject instanceof Text )
+      {
+         processText( oResponse, ( Text ) oViewObject );
+      }
+      else if ( oViewObject instanceof Image )
+      {
+         processImage( oResponse, ( Image ) oViewObject );
+      }
+      else if ( oViewObject instanceof ImageStream )
+      {
+         processImageStream( oResponse, ( ImageStream ) oViewObject );
+      }
+      else if ( oViewObject instanceof Template )
+      {
+         processTemplate( oResponse, ( Template ) oViewObject );
+      }
+      else
+      {
+         processObject( oResponse, oViewObject );
+      }
+   }
 
-      BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+   private Object getView( String sViewClassName, HttpServletRequest oRequest, HttpServletResponse oResponse, ViewResolver.Resolution oResolution )
+      throws ViewExecutorException
+   {
+      Object oViewObject;
+
       try
+      {
+         oViewObject = _oViewFactory.getView( sViewClassName,
+                                              oRequest,
+                                              oResponse,
+                                              null );
+      }
+      catch ( ClassNotFoundException e )
+      {
+         throw new ViewExecutorException( "load: unable to load class definition", e );
+      }
+      catch ( ConstructorNotFoundException e )
+      {
+         throw new ViewExecutorException( "load: unable to find constructor", e );
+      }
+      catch ( InstantiationException e )
+      {
+         throw new ViewExecutorException( "load: instantiate error", e );
+      }
+      catch ( InvocationTargetException e )
+      {
+         throw new ViewExecutorException( "load: target exception", e );
+      }
+      catch ( IllegalAccessException e )
+      {
+         throw new ViewExecutorException( "load: access exception", e );
+      }
+      catch ( ParameterProviderException e )
+      {
+         throw new ViewExecutorException( "load: parameter error", e );
+      }
+
+      return oViewObject;
+   }
+
+   private void processText( HttpServletResponse oResponse, Text oText ) throws ViewExecutorException
+   {
+      try
+      {
+         oResponse.setContentType( oText.getMimeType() == null ? "text/plain": oText.getMimeType() );
+
+         BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+         try
       {
          oWriter.write( oText.getText() );
+         }
+         finally
+         {
+            oWriter.flush();
+         }
       }
-      finally
+      catch ( IOException e )
       {
-         oWriter.flush();
+         throw new ViewExecutorException( "exec: text view: IO error", e );
       }
    }
 
-   private void processImage( HttpServletResponse oResponse, Image oImage ) throws IOException
+   private void processImage( HttpServletResponse oResponse, Image oImage ) throws ViewExecutorException
    {
-      if ( oImage.getMimeType() == null )
-      {
-         throw new IllegalArgumentException( "Image must specify a mime type" );
-      }
-
-      if ( oImage.getImage() == null )
-      {
-         throw new IllegalArgumentException( "Image has no content" );
-      }
-
-      oResponse.setContentType( oImage.getMimeType() );
-
-      BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
       try
+      {
+         if ( oImage.getMimeType() == null )
+         {
+            throw new IllegalArgumentException( "Image must specify a mime type" );
+         }
+
+         if ( oImage.getImage() == null )
+         {
+            throw new IllegalArgumentException( "Image has no content" );
+         }
+
+         oResponse.setContentType( oImage.getMimeType() );
+
+         BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
+         try
       {
          oStream.write( oImage.getImage() );
+         }
+         finally
+         {
+            oStream.flush();
+         }
       }
-      finally
+      catch ( IOException e )
       {
-         oStream.flush();
+         throw new ViewExecutorException( "exec: image view: IO error", e );
       }
    }
 
-   private void processImageStream( HttpServletResponse oResponse, ImageStream oImageStream ) throws IOException
+   private void processImageStream( HttpServletResponse oResponse, ImageStream oImageStream ) throws ViewExecutorException
    {
-      if ( oImageStream.getMimeType() == null )
-      {
-         throw new IllegalArgumentException( "ImageStream must specify a mime type" );
-      }
-
-      if ( oImageStream.getMimeType() == null )
-      {
-         throw new IllegalArgumentException( "ImageStream must specify a mime type" );
-      }
-
-      oResponse.setContentType( oImageStream.getMimeType() );
-
-      BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
       try
+      {
+         if ( oImageStream.getMimeType() == null )
+         {
+            throw new IllegalArgumentException( "ImageStream must specify a mime type" );
+         }
+
+         if ( oImageStream.getMimeType() == null )
+         {
+            throw new IllegalArgumentException( "ImageStream must specify a mime type" );
+         }
+
+         oResponse.setContentType( oImageStream.getMimeType() );
+
+         BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
+         try
       {
          oImageStream.writeImage( oStream );
+         }
+         finally
+         {
+            oStream.flush();
+         }
       }
-      finally
+      catch ( IOException e )
       {
-         oStream.flush();
+         throw new ViewExecutorException( "exec: image stream view: IO error", e );
       }
    }
 
-   private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws TemplatingEngineException, IOException
+   private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws ViewExecutorException
    {
-      oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
-
-      BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
       try
       {
-         _oTemplatingEngine.process( oTemplate, oWriter );
+         oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
+
+         BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+
+         try
+         {
+            _oTemplatingEngine.process( oTemplate, oWriter );
+         }
+         finally
+         {
+            oWriter.flush();
+         }
       }
-      finally
+      catch ( IOException e )
       {
-         oWriter.flush();
+         throw new ViewExecutorException( "exec: template view: IO error", e );
+      }
+      catch ( TemplatingEngineException e )
+      {
+         throw new ViewExecutorException( "exec: template view: templating engine error", e.getCause() );
+      }
+   }
+
+   private void processObject( HttpServletResponse oResponse, Object oViewObject ) throws ViewExecutorException
+   {
+      // just print the object to the response
+      try
+      {
+         oResponse.getWriter().print( oViewObject );
+      }
+      catch ( IOException e )
+      {
+         throw new ViewExecutorException( "exec: generic object view: IO error", e );
       }
    }
 }

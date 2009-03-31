@@ -26,12 +26,15 @@ import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.dispatcher.view.ViewExecutor;
 import com.acciente.induction.dispatcher.view.ViewExecutorException;
+import com.acciente.induction.dispatcher.view.ViewFactory;
+import com.acciente.induction.dispatcher.view.ViewParameterProviderFactory;
 import com.acciente.induction.init.ClassLoaderInitializer;
 import com.acciente.induction.init.ConfigLoaderInitializer;
 import com.acciente.induction.init.ControllerResolverInitializer;
 import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.RedirectResolverInitializer;
 import com.acciente.induction.init.TemplatingEngineInitializer;
+import com.acciente.induction.init.ViewResolverInitializer;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
 import com.acciente.induction.resolver.ControllerResolver;
@@ -176,12 +179,42 @@ public class HttpDispatcher extends HttpServlet
       catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
+      // setup a resolver that maps a request to a view
+      try
+      {
+         _oViewResolver
+            =  ViewResolverInitializer
+                  .getViewResolver( oConfig.getViewResolver(),
+                                    oConfig.getViewMapping(),
+                                    oModelPool,
+                                    _oClassLoader,
+                                    oServletConfig,
+                                    _oLogger );
+      }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+
       // setup a resolver that maps a redirect to a URL
       try
       {
          _oRedirectResolver
             =  RedirectResolverInitializer
-                  .getRedirectResolver( oConfig.getRedirectResolver(), oModelPool, _oClassLoader, oServletConfig, _oLogger );
+                  .getRedirectResolver( oConfig.getRedirectResolver(),
+                                        oConfig.getRedirectMapping(),
+                                        oModelPool,
+                                        _oClassLoader,
+                                        oServletConfig,
+                                        _oLogger );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
@@ -205,8 +238,12 @@ public class HttpDispatcher extends HttpServlet
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
 
-      // the ViewExecutor manages the processing any view returned by a controller
-      _oViewExecutor = new ViewExecutor( oTemplatingEngine );
+      // the ViewExecutor manages the loading (when needed) and processing of views
+      _oViewExecutor = new ViewExecutor( new ViewFactory( _oClassLoader,
+                                                          new ViewParameterProviderFactory( oModelPool,
+                                                                                            oConfig.getFileUpload(),
+                                                                                            oTemplatingEngine ) ), 
+                                         oTemplatingEngine );
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
@@ -223,7 +260,9 @@ public class HttpDispatcher extends HttpServlet
 
       if ( oControllerResolution != null )
       {
+         // execute the controller
          Object   oControllerReturnValue = null;
+
          try
          {
             oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse );
@@ -233,6 +272,7 @@ public class HttpDispatcher extends HttpServlet
             logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
          }
 
+         // process the controller's return value (if any)
          if ( oControllerReturnValue != null )
          {
             if ( oControllerReturnValue instanceof Redirect )
@@ -267,7 +307,17 @@ public class HttpDispatcher extends HttpServlet
             {
                try
                {
-                  _oViewExecutor.execute( oControllerReturnValue, oResponse );
+                  // check if the value returned is type..
+                  if ( oControllerReturnValue instanceof Class )
+                  {
+                     // if so process as a view type..
+                     _oViewExecutor.execute( ( Class ) oControllerReturnValue, oRequest, oResponse );
+                  }
+                  else
+                  {
+                     // ...otherwise if so process as a view object
+                     _oViewExecutor.execute( oControllerReturnValue, oResponse );
+                  }
                }
                catch ( ViewExecutorException e )
                {
@@ -285,7 +335,7 @@ public class HttpDispatcher extends HttpServlet
          {
             try
             {
-               _oViewExecutor.execute( oViewResolution, oResponse );
+               _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
             }
             catch ( ViewExecutorException e )
             {
@@ -294,7 +344,7 @@ public class HttpDispatcher extends HttpServlet
          }
          else
          {
-            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller", null );
+            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller or view", null );
          }
       }
    }

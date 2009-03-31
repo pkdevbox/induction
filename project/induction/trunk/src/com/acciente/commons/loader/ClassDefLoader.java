@@ -50,7 +50,7 @@ public interface ClassDefLoader
     * resource was located but the load failed again a null is returned (since the getResource() and
     * getResourceAsStreamMethods() do not have checked exceptions in their signature).
     */
-   ResourceDef    getResourceDef( String sResourceName );
+   ResourceDef getResourceDef( String sResourceName );
 
    /**
     * Searches for class names that match the specified regex. This method is expected to search and
@@ -59,7 +59,7 @@ public interface ClassDefLoader
     * @param sClassNamePattern a java regex that defines the classnames that match the search
     * @return a collection of string classnames that match the specified regex
     */
-   Collection<String>   findClassNames( String sClassNamePattern );
+   Collection  findClassNames( String sClassNamePattern );
 }
 
 // EOF

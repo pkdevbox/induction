@@ -163,6 +163,8 @@
             <class-pattern>another_java_regex_string</class-pattern>
             <url-format>another_java_printf_string</url-format>
         </class-to-url-map>
+        
+        <url-base>an_optional_base_url_for_redirects</url-base>
     </redirect-mapping>
 
     <controller-resolver>

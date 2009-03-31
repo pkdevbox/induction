@@ -76,6 +76,7 @@ public class XML
    public static final XML Config_RedirectMapping_ClassToURLMap                  = new XML( "class-to-url-map",            Config_RedirectMapping );
    public static final XML Config_RedirectMapping_ClassToURLMap_ClassPattern     = new XML( "class-pattern",               Config_RedirectMapping_ClassToURLMap );
    public static final XML Config_RedirectMapping_ClassToURLMap_URLFormat        = new XML( "url-format",                  Config_RedirectMapping_ClassToURLMap );
+   public static final XML Config_RedirectMapping_URLBase                        = new XML( "url-base",                    Config_RedirectMapping );
 
    public static final XML Config_ControllerResolver                             = new XML( "controller-resolver",         Config );
    public static final XML Config_ControllerResolver_Class                       = new XML( "class",                       Config_ControllerResolver );

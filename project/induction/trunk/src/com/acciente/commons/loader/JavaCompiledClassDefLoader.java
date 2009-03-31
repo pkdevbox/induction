@@ -81,20 +81,24 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       return oClassDef;
    }
 
-   public Collection<String> findClassNames( String sClassNamePattern )
+   public Collection findClassNames( String sClassNamePattern )
    {
       return findClassNames( _oCompiledDirectory,
                              _sPackageNamePrefix,
                              Pattern.compile( sClassNamePattern ) );
    }
 
-   private Collection<String> findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern )
+   private Collection findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern )
    {
-      Collection<String> oClassNameList = new LinkedList<String>();
+      Collection oClassNameList = new LinkedList();
+
+      File[] oFileList = oPath.listFiles();
 
       // iterate thru the classes in this directory
-      for ( File oFile : oPath.listFiles() )
+      for ( int i = 0; i < oFileList.length; i++ )
       {
+         File oFile = oFileList[ i ];
+
          if ( oFile.isDirectory() )
          {
             if ( sPackageName == null )
