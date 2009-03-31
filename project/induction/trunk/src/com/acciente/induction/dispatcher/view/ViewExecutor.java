@@ -192,11 +192,13 @@ public class ViewExecutor
          }
 
          oResponse.setContentType( oImage.getMimeType() );
+         oResponse.setHeader( "Content-Type", oImage.getMimeType() );
 
          BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
+
          try
-      {
-         oStream.write( oImage.getImage() );
+         {
+            oStream.write( oImage.getImage() );
          }
          finally
          {
@@ -211,34 +213,15 @@ public class ViewExecutor
 
    private void processImageStream( HttpServletResponse oResponse, ImageStream oImageStream ) throws ViewExecutorException
    {
-      try
+      if ( oImageStream.getMimeType() == null )
       {
-         if ( oImageStream.getMimeType() == null )
-         {
-            throw new IllegalArgumentException( "ImageStream must specify a mime type" );
-         }
-
-         if ( oImageStream.getMimeType() == null )
-         {
-            throw new IllegalArgumentException( "ImageStream must specify a mime type" );
-         }
-
-         oResponse.setContentType( oImageStream.getMimeType() );
-
-         BufferedOutputStream oStream = new BufferedOutputStream( oResponse.getOutputStream() );
-         try
-      {
-         oImageStream.writeImage( oStream );
-         }
-         finally
-         {
-            oStream.flush();
-         }
+         throw new IllegalArgumentException( "ImageStream must specify a mime type" );
       }
-      catch ( IOException e )
-      {
-         throw new ViewExecutorException( "exec: image stream view: IO error", e );
-      }
+
+      oResponse.setContentType( oImageStream.getMimeType() );      
+      oResponse.setHeader( "Content-Type", oImageStream.getMimeType() );
+
+      oImageStream.writeImage( oResponse );
    }
 
    private void processTemplate( HttpServletResponse oResponse, Template oTemplate ) throws ViewExecutorException

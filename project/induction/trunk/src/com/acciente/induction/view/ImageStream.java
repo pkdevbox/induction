@@ -17,7 +17,7 @@
  */
 package com.acciente.induction.view;
 
-import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This view interface should be implemented to send an image to the browser. This interface
@@ -31,11 +31,11 @@ public interface ImageStream
 {
    /**
     * This method when called by Induction, should write the image contents
-    * to the output stream passed to the method
+    * to the servlet response passed to the method
     *
-    * @param oOutputStream the output stream to which the image data should be written out to
+    * @param oResponse the servlet response to which the image data should be sent
     */
-   void writeImage( OutputStream oOutputStream );
+   void writeImage( HttpServletResponse oResponse );
 
    /**
     * This method should return the mime type of the text content
