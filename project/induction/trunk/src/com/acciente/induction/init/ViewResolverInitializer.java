@@ -66,7 +66,8 @@ public class ViewResolverInitializer
                ObjectFactory.createObject( oViewResolverClass,
                                            new Object[]{ oServletConfig,
                                                          oViewResolverConfig,
-                                                         oViewMappingConfig },
+                                                         oViewMappingConfig,
+                                                         oClassLoader },
                                            new InitializerParameterProvider( oModelPool, "view-resolver-init" ) );
       }
 

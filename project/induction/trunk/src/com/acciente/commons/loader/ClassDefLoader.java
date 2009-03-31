@@ -18,6 +18,7 @@
 package com.acciente.commons.loader;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * This is an interface that abstracts the loading of class definitions.
@@ -56,10 +57,10 @@ public interface ClassDefLoader
     * Searches for class names that match the specified regex. This method is expected to search and
     * return a list of fully qualified classnames.
     *
-    * @param sClassNamePattern a java regex that defines the classnames that match the search
+    * @param oClassNamePattern a java regex that defines the classnames that match the search
     * @return a collection of string classnames that match the specified regex
     */
-   Collection  findClassNames( String sClassNamePattern );
+   Collection  findClassNames( Pattern oClassNamePattern );
 }
 
 // EOF

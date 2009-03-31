@@ -63,7 +63,8 @@ public class RedirectResolverInitializer
                ObjectFactory.createObject( oRedirectResolverClass,
                                            new Object[]{ oServletConfig,
                                                          oRedirectResolverConfig,
-                                                         oRedirectMappingConfig },
+                                                         oRedirectMappingConfig,
+                                                         oClassLoader },
                                            new InitializerParameterProvider( oModelPool, "redirect-resolver-init" )
                                          );
       }
