@@ -25,10 +25,6 @@
 			<directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
 			<package-prefix>demoapp</package-prefix>
 		</compiled-directory>
-		<compiled-directory>
-			<directory>t:/acciente-projects/software/project/demoapp/class/demoapp</directory>
-			<package-prefix>demoapp</package-prefix>
-		</compiled-directory>
 	</java-class-path>
 
 	<!-- The following section allows you define the models used your application.
@@ -77,8 +73,18 @@
 		<expose-public-fields>true</expose-public-fields>
 	</templating>
 
+	<!-- for the demo apps, for now, we used resolver from before Induction 1.2.0 -->
+
+	<controller-resolver>
+		<class>com.acciente.induction.resolver.FullyQualifiedClassnameControllerResolver</class>
+	</controller-resolver>
+
+	<view-resolver>
+		<class>com.acciente.induction.resolver.FullyQualifiedClassnameViewResolver</class>
+	</view-resolver>
+
 	<redirect-resolver>
-		<class>com.acciente.induction.resolver.URLPathRedirectResolver</class>
+		<class>com.acciente.induction.resolver.FullyQualifiedClassnameRedirectResolver</class>
 	</redirect-resolver>
 
 </config> 
