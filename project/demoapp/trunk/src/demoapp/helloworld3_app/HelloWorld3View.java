@@ -15,26 +15,33 @@
  *   See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-package demoapp.helloworld1_app;
+package demoapp.helloworld3_app;
 
-import com.acciente.induction.controller.Controller;
-import com.acciente.induction.controller.Response;
-
-import java.io.IOException;
+import com.acciente.induction.view.Template;
 
 /**
- * A very simple controller that does the customary "Hello World"
+ * A HelloWorld view using a freemarker tenplate
  *
- * Log
- * Apr 26, 2008 APR  -  created
+ * @created Apr 26, 2008
+ * @author Adinath Raveendra Raj
  */
-public class HelloWorldController implements Controller
+public class HelloWorld3View implements Template
 {
-   public void handler( Response oReponse ) throws IOException
+   // bean attributes
+   public String getFirstName()
    {
-      oReponse.setContentType( "text/plain" );
-      oReponse.out().println( "Hello World, using a simple println()" );
+      return "John Doe";
+   }
+
+   // Template methods
+
+   public String getTemplateName()
+   {
+      return "HelloWorld3.ftl";
+   }
+
+   public String getMimeType()
+   {
+      return "text/html";
    }
 }
-
-// EOF

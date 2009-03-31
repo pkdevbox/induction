@@ -15,20 +15,26 @@
  *   See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-package demoapp.helloworld3_app;
+package demoapp.helloworld1_app;
 
 import com.acciente.induction.controller.Controller;
+import com.acciente.induction.controller.Response;
+
+import java.io.IOException;
 
 /**
+ * A very simple controller that does the customary "Hello World"
+ *
  * Log
  * Apr 26, 2008 APR  -  created
  */
-public class HelloWorldController implements Controller
+public class HelloWorld1Controller implements Controller
 {
-   public HelloWorldView handler()
+   public void handler( Response oReponse ) throws IOException
    {
-      // typically we would do some processing of the user input here
-
-      return new HelloWorldView();
+      oReponse.setContentType( "text/plain" );
+      oReponse.out().println( "Hello World, using a simple println()" );
    }
 }
+
+// EOF

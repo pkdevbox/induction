@@ -18,73 +18,83 @@
 <!-- this file contains the configuration for the Induction dispatcher -->
 <config>
 
-	<!-- The following section allows you to specify locations from which
-	Induction will automatically reload a class if the file has changed -->
-	<java-class-path>
-		<compiled-directory>
-			<directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
-			<package-prefix>demoapp</package-prefix>
-		</compiled-directory>
-	</java-class-path>
+    <!-- The following section allows you to specify locations from which
+    Induction will automatically reload a class if the file has changed -->
+    <java-class-path>
+        <compiled-directory>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
+            <package-prefix>demoapp</package-prefix>
+        </compiled-directory>
+    </java-class-path>
 
-	<!-- The following section allows you define the models used your application.
-	A model definition must specify a <class> and a <scope>. The <class> specifies
-	the name of the model class. The value specified for the <class> must a fully 
-	qualified classname. 
-	
-	If a model class implements an interface and it is desired that references 
-	to the model in the controllers be via the model interface then the interface 
-	name must be specified as the <class> here, instead of the actual implemention 
-	class name. The scope must contain one of the following values: application, 
-	session, request (case insignificant).
-	
-	For most real-life applications, each model class will have a factory class 
-	specified. The model's factory class will be used by Induction to instantiate 
-	objects of the respective model class. If no factory class is defined Induction 
-	will expect the model class to have a single public constructor, which Induction 
-	will call with parameter injection semantics.
-	-->
-	<model-defs>
-		<model-def>
-			<class>demoapp.counter_app.Counter</class>
-			<scope>session</scope>
-		</model-def>
-		<model-def>
-			<class>demoapp.models_app.FooModel</class>
-			<scope>session</scope>
-		</model-def>
-		<model-def>
-			<class>demoapp.models_app.BarModel</class>
-			<scope>session</scope>
-			<factory-class>demoapp.models_app.BarModelFactory</factory-class>
-		</model-def>
-		<model-def>
-			<class>demoapp.models_app.TarModel</class>
-			<scope>application</scope>
-		</model-def>
-	</model-defs>
+    <!-- The following section allows you define the models used your application.
+    A model definition must specify a <class> and a <scope>. The <class> specifies
+    the name of the model class. The value specified for the <class> must a fully 
+    qualified classname. 
+    
+    If a model class implements an interface and it is desired that references 
+    to the model in the controllers be via the model interface then the interface 
+    name must be specified as the <class> here, instead of the actual implemention 
+    class name. The scope must contain one of the following values: application, 
+    session, request (case insignificant).
+    
+    For most real-life applications, each model class will have a factory class 
+    specified. The model's factory class will be used by Induction to instantiate 
+    objects of the respective model class. If no factory class is defined Induction 
+    will expect the model class to have a single public constructor, which Induction 
+    will call with parameter injection semantics.
+    -->
+    <model-defs>
+        <model-def>
+            <class>demoapp.counter_app.Counter</class>
+            <scope>session</scope>
+        </model-def>
+        <model-def>
+            <class>demoapp.models_app.FooModel</class>
+            <scope>session</scope>
+        </model-def>
+        <model-def>
+            <class>demoapp.models_app.BarModel</class>
+            <scope>session</scope>
+            <factory-class>demoapp.models_app.BarModelFactory</factory-class>
+        </model-def>
+        <model-def>
+            <class>demoapp.models_app.TarModel</class>
+            <scope>application</scope>
+        </model-def>
+    </model-defs>
 
-	<!-- The following section configures the templating engine -->
-	<templating>
-		<template-path>
-			<directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
-			<!-- <web-app-path>/WEB-INF/templates</web-app-path> -->
-		</template-path>
-		<expose-public-fields>true</expose-public-fields>
-	</templating>
+    <!-- The following section configures the templating engine -->
+    <templating>
+        <template-path>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app</directory>
+            <!-- <web-app-path>/WEB-INF/templates</web-app-path> -->
+        </template-path>
+        <expose-public-fields>true</expose-public-fields>
+    </templating>
 
-	<!-- for the demo apps, for now, we used resolver from before Induction 1.2.0 -->
+    <controller-mapping>
+        <url-to-class-map>
+            <url-pattern>(?:/(\w*)\.action)|(?:/(\w*)\.(\w*)\.action)</url-pattern>
+            <class-pattern>(?:.*)\.(\w*)Controller</class-pattern>
+        </url-to-class-map>
 
-	<controller-resolver>
-		<class>com.acciente.induction.resolver.FullyQualifiedClassnameControllerResolver</class>
-	</controller-resolver>
+        <default-handler-method>handler</default-handler-method>
+        <ignore-handler-method-case>true</ignore-handler-method-case>
+    </controller-mapping>
 
-	<view-resolver>
-		<class>com.acciente.induction.resolver.FullyQualifiedClassnameViewResolver</class>
-	</view-resolver>
+    <!-- for the demo apps, for now, we used resolver from before Induction 1.2.0 -->
 
-	<redirect-resolver>
-		<class>com.acciente.induction.resolver.FullyQualifiedClassnameRedirectResolver</class>
-	</redirect-resolver>
+    <controller-resolver>
+        <class>com.acciente.induction.resolver.ShortURLControllerResolver</class>
+    </controller-resolver>
+
+    <view-resolver>
+        <class>com.acciente.induction.resolver.FullyQualifiedClassnameViewResolver</class>
+    </view-resolver>
+
+    <redirect-resolver>
+        <class>com.acciente.induction.resolver.FullyQualifiedClassnameRedirectResolver</class>
+    </redirect-resolver>
 
 </config> 

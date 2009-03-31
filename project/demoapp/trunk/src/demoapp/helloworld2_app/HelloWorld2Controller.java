@@ -28,19 +28,19 @@ import java.io.IOException;
  * @created Apr 23, 2008
  * @author Adinath Raveendra Raj
  */
-public class HelloWorldController implements Controller
+public class HelloWorld2Controller implements Controller
 {
-   public HelloWorldView handler()
+   public HelloWorld2View handler()
    {
       // typically we would do some processing of the user input here
       // and pass some data into the view via its constructor
-      return new HelloWorldView();
+      return new HelloWorld2View();
    }
 
    public Class handler2( Response oResponse ) throws IOException
    {
       //oResponse.out().println( "handler2() called" );
 
-      return HelloWorldView.class;
+      return HelloWorld2View.class;
    }
 }
