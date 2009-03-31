@@ -15,19 +15,20 @@
  *   See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-package demoapp.helloworld2_app;
+package demoapp.helloworld3_app;
 
-import com.acciente.induction.view.Text;
+import com.acciente.induction.controller.Controller;
 
-public class HelloWorldView implements Text
+/**
+ * Log
+ * Apr 26, 2008 APR  -  created
+ */
+public class HelloWorld3Controller implements Controller
 {
-   public String getText()
+   public HelloWorld3View handler()
    {
-      return "Hello World, using a Text view";
-   }
+      // typically we would do some processing of the user input here
 
-   public String getMimeType()
-   {
-      return "text/plain";
+      return new HelloWorld3View();
    }
 }

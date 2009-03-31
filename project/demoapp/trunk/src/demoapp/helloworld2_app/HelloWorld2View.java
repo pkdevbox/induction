@@ -15,33 +15,19 @@
  *   See the License for the specific language governing
  *   permissions and limitations under the License.
  */
-package demoapp.helloworld3_app;
+package demoapp.helloworld2_app;
 
-import com.acciente.induction.view.Template;
+import com.acciente.induction.view.Text;
 
-/**
- * A HelloWorld view using a freemarker tenplate
- *
- * @created Apr 26, 2008
- * @author Adinath Raveendra Raj
- */
-public class HelloWorldView implements Template
+public class HelloWorld2View implements Text
 {
-   // bean attributes
-   public String getFirstName()
+   public String getText()
    {
-      return "John Doe";
-   }
-
-   // Template methods
-
-   public String getTemplateName()
-   {
-      return "HelloWorld.ftl";
+      return "Hello World, using a Text view";
    }
 
    public String getMimeType()
    {
-      return "text/html";
+      return "text/plain";
    }
 }
