@@ -18,6 +18,9 @@
 package demoapp.helloworld2_app;
 
 import com.acciente.induction.controller.Controller;
+import com.acciente.induction.controller.Response;
+
+import java.io.IOException;
 
 /**
  * A simple controller that uses a Text view to display hello world
@@ -32,5 +35,12 @@ public class HelloWorldController implements Controller
       // typically we would do some processing of the user input here
       // and pass some data into the view via its constructor
       return new HelloWorldView();
+   }
+
+   public Class handler2( Response oResponse ) throws IOException
+   {
+      //oResponse.out().println( "handler2() called" );
+
+      return HelloWorldView.class;
    }
 }
