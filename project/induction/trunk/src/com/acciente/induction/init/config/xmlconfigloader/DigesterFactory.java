@@ -106,9 +106,9 @@ public class DigesterFactory
       // controller-mapping config rules
       {
          ControllerMappingRule oControllerMappingRule = new ControllerMappingRule( oConfig.getControllerMapping() );
-         oDigester.addRule( XML.Config_ControllerMapping.PATTERN,                           oControllerMappingRule );
-         oDigester.addRule( XML.Config_ControllerMapping_DefaultHandlerMethod.PATTERN,      oControllerMappingRule.createSetDefaultHandlerMethodRule() );
-         oDigester.addRule( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.PATTERN,   oControllerMappingRule.createSetIgnoreHandlerMethodCaseRule() );
+         oDigester.addRule( XML.Config_ControllerMapping.PATTERN,                               oControllerMappingRule );
+         oDigester.addRule( XML.Config_ControllerMapping_DefaultHandlerMethod.PATTERN,          oControllerMappingRule.createSetDefaultHandlerMethodRule() );
+         oDigester.addRule( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.PATTERN,       oControllerMappingRule.createSetIgnoreHandlerMethodCaseRule() );
          {
             ControllerMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oControllerMappingRule.createAddURLToClassMapRule();
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap.PATTERN,              oAddURLToClassMapRule );
@@ -131,6 +131,8 @@ public class DigesterFactory
       // redirect-mapping config rules
       {
          RedirectMappingRule oRedirectMappingRule = new RedirectMappingRule( oConfig.getRedirectMapping() );
+         oDigester.addRule( XML.Config_RedirectMapping.PATTERN,                                 oRedirectMappingRule );
+         oDigester.addRule( XML.Config_RedirectMapping_URLBase.PATTERN,                         oRedirectMappingRule.createSetURLBaseRule() );
          {
             RedirectMappingRule.AddClassToURLMapRule oAddClassToURLMapRule = oRedirectMappingRule.createAddClassToURLMapRule();
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap.PATTERN,                oAddClassToURLMapRule );

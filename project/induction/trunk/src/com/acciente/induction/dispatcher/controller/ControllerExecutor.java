@@ -74,7 +74,7 @@ public class ControllerExecutor
       }
       catch ( ClassNotFoundException e )
       {
-         throw new ControllerExecutorException( "load: unable to load definition", e );
+         throw new ControllerExecutorException( "load: unable to load class definition", e );
       }
       catch ( ConstructorNotFoundException e )
       {

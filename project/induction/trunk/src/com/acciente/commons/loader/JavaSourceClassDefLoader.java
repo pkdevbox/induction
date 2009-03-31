@@ -75,7 +75,7 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
       return null;
    }
 
-   public Collection<String> findClassNames( String sClassNamePattern )
+   public Collection findClassNames( String sClassNamePattern )
    {
       // not implemented at this time since this class def loader is not currently used/supported
       return null;

@@ -19,41 +19,35 @@ package com.acciente.induction.resolver;
 
 import com.acciente.induction.init.config.Config;
 
-import javax.servlet.ServletConfig;
-
 /**
  * This class is an illustrative implementation of a RedirectResolver that works
  * in a manner consistent to the scheme used by the default ControllerResolver
- * class, URLPathControllerResolver. If you are going to use Induction redirect support
- * please replace this class with an implementation that would make sense for your application.
+ * class, FullyQualifiedClassnameControllerResolver. If you are going to use Induction redirect support
+ * you may replace this class with an implementation that would make sense for your application.
  *
  * @created Jun 21, 2008
  *
  * @author Adinath Raveendra Raj
  */
-public class URLPathRedirectResolver implements RedirectResolver
+public class FullyQualifiedClassnameRedirectResolver implements RedirectResolver
 {
-   private  ServletConfig     _oServletConfig;
+   private  Config.RedirectMapping  _oRedirectMappingConfig;
 
-   public URLPathRedirectResolver( Config.RedirectResolver oRedirectResolverConfig, ServletConfig oServletConfig )
+   public FullyQualifiedClassnameRedirectResolver( Config.RedirectMapping oRedirectMappingConfig )
    {
-      _oServletConfig = oServletConfig;
+      _oRedirectMappingConfig = oRedirectMappingConfig;
    }
 
    public String resolve( Class oControllerClass )
    {
-      return   "http://localhost:8080/"
-               // + _oServletConfig.getServletName()
-               // + "/"
+      return   _oRedirectMappingConfig.getURLBase()
                + oControllerClass.getName().replace( '.', '/' )
                + "/";
    }
 
    public String resolve( Class oControllerClass, String sControllerMethodName )
    {
-      return   "http://localhost:8080/"
-               // + _oServletConfig.getServletName()
-               // + "/"
+      return   _oRedirectMappingConfig.getURLBase()
                + oControllerClass.getName().replace( '.', '/' )
                + "/"
                + sControllerMethodName;
@@ -61,7 +55,7 @@ public class URLPathRedirectResolver implements RedirectResolver
 
    public String resolve( String sURL )
    {
-      return sURL;
+      return _oRedirectMappingConfig.getURLBase() + sURL;
    }
 }
 

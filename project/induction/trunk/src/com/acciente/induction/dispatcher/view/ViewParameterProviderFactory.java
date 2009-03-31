@@ -19,7 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
 
 /**
-    * Internal.
+ * Internal.
+ *
+ * ViewParameterProviderFactory.
+ *
+ * This class is a ParameterProvider factory that returns a ParameterProvider object to provide
+ * parameter values for view constructors.
  */
 public class ViewParameterProviderFactory
 {

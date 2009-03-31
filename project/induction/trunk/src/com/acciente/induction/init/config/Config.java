@@ -17,6 +17,8 @@
  */
 package com.acciente.induction.init.config;
 
+import com.acciente.commons.lang.Strings;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1118,7 +1120,8 @@ public class Config
     */
    public static class RedirectMapping
    {
-      private List _oClassToURLMapList = new ArrayList();
+      private List   _oClassToURLMapList = new ArrayList();
+      private String _sURLBase           = "";
 
       public void addClassToURLMap( Pattern oClassPattern, String sURLFormat )
       {
@@ -1130,6 +1133,16 @@ public class Config
          return _oClassToURLMapList;
       }
 
+      public String getURLBase()
+      {
+         return _sURLBase;
+      }
+
+      public void setURLBase( String sURLBase )
+      {
+         _sURLBase = sURLBase;
+      }
+
       public String toString()
       {
          return toXML();
@@ -1137,6 +1150,11 @@ public class Config
 
       public String toXML()
       {
+         if ( _oClassToURLMapList.size() == 0 && Strings.isEmpty( _sURLBase ) )
+         {
+            return "";
+         }
+
          StringBuffer   oBuffer = new StringBuffer();
 
          oBuffer.append( "\n" );
@@ -1145,6 +1163,11 @@ public class Config
          for ( Iterator oIter = _oClassToURLMapList.iterator(); oIter.hasNext(); )
          {
             oBuffer.append ( ( ( ClassToURLMap ) oIter.next() ).toXML() );
+         }
+
+         if ( ! Strings.isEmpty( _sURLBase ) )
+         {
+            oBuffer.append( XML.Config_RedirectMapping_URLBase.toXML( _sURLBase ) );
          }
 
          oBuffer.append( "\n" );

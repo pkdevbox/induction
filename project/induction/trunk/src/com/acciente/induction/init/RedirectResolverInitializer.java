@@ -21,7 +21,7 @@ import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.RedirectResolver;
-import com.acciente.induction.resolver.URLPathRedirectResolver;
+import com.acciente.induction.resolver.FullyQualifiedClassnameRedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
@@ -36,7 +36,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class RedirectResolverInitializer
 {
-   public static RedirectResolver getRedirectResolver(   Config.RedirectResolver oRedirectResolverConfig,
+   public static RedirectResolver getRedirectResolver(   Config.RedirectResolver    oRedirectResolverConfig,
+                                                         Config.RedirectMapping     oRedirectMappingConfig,
                                                          ModelPool                  oModelPool,
                                                          ClassLoader                oClassLoader,
                                                          ServletConfig              oServletConfig,
@@ -48,7 +49,7 @@ public class RedirectResolverInitializer
 
       if ( sRedirectResolverClassName == null )
       {
-         oRedirectResolver = new URLPathRedirectResolver( oRedirectResolverConfig, oServletConfig );
+         oRedirectResolver = new FullyQualifiedClassnameRedirectResolver( oRedirectMappingConfig );
       }
       else
       {
@@ -61,7 +62,8 @@ public class RedirectResolverInitializer
             =  ( RedirectResolver )
                ObjectFactory.createObject( oRedirectResolverClass,
                                            new Object[]{ oServletConfig,
-                                                         oRedirectResolverConfig },
+                                                         oRedirectResolverConfig,
+                                                         oRedirectMappingConfig },
                                            new InitializerParameterProvider( oModelPool, "redirect-resolver-init" )
                                          );
       }
