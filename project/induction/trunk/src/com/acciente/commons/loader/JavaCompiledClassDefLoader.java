@@ -81,11 +81,11 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       return oClassDef;
    }
 
-   public Collection findClassNames( String sClassNamePattern )
+   public Collection findClassNames( Pattern oClassNamePattern )
    {
       return findClassNames( _oCompiledDirectory,
                              _sPackageNamePrefix,
-                             Pattern.compile( sClassNamePattern ) );
+                             oClassNamePattern );
    }
 
    private Collection findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern )

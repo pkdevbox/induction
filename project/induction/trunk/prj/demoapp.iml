@@ -8,7 +8,7 @@
           <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/induction-demoapp.xml">
             <option name="DEFAULT_DIR" value="WEB-INF" />
           </deploymentDescriptor>
-          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorld.ftl">
+          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorld3.ftl">
             <option name="DEFAULT_DIR" value="WEB-INF/templates" />
           </deploymentDescriptor>
         </descriptors>

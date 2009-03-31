@@ -66,7 +66,8 @@ public class ControllerResolverInitializer
                ObjectFactory.createObject( oControllerResolverClass,
                                            new Object[]{ oServletConfig,
                                                          oControllerResolverConfig,
-                                                         oControllerMappingConfig },
+                                                         oControllerMappingConfig,
+                                                         oClassLoader },
                                            new InitializerParameterProvider( oModelPool, "controller-resolver-init" ) );
       }
 

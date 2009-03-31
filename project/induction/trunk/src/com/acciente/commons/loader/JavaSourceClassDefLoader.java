@@ -21,6 +21,7 @@ import com.acciente.commons.javac.JavaCompilerManager;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * An class definition loader that compiles and loads Java source files.
@@ -75,7 +76,7 @@ public class JavaSourceClassDefLoader implements ClassDefLoader
       return null;
    }
 
-   public Collection findClassNames( String sClassNamePattern )
+   public Collection findClassNames( Pattern oClassNamePattern )
    {
       // not implemented at this time since this class def loader is not currently used/supported
       return null;
