@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project relativePaths="false" version="4">
-  <component name="BookmarkManager">
-    <editor_bookmark url="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java" line="1157" number="1" description="StringBuffer   oBuffer = new StringBuffer();" />
-  </component>
   <component name="CCaseConfig">
     <option name="checkoutReserved" value="false" />
     <option name="markExternalChangeAsUpToDate" value="true" />
@@ -19,33 +16,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/view/ViewExecutor.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/view/ViewExecutor.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ControllerResolverInitializer.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ControllerResolverInitializer.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/controller/ControllerExecutor.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/controller/ControllerExecutor.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/RedirectMappingRule.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/RedirectMappingRule.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/induction.iml" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld2_app/HelloWorldController.java" afterPath="C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld2_app/HelloWorldController.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/ClassDefLoader.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/ClassDefLoader.java" />
-      <change type="NEW" beforePath="" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/FullyQualifiedClassnameRedirectResolver.java" />
-      <change type="NEW" beforePath="" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/FullyQualifiedClassnameViewResolver.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/induction.iws" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/induction-test-data.iml" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/view/ViewParameterProviderFactory.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/view/ViewParameterProviderFactory.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/XML.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/XML.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/ViewResolverRule.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/ViewResolverRule.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/demoapp.iml" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/DigesterFactory.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/DigesterFactory.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/JavaCompiledClassDefLoader.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/JavaCompiledClassDefLoader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/induction.ipr" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/induction-test.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/RedirectResolverInitializer.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/RedirectResolverInitializer.java" />
-      <change type="NEW" beforePath="" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ViewResolverInitializer.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java" />
-      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/JavaSourceClassDefLoader.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/loader/JavaSourceClassDefLoader.java" />
+      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ShortURLControllerResolver.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ShortURLControllerResolver.java" />
       <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/induction-demoapp.xml" afterPath="C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/induction-demoapp.xml" />
-      <change type="NEW" beforePath="" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/FullyQualifiedClassnameControllerResolver.java" />
       <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/HttpDispatcher.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/HttpDispatcher.java" />
+      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ViewResolverInitializer.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ViewResolverInitializer.java" />
+      <change type="MOVED" beforePath="C:\acciente\acciente-projects\software\project\induction\subversion\src\com\acciente\induction\resolver\ShorURL2ClassnameMapping.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/URL2ClassMapper.java" />
+      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ControllerResolverInitializer.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ControllerResolverInitializer.java" />
+      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction-test/subversion/src/com/acciente/commons_junit/loader/Test_JavaCompiledClassDefLoader.java" afterPath="C:/acciente/acciente-projects/software/project/induction-test/subversion/src/com/acciente/commons_junit/loader/Test_JavaCompiledClassDefLoader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/induction.iws" afterPath="$PROJECT_DIR$/induction.iws" />
+      <change type="MODIFICATION" beforePath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java" />
+      <change type="NEW" beforePath="" afterPath="C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ShortURLViewResolver.java" />
     </list>
     <ignored path="dragonFly-web.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -146,6 +126,70 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="com.acciente" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="com.acciente" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="resolver" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="com.acciente" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="induction" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
           <option name="myItemId" value="demoapp" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
         </PATH_ELEMENT>
@@ -197,24 +241,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="helloworld2_app" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="induction" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="demoapp" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="demoapp" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="helloworld1_app" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageElementNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -342,6 +368,8 @@
       <recent name="com.acciente.commons.loader" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="com.acciente.induction.resolver.ShorURL2ClassnameMapper" />
+      <recent name="com.acciente.induction.resolver.URL2ClassnameMapper" />
       <recent name="com.acciente.commons.reflect.Executor" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
@@ -359,6 +387,25 @@
     </key>
   </component>
   <component name="RunManager" selected="Tomcat Server.Test - HttpDispatcher">
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -387,41 +434,6 @@
       <method>
         <option name="Make" value="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local">
-      <option name="WORKING_DIRECTORY" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="8080" />
-      <option name="LOCAL" value="true" />
-      <option name="OPEN_IN_BROWSER" value="true" />
-      <option name="OPEN_IN_BROWSER_URL" value="/" />
-      <option name="COMMON_VM_ARGUMENTS" value="" />
-      <JAVAEE_FACET FACET_ID="demoapp/web/demoapp-web" DEPLOYMENT_SOURCE_NAME="exploded">
-        <option name="CONTEXT_PATH" value="/" />
-        <option name="DEPLOY" value="false" />
-      </JAVAEE_FACET>
-      <option name="DEPLOY_TOMCAT_MANAGER" value="false" />
-      <option name="BASE_DIRECTORY_NAME" value="" />
-      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" />
@@ -457,6 +469,22 @@
       <method>
         <option name="Make" value="true" />
       </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local">
+      <option name="WORKING_DIRECTORY" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8080" />
+      <option name="LOCAL" value="true" />
+      <option name="OPEN_IN_BROWSER" value="true" />
+      <option name="OPEN_IN_BROWSER_URL" value="/" />
+      <option name="COMMON_VM_ARGUMENTS" value="" />
+      <JAVAEE_FACET FACET_ID="demoapp/web/demoapp-web" DEPLOYMENT_SOURCE_NAME="exploded">
+        <option name="CONTEXT_PATH" value="/" />
+        <option name="DEPLOY" value="false" />
+      </JAVAEE_FACET>
+      <option name="DEPLOY_TOMCAT_MANAGER" value="false" />
+      <option name="BASE_DIRECTORY_NAME" value="" />
+      <predefined_log_file id="TOMCAT_LOCALHOST_LOG_ID" enabled="true" />
     </configuration>
     <configuration default="false" name="Test - Tokenizer" type="Application" factoryName="Application" enabled="false" merge="false">
       <option name="MAIN_CLASS_NAME" value="com.acciente.test.induction.form.TestTokenizer" />
@@ -918,25 +946,25 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1572" height="1022" extended-state="0" />
-    <editor active="false" />
+    <frame x="-4" y="-4" width="1688" height="1030" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32853982" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2496799" order="1" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5" order="1" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.66150445" order="2" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.49451753" order="2" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3331292" order="3" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="10" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27544248" order="11" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2752193" order="11" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.62828946" order="7" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24923454" order="1" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39948782" order="0" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297055" order="3" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24126565" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22412737" order="0" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="12" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24945295" order="2" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="5" />
@@ -1008,124 +1036,127 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/RedirectResolver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="17" selection-start="1237" selection-end="1237" vertical-scroll-proportion="0.3280363">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/RedirectResolverInitializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="84" selection-start="1531" selection-end="1531" vertical-scroll-proportion="0.2773893">
+        <state line="36" column="13" selection-start="1308" selection-end="1308" vertical-scroll-proportion="0.21593533">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/FullyQualifiedClassnameControllerResolver.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/controller/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="76" selection-start="2489" selection-end="2489" vertical-scroll-proportion="0.39175257">
+        <state line="46" column="17" selection-start="2096" selection-end="2096" vertical-scroll-proportion="0.57888764">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/FullyQualifiedClassnameViewResolver.java">
+    <entry file="jar://C:/dev/j2sdk1.4.2_16/src.zip!/java/util/Map.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="63" selection-start="2200" selection-end="2200" vertical-scroll-proportion="0.7273769">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="78" column="17" selection-start="3930" selection-end="3930" vertical-scroll-proportion="-1.6356413">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/commons/lang/Strings.java">
+    <entry file="jar://C:/dev/j2sdk1.4.2_16/src.zip!/java/util/HashMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="25" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.33104238">
+        <state line="990" column="30" selection-start="33410" selection-end="33410" vertical-scroll-proportion="0.24744609">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/Config.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1167" column="9" selection-start="35039" selection-end="35039" vertical-scroll-proportion="0.45571095">
+        <state line="999" column="6" selection-start="30792" selection-end="30792" vertical-scroll-proportion="0.31293303">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/ControllerMappingRule.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ControllerResolver.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="0" selection-start="3611" selection-end="3611" vertical-scroll-proportion="1.3170164">
+        <state line="111" column="0" selection-start="4548" selection-end="4548" vertical-scroll-proportion="0.8876812">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/DigesterFactory.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld2_app/HelloWorld2Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="147" column="6" selection-start="8743" selection-end="8743" vertical-scroll-proportion="0.47668996">
+        <state line="30" column="13" selection-start="977" selection-end="977" vertical-scroll-proportion="0.2122588">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/XML.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/URL2ClassMapper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="3" selection-start="7061" selection-end="7061" vertical-scroll-proportion="0.3170163">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/config/xmlconfigloader/RedirectMappingRule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="3" selection-start="1392" selection-end="1392" vertical-scroll-proportion="0.019473081">
+        <state line="71" column="0" selection-start="2042" selection-end="2042" vertical-scroll-proportion="0.09307605">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorldController.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/InitializerParameterProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="13" selection-start="807" selection-end="807" vertical-scroll-proportion="0.8138298">
+        <state line="22" column="10" selection-start="750" selection-end="750" vertical-scroll-proportion="0.30874008">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorldView.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ClassLoaderInitializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="13" selection-start="870" selection-end="870" vertical-scroll-proportion="0.9946808">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorld.ftl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="HtmlPreview">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld2_app/HelloWorldView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="13" selection-start="748" selection-end="748" vertical-scroll-proportion="0.45212767">
+        <state line="36" column="29" selection-start="1246" selection-end="1246" vertical-scroll-proportion="0.30874008">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/dispatcher/HttpDispatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="343" column="0" selection-start="15592" selection-end="15592" vertical-scroll-proportion="0.96105385">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld2_app/HelloWorldController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="0" selection-start="1405" selection-end="1405" vertical-scroll-proportion="0.58419245">
+        <state line="149" column="0" selection-start="6540" selection-end="6540" vertical-scroll-proportion="0.3325766">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld1_app/HelloWorldController.java">
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ControllerResolverInitializer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="13" selection-start="956" selection-end="956" vertical-scroll-proportion="0.2142039">
-          <folding />
+        <state line="39" column="13" selection-start="1408" selection-end="1408" vertical-scroll-proportion="0.33256352">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ShortURLControllerResolver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="51" selection-start="497" selection-end="497" vertical-scroll-proportion="0.3325766">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/resolver/ShortURLViewResolver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="640" selection-end="640" vertical-scroll-proportion="0.4631101">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/acciente/acciente-projects/software/project/induction/subversion/src/com/acciente/induction/init/ViewResolverInitializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="83" selection-start="2351" selection-end="2351" vertical-scroll-proportion="0.6281755">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

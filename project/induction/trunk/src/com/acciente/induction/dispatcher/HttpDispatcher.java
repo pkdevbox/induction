@@ -60,8 +60,6 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private  ClassLoader          _oClassLoader;
-
    private  ControllerResolver   _oControllerResolver;
    private  ViewResolver         _oViewResolver;
    private  RedirectResolver     _oRedirectResolver;
@@ -110,9 +108,10 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: config-loader", e );    }
 
       // setup up our classloader
+      ClassLoader oClassLoader;
       try
       {
-         _oClassLoader
+         oClassLoader
          =  ClassLoaderInitializer
                   .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader(), _oLogger );
       }
@@ -127,7 +126,7 @@ public class HttpDispatcher extends HttpServlet
          oTemplatingEngine
          =  TemplatingEngineInitializer
                .getTemplatingEngine( oConfig.getTemplating(),
-                                     _oClassLoader,
+                                     oClassLoader,
                                      oServletConfig,
                                      _oLogger );
       }
@@ -148,7 +147,7 @@ public class HttpDispatcher extends HttpServlet
 
       // we setup the model factory and pool managers early since we now support inject models into the
       // controller and redirect resolver initializers
-      ModelFactory   oModelFactory  = new ModelFactory( _oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
       ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
 
       // now set the pool for the model factory to use in model-to-model injection
@@ -162,7 +161,7 @@ public class HttpDispatcher extends HttpServlet
                   .getControllerResolver( oConfig.getControllerResolver(),
                                           oConfig.getControllerMapping(),
                                           oModelPool,
-                                          _oClassLoader,
+                                          oClassLoader,
                                           oServletConfig,
                                           _oLogger );
       }
@@ -187,7 +186,7 @@ public class HttpDispatcher extends HttpServlet
                   .getViewResolver( oConfig.getViewResolver(),
                                     oConfig.getViewMapping(),
                                     oModelPool,
-                                    _oClassLoader,
+                                    oClassLoader,
                                     oServletConfig,
                                     _oLogger );
       }
@@ -212,7 +211,7 @@ public class HttpDispatcher extends HttpServlet
                   .getRedirectResolver( oConfig.getRedirectResolver(),
                                         oConfig.getRedirectMapping(),
                                         oModelPool,
-                                        _oClassLoader,
+                                        oClassLoader,
                                         oServletConfig,
                                         _oLogger );
       }
@@ -233,13 +232,13 @@ public class HttpDispatcher extends HttpServlet
       ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload(), oTemplatingEngine );
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
-      ControllerPool oControllerPool = new ControllerPool( _oClassLoader, oServletConfig, _oLogger );
+      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
 
       // the ViewExecutor manages the loading (when needed) and processing of views
-      _oViewExecutor = new ViewExecutor( new ViewFactory( _oClassLoader,
+      _oViewExecutor = new ViewExecutor( new ViewFactory( oClassLoader,
                                                           new ViewParameterProviderFactory( oModelPool,
                                                                                             oConfig.getFileUpload(),
                                                                                             oTemplatingEngine ) ), 
