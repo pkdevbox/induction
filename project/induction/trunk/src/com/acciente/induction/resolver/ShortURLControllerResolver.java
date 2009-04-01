@@ -1,18 +1,14 @@
 package com.acciente.induction.resolver;
 
 import com.acciente.commons.lang.Strings;
-import com.acciente.commons.loader.ClassDefLoader;
 import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  * ShortURLControllerResolver
@@ -22,51 +18,22 @@ import java.util.regex.Matcher;
  */
 public class ShortURLControllerResolver implements ControllerResolver
 {
-   private  Config.ControllerMapping      _oControllerMapping;
-   private  List                          _oShorURL2ClassnameMappingList;
+   private  Config.ControllerMapping   _oControllerMapping;
+   private  List                       _oURL2ClassMapperList;
 
    public ShortURLControllerResolver( Config.ControllerMapping    oControllerMapping,
-                                      ReloadingClassLoader        oClassLoader )
+                                      ClassLoader                 oClassLoader )
    {
-      _oControllerMapping              = oControllerMapping;
-      _oShorURL2ClassnameMappingList   = new ArrayList( oControllerMapping.getURLToClassMapList().size() );
+      _oControllerMapping   = oControllerMapping;
 
-      for ( Iterator oURLToClassMapIter = oControllerMapping.getURLToClassMapList().iterator(); oURLToClassMapIter.hasNext(); )
+      if ( oClassLoader instanceof ReloadingClassLoader )
       {
-         Config.ControllerMapping.URLToClassMap oURLToClassMap;
-         
-         oURLToClassMap = ( Config.ControllerMapping.URLToClassMap ) oURLToClassMapIter.next();
-
-         // build a mapping for all classes foun in the system that match the specified class pattern
-         Map oShorURL2ClassnameMap = new HashMap();
-
-         for ( Iterator oClassDefLoaderIter = oClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
-         {
-            ClassDefLoader oClassDefLoader = ( ClassDefLoader ) oClassDefLoaderIter.next();
-            Collection     oClassnames     = oClassDefLoader.findClassNames( oURLToClassMap.getClassPattern() );
-
-            for ( Iterator oClassnameIter = oClassnames.iterator(); oClassnameIter.hasNext(); )
-            {
-               String   sClassName = ( String ) oClassnameIter.next();
-               Matcher  oClassMatcher;
-
-               oClassMatcher = oURLToClassMap.getClassPattern().matcher( sClassName );
-
-               if ( oClassMatcher.matches() )
-               {
-                  if ( oClassMatcher.groupCount() == 0 )
-                  {
-                     throw new IllegalArgumentException( "short-url-controller-resolver: must have at least one matching group in class name pattern: "
-                                                         + oClassMatcher.pattern().pattern() );
-                  }
-
-                  oShorURL2ClassnameMap.put( oClassMatcher.group( 1 ).toLowerCase(), sClassName );
-               }
-            }
-         }
-
-         // store the URL pattern and the classname map in the list
-         _oShorURL2ClassnameMappingList.add( new ShorURL2ClassnameMapping( oURLToClassMap.getURLPattern(), oShorURL2ClassnameMap ) );
+         _oURL2ClassMapperList = createURL2ClassMapperList( oControllerMapping, ( ReloadingClassLoader ) oClassLoader );
+      }
+      else
+      {
+         // todo: need to determine a way to scan for classes using a general classloader
+         _oURL2ClassMapperList = Collections.EMPTY_LIST;
       }
    }
 
@@ -74,44 +41,53 @@ public class ShortURLControllerResolver implements ControllerResolver
    {
       String   sURLPath = oRequest.getPathInfo();
 
-      for ( Iterator oIter = _oShorURL2ClassnameMappingList.iterator(); oIter.hasNext(); )
+      if ( sURLPath != null )
       {
-         ShorURL2ClassnameMapping   oShorURL2ClassnameMapping = ( ShorURL2ClassnameMapping ) oIter.next();
-
-         Matcher oURLMatcher = oShorURL2ClassnameMapping.getURLPattern().matcher( sURLPath );
-
-         if ( oURLMatcher.matches() )
+         for ( Iterator oIter = _oURL2ClassMapperList.iterator(); oIter.hasNext(); )
          {
-            String   sShortName;
-            String   sClassName;
-            String   sMethodname = null;
+            URL2ClassMapper.ClassAndMethod oClassAndMethod;
 
-            if ( oURLMatcher.groupCount() == 0 )
+            oClassAndMethod = ( ( URL2ClassMapper ) oIter.next() ).mapURL2Class( sURLPath );
+
+            if ( oClassAndMethod != null )
             {
-               throw new IllegalArgumentException( "short-url-controller-resolver: must have at least one matching group in URL pattern: "
-                                                   + oURLMatcher.pattern().pattern() );
+               if ( Strings.isEmpty( oClassAndMethod.getMethodName() ) )
+               {
+                  return new Resolution( oClassAndMethod.getClassName(),
+                                         _oControllerMapping.getDefaultHandlerMethodName(),
+                                         _oControllerMapping.isIgnoreMethodNameCase() );
+               }
+               else
+               {
+                  return new Resolution( oClassAndMethod.getClassName(),
+                                         oClassAndMethod.getMethodName(),
+                                         _oControllerMapping.isIgnoreMethodNameCase() );
+               }
             }
-
-            sShortName = oURLMatcher.group( 1 ).toLowerCase();
-            sClassName = ( String ) oShorURL2ClassnameMapping.getShortName2ClassnameMap().get( sShortName );
-
-            if ( oURLMatcher.groupCount() > 1 )
-            {
-               sMethodname = oURLMatcher.group( 2 );
-            }
-
-            if ( Strings.isEmpty( sMethodname ) )
-            {
-               sMethodname = _oControllerMapping.getDefaultHandlerMethodName();
-            }
-
-            if ( sClassName != null )
-            {
-               return new Resolution( sClassName, sMethodname, _oControllerMapping.isIgnoreMethodNameCase() );
-            }            
          }
       }
-      
+
       return null;
+   }
+
+   private List createURL2ClassMapperList( Config.ControllerMapping oControllerMapping, ReloadingClassLoader oClassLoader )
+   {
+      List oURL2ClassMapperList;
+
+      oURL2ClassMapperList = new ArrayList( oControllerMapping.getURLToClassMapList().size() );
+
+      for ( Iterator oURLToClassMapIter = oControllerMapping.getURLToClassMapList().iterator(); oURLToClassMapIter.hasNext(); )
+      {
+         Config.ControllerMapping.URLToClassMap oURLToClassMap;
+
+         oURLToClassMap = ( Config.ControllerMapping.URLToClassMap ) oURLToClassMapIter.next();
+
+         // store the URL pattern and the classname map in the list
+         oURL2ClassMapperList.add( new URL2ClassMapper( oURLToClassMap.getURLPattern(),
+                                                        oURLToClassMap.getClassPattern(),
+                                                        oClassLoader ) );
+      }
+
+      return oURL2ClassMapperList;
    }
 }

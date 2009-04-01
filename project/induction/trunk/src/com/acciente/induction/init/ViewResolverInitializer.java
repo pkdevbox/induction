@@ -20,8 +20,8 @@ package com.acciente.induction.init;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
+import com.acciente.induction.resolver.ShortURLViewResolver;
 import com.acciente.induction.resolver.ViewResolver;
-import com.acciente.induction.resolver.FullyQualifiedClassnameViewResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
@@ -52,7 +52,7 @@ public class ViewResolverInitializer
 
       if ( sViewResolverClassName == null )
       {
-         oViewResolver = new FullyQualifiedClassnameViewResolver( oViewMappingConfig );
+         oViewResolver = new ShortURLViewResolver( oViewMappingConfig, oClassLoader );
       }
       else
       {

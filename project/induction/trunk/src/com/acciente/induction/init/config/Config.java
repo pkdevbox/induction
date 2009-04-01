@@ -254,7 +254,7 @@ public class Config
                }
                else
                {
-                  throw new IllegalArgumentException( "config: internal error: unknown java class path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
+                  throw new IllegalArgumentException( "config-error: internal error: unknown java class path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
                }
             }
 
@@ -799,7 +799,7 @@ public class Config
                   }
                   else
                   {
-                     throw new IllegalArgumentException( "config: internal error: unknown template path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
+                     throw new IllegalArgumentException( "config-error: internal error: unknown template path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
                   }
                }
 
@@ -1005,6 +1005,9 @@ public class Config
 
          private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
          {
+            validateURLPattern( oURLPattern );
+            validateClassPattern( oClassPattern );
+
             _oURLPattern   = oURLPattern;
             _oClassPattern = oClassPattern;
          }
@@ -1085,6 +1088,9 @@ public class Config
 
          private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
          {
+            validateURLPattern( oURLPattern );
+            validateClassPattern( oClassPattern );
+
             _oURLPattern   = oURLPattern;
             _oClassPattern = oClassPattern;
          }
@@ -1186,6 +1192,8 @@ public class Config
 
          private ClassToURLMap( Pattern oClassPattern, String sURLFormat )
          {
+            validateClassPattern( oClassPattern );
+
             _oClassPattern = oClassPattern;
             _sURLFormat    = sURLFormat;
          }
@@ -1411,6 +1419,28 @@ public class Config
                        + XML.Config_FileUpload_StoreFileOnDiskThreshold.toXML( _iStoreFileOnDiskThresholdInBytes )
                        + XML.Config_FileUpload_UploadedFileStorageDir.toXML( _oUploadedFileStorageDir )
                      );
+      }
+   }
+
+   private static void validateURLPattern( Pattern oURLPattern )
+   {
+      // we validate the regex to ensure that it has atleast on matching group
+      int iGroupCount = oURLPattern.matcher( "" ).groupCount();
+
+      if ( iGroupCount != 1 && iGroupCount != 2 )
+      {
+         throw new IllegalArgumentException( "config-error: must have exactly 1, or exactly 2, matching group(s) in URL pattern: "
+                                             + oURLPattern.pattern() );
+      }
+   }
+
+   private static void validateClassPattern( Pattern oClassPattern )
+   {
+      // we validate the regex to ensure that it has atleast on matching group
+      if ( oClassPattern.matcher( "" ).groupCount() != 1 )
+      {
+         throw new IllegalArgumentException( "config-error: must have exactly 1 matching group in class pattern: "
+                                             + oClassPattern.pattern() );
       }
    }
 }
