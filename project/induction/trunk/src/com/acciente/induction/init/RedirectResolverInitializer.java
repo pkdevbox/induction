@@ -21,7 +21,7 @@ import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.RedirectResolver;
-import com.acciente.induction.resolver.FullyQualifiedClassnameRedirectResolver;
+import com.acciente.induction.resolver.ShortURLRedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
@@ -36,12 +36,12 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class RedirectResolverInitializer
 {
-   public static RedirectResolver getRedirectResolver(   Config.RedirectResolver    oRedirectResolverConfig,
-                                                         Config.RedirectMapping     oRedirectMappingConfig,
-                                                         ModelPool                  oModelPool,
-                                                         ClassLoader                oClassLoader,
-                                                         ServletConfig              oServletConfig,
-                                                         Logger oLogger )
+   public static RedirectResolver getRedirectResolver( Config.RedirectResolver   oRedirectResolverConfig,
+                                                       Config.RedirectMapping    oRedirectMappingConfig,
+                                                       ModelPool                 oModelPool,
+                                                       ClassLoader               oClassLoader,
+                                                       ServletConfig             oServletConfig,
+                                                       Logger                    oLogger )
       throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       RedirectResolver  oRedirectResolver;
@@ -49,7 +49,7 @@ public class RedirectResolverInitializer
 
       if ( sRedirectResolverClassName == null )
       {
-         oRedirectResolver = new FullyQualifiedClassnameRedirectResolver( oRedirectMappingConfig );
+         oRedirectResolver = new ShortURLRedirectResolver( oRedirectMappingConfig, oClassLoader );
       }
       else
       {
@@ -72,5 +72,3 @@ public class RedirectResolverInitializer
       return oRedirectResolver;
    }
 }
-
-// EOF
