@@ -21,23 +21,23 @@ import java.util.regex.Pattern;
 class URL2ClassMapper
 {
    private  Pattern  _oURLPattern;
-   private  Map      _oShortName2ClassnameMap;
+   private  Map      _oShortName2ClassNameMap;
 
    URL2ClassMapper( Pattern oURLPattern, Pattern oClassPattern, ReloadingClassLoader oClassLoader )
    {
       _oURLPattern = oURLPattern;
 
-      // build a mapping for all classes foun in the system that match the specified class pattern
-      _oShortName2ClassnameMap = new HashMap();
+      // build a mapping for all classes we can find matching the specified class pattern
+      _oShortName2ClassNameMap = new HashMap();
 
       for ( Iterator oClassDefLoaderIter = oClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
       {
          ClassDefLoader oClassDefLoader = ( ClassDefLoader ) oClassDefLoaderIter.next();
-         Collection     oClassnames     = oClassDefLoader.findClassNames( oClassPattern );
+         Collection     oClassNames     = oClassDefLoader.findClassNames( oClassPattern );
 
-         for ( Iterator oClassnameIter = oClassnames.iterator(); oClassnameIter.hasNext(); )
+         for ( Iterator oClassNameIter = oClassNames.iterator(); oClassNameIter.hasNext(); )
          {
-            String   sClassName = ( String ) oClassnameIter.next();
+            String   sClassName = ( String ) oClassNameIter.next();
             Matcher oClassMatcher;
 
             oClassMatcher = oClassPattern.matcher( sClassName );
@@ -48,7 +48,7 @@ class URL2ClassMapper
 
                if ( sShortName != null )
                {
-                  _oShortName2ClassnameMap.put( sShortName.toLowerCase(), sClassName );
+                  _oShortName2ClassNameMap.put( sShortName.toLowerCase(), sClassName );
                }
             }
          }
@@ -69,7 +69,7 @@ class URL2ClassMapper
          {
             String   sClassName;
 
-            sClassName = ( String ) this._oShortName2ClassnameMap.get( sShortName.toLowerCase() );
+            sClassName = ( String ) this._oShortName2ClassNameMap.get( sShortName.toLowerCase() );
 
             if ( sClassName != null )
             {
