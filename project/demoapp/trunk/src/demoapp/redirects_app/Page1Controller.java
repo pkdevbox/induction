@@ -27,7 +27,7 @@ import java.io.IOException;
  * Log
  * Jun 21, 2008 APR  -  created
  */
-public class Page1 implements Controller
+public class Page1Controller implements Controller
 {
    public Redirect handler( Response oResponse ) throws IOException, InterruptedException
    {
@@ -36,7 +36,7 @@ public class Page1 implements Controller
 
       Thread.sleep( 2000 );
 
-      return new Redirect( Page2.class );
+      return new Redirect( Page2Controller.class );
    }
 
    public Redirect handler2( Response oResponse ) throws IOException, InterruptedException
@@ -46,7 +46,7 @@ public class Page1 implements Controller
 
       Thread.sleep( 2000 );
 
-      return new Redirect( Page2.class, "another" );
+      return new Redirect( Page2Controller.class, "another" );
    }
 }
 

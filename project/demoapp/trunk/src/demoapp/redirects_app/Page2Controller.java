@@ -26,7 +26,7 @@ import java.io.IOException;
  * Log
  * Jun 21, 2008 APR  -  created
  */
-public class Page2 implements Controller
+public class Page2Controller implements Controller
 {
    public void handler( Response oResponse ) throws IOException, InterruptedException
    {
