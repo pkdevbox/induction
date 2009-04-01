@@ -90,4 +90,11 @@
         </url-to-class-map>
     </view-mapping>
 
+    <redirect-mapping>
+        <class-to-url-map>
+            <class-pattern>(?:.*\.)?(\w*)Controller</class-pattern>
+            <url-format>/action/$Name</url-format>
+        </class-to-url-map>
+    </redirect-mapping>
+
 </config> 
