@@ -17,8 +17,12 @@
  */
 package demoapp.redirects_app;
 
+import com.acciente.commons.htmlform.ParserException;
 import com.acciente.induction.controller.Controller;
+import com.acciente.induction.controller.Form;
+import com.acciente.induction.controller.HTMLFormException;
 import com.acciente.induction.controller.Response;
+import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
 
@@ -26,18 +30,30 @@ import java.io.IOException;
  * Log
  * Jun 21, 2008 APR  -  created
  */
-public class Page2Controller implements Controller
+public class Action1Controller implements Controller
 {
    public void handler( Response oResponse ) throws IOException, InterruptedException
    {
-      oResponse.out().println( "This is page 2, this page does not redirect" );
+      oResponse.out().println( "Hello! I am method handler() in " + getClass().getName() );
 
       return;
    }
 
-   public void another( Response oResponse ) throws IOException, InterruptedException
+   public void anotherHandler( Form oForm, Response oResponse ) throws IOException, InterruptedException, HTMLFormException, FileUploadException, ParserException
    {
-      oResponse.out().println( "This is another handler in page 2, this page does not redirect" );
+      oResponse.setContentType( "text/html" );
+
+      oResponse.out().println( "Hello! I am method anotherHandler() in " + getClass().getName() + "<br>" );
+
+      if ( oForm.containsParam( "name" ) )
+      {
+         oResponse.out().print( "<br>Form: Name    : " + oForm.getString( "name" ) );
+      }
+
+      if ( oForm.containsParam( "message" ) )
+      {
+         oResponse.out().print( "<br>Form: Message : " + oForm.getString( "message" ) );
+      }
 
       return;
    }
