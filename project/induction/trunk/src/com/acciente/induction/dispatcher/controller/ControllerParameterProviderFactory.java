@@ -1,4 +1,21 @@
-package com.acciente.induction.dispatcher.view;
+/**
+ *   Copyright 2009 Acciente, LLC
+ *
+ *   Acciente, LLC licenses this file to you under the
+ *   Apache License, Version 2.0 (the "License"); you
+ *   may not use this file except in compliance with the
+ *   License. You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in
+ *   writing, software distributed under the License is
+ *   distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+ *   OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing
+ *   permissions and limitations under the License.
+ */
+package com.acciente.induction.dispatcher.controller;
 
 import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.commons.reflect.ParameterProviderException;
@@ -10,7 +27,7 @@ import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
-import com.acciente.induction.resolver.ViewResolver;
+import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
@@ -21,41 +38,41 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
+ * This class handles the resolution of parameter values used for injection into controller methods.
  *
- * ViewParameterProviderFactory.
+ * @created Mar 16, 2008
  *
- * This class is a ViewParameterProvider factory that returns a ViewParameterProvider object to provide
- * parameter values for view constructors.
+ * @author Adinath Raveendra Raj
  */
-public class ViewParameterProviderFactory
+public class ControllerParameterProviderFactory
 {
    private  ModelPool            _oModelPool;
    private  Config.FileUpload    _oFileUploadConfig;
    private  TemplatingEngine     _oTemplatingEngine;
 
-   public ViewParameterProviderFactory( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, TemplatingEngine oTemplatingEngine )
+   public ControllerParameterProviderFactory( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, TemplatingEngine oTemplatingEngine )
    {
       _oModelPool          = oModelPool;
       _oFileUploadConfig   = oFileUploadConfig;
       _oTemplatingEngine   = oTemplatingEngine;
    }
 
-   public ViewParameterProvider getParameterProvider( HttpServletRequest      oRequest,
-                                                      HttpServletResponse     oResponse,
-                                                      ViewResolver.Resolution oResolution )
+   public ControllerParameterProvider getParameterProvider( HttpServletRequest             oRequest,
+                                                            HttpServletResponse            oResponse,
+                                                            ControllerResolver.Resolution  oResolution )
    {
-      return new ViewParameterProvider( oRequest, oResponse, oResolution );
+      return new ControllerParameterProvider( oRequest, oResponse, oResolution );
    }
 
-   private class ViewParameterProvider implements ParameterProvider
+   private class ControllerParameterProvider implements ParameterProvider
    {
-      private  HttpServletRequest            _oRequest;
-      private  HttpServletResponse           _oResponse;
-      private  ViewResolver.Resolution       _oResolution;
+      private  HttpServletRequest               _oRequest;
+      private  HttpServletResponse              _oResponse;
+      private  ControllerResolver.Resolution    _oResolution;
 
-      private ViewParameterProvider( HttpServletRequest        oRequest,
-                                     HttpServletResponse       oResponse,
-                                     ViewResolver.Resolution   oResolution )
+      private ControllerParameterProvider( HttpServletRequest              oRequest,
+                                           HttpServletResponse             oResponse,
+                                           ControllerResolver.Resolution   oResolution )
       {
          _oRequest         = oRequest;
          _oResponse        = oResponse;
@@ -64,7 +81,7 @@ public class ViewParameterProviderFactory
 
       public Object getParameter( Class oParamClass ) throws ParameterProviderException
       {
-         final String sMessagePrefix = "view-parameter-provider: error resolving value for type: ";
+         final String sMessagePrefix = "controller-parameter-provider: error resolving value for type: ";
 
          try
          {
@@ -93,7 +110,7 @@ public class ViewParameterProviderFactory
             {
                oParamValue = _oResponse;
             }
-            else if ( oParamClass.isAssignableFrom( ViewResolver.Resolution.class ) )
+            else if ( oParamClass.isAssignableFrom( ControllerResolver.Resolution.class ) )
             {
                oParamValue = _oResolution;
             }
@@ -129,3 +146,5 @@ public class ViewParameterProviderFactory
       }
    }
 }
+
+// EOF

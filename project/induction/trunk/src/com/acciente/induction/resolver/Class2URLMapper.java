@@ -70,39 +70,46 @@ class Class2URLMapper
       {
          String   sURL;
 
+         // in the code below we generate a URL using the primary URL format, in the cases explained
+         // below we will use the alternate URL format (if one is defined)
+
+         // does the URL need to encode a method name?
          if ( Strings.isEmpty( sMethodName ) )
          {
+            // no method name, the primary URL format is used
             sURL = _sURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
 
             if ( _bURLFormatHasMethodName )
             {
-               if ( sMethodName == null )
-               {
-                  sMethodName = "";
-               }
-
-               sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+               sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, "" );
             }
          }
          else
          {
-            if ( _sAlternateURLFormat != null )
+            // yes, there is method name, now check if the primary URL format is capable of encoding method names
+            if ( _bURLFormatHasMethodName )
             {
-               sURL = _sAlternateURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
-               sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+               // yes, use the primary URL format
+               sURL = _sURLFormat
+                        .replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName )
+                           .replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
             }
             else
             {
-               sURL = _sURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
-
-               if ( _bURLFormatHasMethodName )
+               // no, the primary URL format does not handle method names, is there is an alternate URL format provided?
+               if ( _sAlternateURLFormat != null )
                {
-                  if ( sMethodName == null )
-                  {
-                     sMethodName = "";
-                  }
-
-                  sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+                  // yes, there is an alternate URL format so use it
+                  sURL = _sAlternateURLFormat
+                           .replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName )
+                              .replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+               }
+               else
+               {
+                  // no, so we inform the developer that we are unable to map this encoding request
+                  throw new IllegalArgumentException( "Unable to map class: "
+                                                      + oClass.getName()
+                                                      + " to a URL, primary URL format provided does not handle method names and no alternate format specified" );
                }
             }
          }
