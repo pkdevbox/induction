@@ -94,7 +94,7 @@
         <class-to-url-map>
             <class-pattern>(?:.*\.)?(\w+)Controller</class-pattern>
             <url-format>/$Name.action</url-format>
-            <url-format>/$Name.$Method.action</url-format>
+            <url-format-alt>/$Name.$Method.action</url-format-alt>
         </class-to-url-map>
         <class-to-url-map>
             <class-pattern>(?:.*\.)?(\w+)View</class-pattern>
