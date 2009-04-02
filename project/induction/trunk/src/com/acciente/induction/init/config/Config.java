@@ -1129,9 +1129,9 @@ public class Config
       private List   _oClassToURLMapList = new ArrayList();
       private String _sURLBase           = "";
 
-      public void addClassToURLMap( Pattern oClassPattern, String sURLFormat )
+      public void addClassToURLMap( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
       {
-         _oClassToURLMapList.add( new ClassToURLMap( oClassPattern, sURLFormat ) );
+         _oClassToURLMapList.add( new ClassToURLMap( oClassPattern, sURLFormat, sAlternateURLFormat ) );
       }
 
       public List getClassToURLMapList()
@@ -1187,15 +1187,43 @@ public class Config
        */
       public static class ClassToURLMap
       {
+         public static final String    SHORTNAME_LITERAL       = "$Name";
+         public static final String    METHODNAME_LITERAL      = "$Method";
+
+         public static final String    SHORTNAME_SEARCH_REGEX  = "\\$Name";
+         public static final String    METHODNAME_SEARCH_REGEX = "\\$Method";
+
          private Pattern   _oClassPattern;
          private String    _sURLFormat;
+         private String    _sAlternateURLFormat;
 
-         private ClassToURLMap( Pattern oClassPattern, String sURLFormat )
+         private ClassToURLMap( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
          {
             validateClassPattern( oClassPattern );
 
+            if ( sURLFormat.indexOf( SHORTNAME_LITERAL ) == -1 )
+            {
+               throw new IllegalArgumentException( "config-error: URL format must use: "
+                                                   + SHORTNAME_LITERAL
+                                                   + " may optionally use: "
+                                                   + METHODNAME_LITERAL );
+            }
+
+            // check the optional alternate URL format, if present
+            if ( sAlternateURLFormat != null
+                 && ( sAlternateURLFormat.indexOf( SHORTNAME_LITERAL ) == -1
+                      || sAlternateURLFormat.indexOf( METHODNAME_LITERAL ) == -1 ) )
+            {
+               throw new IllegalArgumentException( "config-error: Alternate URL format must use both: "
+                                                   + SHORTNAME_LITERAL
+                                                   + " and: "
+                                                   + METHODNAME_LITERAL );
+            }
+
             _oClassPattern = oClassPattern;
-            _sURLFormat    = sURLFormat;
+
+            _sURLFormat          = sURLFormat;
+            _sAlternateURLFormat = sAlternateURLFormat;
          }
 
          public Pattern getClassPattern()
@@ -1206,6 +1234,11 @@ public class Config
          public String getURLFormat()
          {
             return _sURLFormat;
+         }
+
+         public String getAlternateURLFormat()
+         {
+            return _sAlternateURLFormat;
          }
 
          public String toString()
@@ -1219,6 +1252,7 @@ public class Config
                XML.Config_RedirectMapping_ClassToURLMap
                   .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern )
                           + XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat )
+                          + XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.toXML( _sAlternateURLFormat )
                         );
          }
       }

@@ -17,6 +17,8 @@
  */
 package com.acciente.induction.resolver;
 
+import java.util.Map;
+
 /**
  * This interface is used to abstract the algorithm used to map a redirect request to an actual URL
  * <p>
@@ -34,12 +36,22 @@ package com.acciente.induction.resolver;
 public interface RedirectResolver
 {
    /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target controller.
+    * Called by Induction to resolve a redirect request defined on in terms of a target controller or view.
     *
-    * @param oControllerClass  a class object representing a class that implements the Controller interface
+    * @param oTargetClass  a class object representing a class that implements the Controller or interface or a view
     * @return a string represting a complete URL
     */
-   public String resolve( Class oControllerClass );
+   public String resolve( Class oTargetClass );
+
+   /**
+    * Called by Induction to resolve a redirect request defined on in terms of a target controller or view and map
+    * of query parameters.
+    *
+    * @param oTargetClass  a class object representing a class that implements the Controller or interface or a view
+    * @param oURLQueryParameters a map to be converted to URL query parameters
+    * @return a string represting a complete URL
+    */
+   public String resolve( Class oTargetClass, Map oURLQueryParameters );
 
    /**
     * Called by Induction to resolve a redirect request defined on in terms of a target controller
@@ -53,14 +65,38 @@ public interface RedirectResolver
    public String resolve( Class oControllerClass, String sControllerMethodName );
 
    /**
+    * Called by Induction to resolve a redirect request defined on in terms of a target controller
+    * and a specific target method in the controller and has URL query parameters.
+    *
+    * @param oControllerClass  a class object representing a class that implements the Controller interface
+    * @param sControllerMethodName a specific method name in the controller that the client
+    * should redirect to
+    * @param oURLQueryParameters a map to be converted to URL query parameters
+    * @return a string represting a complete URL
+    */
+   public String resolve( Class oControllerClass, String sControllerMethodName, Map oURLQueryParameters );
+
+   /**
     * Called by Induction to resolve a redirect request defined on in terms of a target URL,
     * the URL may be a partial URL that this method is expected to complete. The URL may even
     * simply be a mnemonic reference that is mapped to a complete URL by this method.
     *
-    * @param sURL a string representing a complete or partial URL
+    * @param sURLPart a string representing a complete or partial URL
     * @return a string represting a complete URL
     */
-   public String resolve( String sURL );
+   public String resolve( String sURLPart );
+
+   /**
+    * Called by Induction to resolve a redirect request defined on in terms of a target URL
+    * and URL query parameters. The URL may be a partial URL that this method is expected to
+    * complete. The URL may even simply be a mnemonic reference that is mapped to a complete
+    * URL by this method.
+    *
+    * @param sURLPart a string representing a complete or partial URL
+    * @param oURLQueryParameters a map to be converted to URL query parameters
+    * @return a string represting a complete URL
+    */
+   public String resolve( String sURLPart, Map oURLQueryParameters );
 }
 
 // EOF

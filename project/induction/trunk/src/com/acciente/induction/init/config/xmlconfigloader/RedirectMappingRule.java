@@ -83,12 +83,14 @@ public class RedirectMappingRule extends Rule
    {
       private  Pattern  _oClassPattern;
       private  String   _sURLFormat;
+      private  String   _sAlternateURLFormat;
 
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
          // reset data stored in rule
-         _oClassPattern = null;
-         _sURLFormat    = null;
+         _oClassPattern       = null;
+         _sURLFormat          = null;
+         _sAlternateURLFormat = null;
       }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
@@ -103,7 +105,7 @@ public class RedirectMappingRule extends Rule
             throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > url format is a required attribute" );
          }
 
-         _oRedirectMapping.addClassToURLMap( _oClassPattern, _sURLFormat );
+         _oRedirectMapping.addClassToURLMap( _oClassPattern, _sURLFormat, _sAlternateURLFormat );
       }
 
       public ParamClassPatternRule createParamClassPatternRule()
@@ -114,6 +116,11 @@ public class RedirectMappingRule extends Rule
       public ParamURLFormatRule createParamURLFormatRule()
       {
          return new ParamURLFormatRule();
+      }
+
+      public ParamURLFormatAltRule createParamURLFormatAltRule()
+      {
+         return new ParamURLFormatAltRule();
       }
 
       private class ParamClassPatternRule extends Rule
@@ -129,6 +136,14 @@ public class RedirectMappingRule extends Rule
          public void body( String sNamespace, String sName, String sText )
          {
             _sURLFormat = sText;
+         }
+      }
+
+      private class ParamURLFormatAltRule extends Rule
+      {
+         public void body( String sNamespace, String sName, String sText )
+         {
+            _sAlternateURLFormat = sText;
          }
       }
    }

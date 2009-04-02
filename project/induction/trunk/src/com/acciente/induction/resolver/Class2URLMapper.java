@@ -1,7 +1,9 @@
 package com.acciente.induction.resolver;
 
+import com.acciente.commons.lang.Strings;
 import com.acciente.commons.loader.ClassDefLoader;
 import com.acciente.commons.loader.ReloadingClassLoader;
+import com.acciente.induction.init.config.Config;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,18 +20,19 @@ import java.util.regex.Pattern;
  */
 class Class2URLMapper
 {
-   private static final String   FORMAT_PLACEHOLDER_SHORTNAME  = "\\$Name";
-   private static final String   FORMAT_PLACEHOLDER_METHODNAME = "\\$Method";
-
    private Map       _oClassName2ShortNameMap;
-   private String    _sURLFormat;
-   private boolean   _bURLFormatRequiresMethodName;
 
-   Class2URLMapper( Pattern oClassPattern, String sURLFormat, ReloadingClassLoader oClassLoader )
+   private String    _sURLFormat;
+   private boolean   _bURLFormatHasMethodName;
+
+   private String    _sAlternateURLFormat;
+
+   Class2URLMapper( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat, ReloadingClassLoader oClassLoader )
    {
       _sURLFormat = sURLFormat;
+      _sAlternateURLFormat = sAlternateURLFormat;
 
-      _bURLFormatRequiresMethodName = _sURLFormat.indexOf( FORMAT_PLACEHOLDER_METHODNAME ) != -1;
+      _bURLFormatHasMethodName = _sURLFormat.indexOf( Config.RedirectMapping.ClassToURLMap.METHODNAME_LITERAL ) != -1;
 
       // build a mapping for all classes we can find matching the specified class pattern
       _oClassName2ShortNameMap = new HashMap();
@@ -67,16 +70,41 @@ class Class2URLMapper
       {
          String   sURL;
 
-         sURL = _sURLFormat.replaceAll( FORMAT_PLACEHOLDER_SHORTNAME, sShortName );
-
-         if ( _bURLFormatRequiresMethodName )
+         if ( Strings.isEmpty( sMethodName ) )
          {
-            if ( sMethodName == null )
-            {
-               sMethodName = "";
-            }
+            sURL = _sURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
 
-            sURL = sURL.replaceAll( FORMAT_PLACEHOLDER_METHODNAME, sMethodName );
+            if ( _bURLFormatHasMethodName )
+            {
+               if ( sMethodName == null )
+               {
+                  sMethodName = "";
+               }
+
+               sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+            }
+         }
+         else
+         {
+            if ( _sAlternateURLFormat != null )
+            {
+               sURL = _sAlternateURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
+               sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+            }
+            else
+            {
+               sURL = _sURLFormat.replaceAll( Config.RedirectMapping.ClassToURLMap.SHORTNAME_SEARCH_REGEX, sShortName );
+
+               if ( _bURLFormatHasMethodName )
+               {
+                  if ( sMethodName == null )
+                  {
+                     sMethodName = "";
+                  }
+
+                  sURL = sURL.replaceAll( Config.RedirectMapping.ClassToURLMap.METHODNAME_SEARCH_REGEX, sMethodName );
+               }
+            }
          }
 
          return sURL;
