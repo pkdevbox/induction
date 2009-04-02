@@ -17,6 +17,8 @@
  */
 package com.acciente.induction.controller;
 
+import java.util.Map;
+
 /**
  * Used to instruct the client to redirect.
  *
@@ -26,61 +28,143 @@ package com.acciente.induction.controller;
  */
 public class Redirect
 {
-   private  Class       _oControllerClass;
-   private  String      _sControllerMethodName;
-   private  String      _sURL;
+   private  Class       _oTargetClass;
+   private  String      _sTargetMethodName;
+   private  String      _sTargetURL;
+   private  Map         _oURLQueryParameters;
 
    /**
-    * A redirect object defined in terms of the controller to which the client should redirect,
-    * Induction uses the redirect resolver to map the controller name to a URL.
+    * A redirect object defined in terms of the controller or view class to which the client should redirect,
+    * Induction uses the redirect resolver to map the controller or view name to a URL.
     *
-    * @param oControllerClass a class object representing a class that implements the Controller interface
+    * @param oTargetClass a class object representing a class that implements the Controller interface or one of the
+    * view interfaces. 
     */
-   public Redirect( Class oControllerClass )
+   public Redirect( Class oTargetClass )
    {
-      _oControllerClass = oControllerClass;
+      // we cannot validate here since a view can be of any type
+      _oTargetClass = oTargetClass;
    }
 
    /**
-    * A redirect object defined in terms of the controller to which the client should redirect,
-    * Induction uses the redirect resolver to map the controller name to a URL.
+    * A redirect object defined in terms of the controller or view class to which the client should redirect,
+    * Induction uses the redirect resolver to map the controller or view name to a URL.
     *
-    * @param oControllerClass a class representing that implements the Controller interface
-    * @param sControllerMethodName a specific method name in the controller that the client
+    * @param oTargetClass a class object representing a class that implements the Controller interface or one of the
+    * view interfaces.
+    * @param oURLQueryParameters a map to be converted to URL query parameters
+    */
+   public Redirect( Class oTargetClass, Map oURLQueryParameters )
+   {
+      validateURLQueryParameters( oURLQueryParameters );
+
+      // we cannot validate here since a view can be of any type
+      _oTargetClass        = oTargetClass;
+      _oURLQueryParameters = oURLQueryParameters;
+   }
+
+   /**
+    * A redirect object defined in terms of the controller and method to which the client should redirect,
+    * Induction uses the redirect resolver to map the controller or view name to a URL. This method should
+    * not be used to redirect to a view since a methid name does not make sense for a view.
+    *
+    * @param oTargetClass a class representing that implements the Controller interface
+    * @param sTargetMethodName a specific method name in the controller that the client
     * should redirect to
     */
-   public Redirect( Class oControllerClass, String sControllerMethodName )
+   public Redirect( Class oTargetClass, String sTargetMethodName )
    {
-      _oControllerClass       = oControllerClass;
-      _sControllerMethodName  = sControllerMethodName;
+      if ( ! Controller.class.isAssignableFrom( oTargetClass ) )
+      {
+         throw new IllegalArgumentException( "The form of the redirect used requires a controller class, "
+                                             + oTargetClass
+                                             + " is not a controller class");
+      }
+
+      _oTargetClass        = oTargetClass;
+      _sTargetMethodName   = sTargetMethodName;
+   }
+
+   /**
+    * A redirect object defined in terms of the controller and method to which the client should redirect,
+    * Induction uses the redirect resolver to map the controller or view name to a URL. This method should
+    * not be used to redirect to a view since a methid name does not make sense for a view.
+    *
+    * @param oTargetClass a class representing that implements the Controller interface
+    * @param sTargetMethodName a specific method name in the controller that the client
+    * should redirect to
+    * @param oURLQueryParameters a map to be converted to URL query parameters
+    */
+   public Redirect( Class oTargetClass, String sTargetMethodName, Map oURLQueryParameters )
+   {
+      if ( ! Controller.class.isAssignableFrom( oTargetClass ) )
+      {
+         throw new IllegalArgumentException( "The form of the redirect used requires a controller class, "
+                                             + oTargetClass
+                                             + " is not a controller class");
+      }
+
+      validateURLQueryParameters( oURLQueryParameters );
+
+      _oTargetClass        = oTargetClass;
+      _sTargetMethodName   = sTargetMethodName;
+      _oURLQueryParameters = oURLQueryParameters;
    }
 
    /**
     * A redirect object defined directly in terms of the URL to which the client should
     * redirect to. The URL is still passed thru the redirect resolver which may choose
-    * to complete partial URLs or provide other services.
+    * to complete partial URLs or provide other services. The defualt resolver prefixes
+    * the URL the URL base parameter defined in the induction config.
     *
     * @param sURL a string representing a complete or partial URL
     */
    public Redirect( String sURL )
    {
-      _sURL = sURL;
+      _sTargetURL = sURL;
    }
 
-   public Class getControllerClass()
+   /**
+    * A redirect object defined directly in terms of the URL to which the client should
+    * redirect to. The URL is still passed thru the redirect resolver which may choose
+    * to complete partial URLs or provide other services. The defualt resolver prefixes
+    * the URL the URL base parameter defined in the induction config.
+    *
+    * @param sURL a string representing a complete or partial URL
+    */
+   public Redirect( String sURL, Map oURLQueryParameters )
    {
-      return _oControllerClass;
+      validateURLQueryParameters( oURLQueryParameters );
+
+      _sTargetURL          = sURL;
+      _oURLQueryParameters = oURLQueryParameters;
    }
 
-   public String getControllerMethodName()
+   public Class getTargetClass()
    {
-      return _sControllerMethodName;
+      return _oTargetClass;
    }
 
-   public String getURL()
+   public String getTargetMethodName()
    {
-      return _sURL;
+      return _sTargetMethodName;
+   }
+
+   public String getTargetURL()
+   {
+      return _sTargetURL;
+   }
+
+   public Map getTargetURLQueryParameters()
+   {
+      return _oURLQueryParameters;
+   }
+
+   private void validateURLQueryParameters( Map oURLQueryParameters )
+   {
+      if ( oURLQueryParameters == null )
+      {
+         throw new IllegalArgumentException( "URL query parameters map cannot be null" );
+      }
    }
 }
-
-// EOF

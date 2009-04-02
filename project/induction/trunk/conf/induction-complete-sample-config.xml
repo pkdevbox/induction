@@ -131,12 +131,12 @@
                   but is be returned as a matching group. -->
     <controller-mapping>
         <url-to-class-map>
-            <url-pattern>a_java_regex_string</url-pattern>
-            <class-pattern>a_java_regex_string</class-pattern>
+            <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-pattern>(a_java_regex_string)</class-pattern>
         </url-to-class-map>
         <url-to-class-map>
-            <url-pattern>another_java_regex_string</url-pattern>
-            <class-pattern>another_java_regex_string</class-pattern>
+            <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-pattern>(another_java_regex_string)</class-pattern>
         </url-to-class-map>
 
         <default-handler-method>my_favorite_handler_name</default-handler-method>
@@ -145,23 +145,24 @@
 
     <view-mapping>
         <url-to-class-map>
-            <url-pattern>a_java_regex_string</url-pattern>
-            <class-pattern>a_java_regex_string</class-pattern>
+            <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-pattern>(a_java_regex_string)</class-pattern>
         </url-to-class-map>
         <url-to-class-map>
-            <url-pattern>another_java_regex_string</url-pattern>
-            <class-pattern>another_java_regex_string</class-pattern>
+            <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-pattern>(another_java_regex_string)</class-pattern>
         </url-to-class-map>
     </view-mapping>
 
     <redirect-mapping>
         <class-to-url-map>
-            <class-pattern>a_java_regex_string</class-pattern>
-            <url-format>a_java_printf_string</url-format>
+            <class-pattern>(a_java_regex_string)</class-pattern>
+            <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
+            <url-format-alt>alternate_url_format_with_both_$Name_and_$Method</url-format-alt>
         </class-to-url-map>
         <class-to-url-map>
-            <class-pattern>another_java_regex_string</class-pattern>
-            <url-format>another_java_printf_string</url-format>
+            <class-pattern>(another_java_regex_string)</class-pattern>
+            <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
         </class-to-url-map>
         
         <url-base>an_optional_base_url_for_redirects</url-base>

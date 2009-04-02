@@ -24,6 +24,7 @@ import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
 import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
+import com.acciente.induction.dispatcher.redirect.RedirectResolverExecutor;
 import com.acciente.induction.dispatcher.view.ViewExecutor;
 import com.acciente.induction.dispatcher.view.ViewExecutorException;
 import com.acciente.induction.dispatcher.view.ViewFactory;
@@ -60,9 +61,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private  ControllerResolver   _oControllerResolver;
-   private  ViewResolver         _oViewResolver;
-   private  RedirectResolver     _oRedirectResolver;
+   private  ControllerResolver         _oControllerResolver;
+   private  ViewResolver               _oViewResolver;
+   private  RedirectResolverExecutor   _oRedirectResolverExecutor;
 
    private  ControllerExecutor   _oControllerExecutor;
    private  ViewExecutor         _oViewExecutor;
@@ -204,9 +205,10 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
 
       // setup a resolver that maps a redirect to a URL
+      RedirectResolver oRedirectResolver;
       try
       {
-         _oRedirectResolver
+         oRedirectResolver
             =  RedirectResolverInitializer
                   .getRedirectResolver( oConfig.getRedirectResolver(),
                                         oConfig.getRedirectMapping(),
@@ -214,6 +216,8 @@ public class HttpDispatcher extends HttpServlet
                                         oClassLoader,
                                         oServletConfig,
                                         _oLogger );
+
+         _oRedirectResolverExecutor = new RedirectResolverExecutor( oRedirectResolver );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
@@ -274,28 +278,14 @@ public class HttpDispatcher extends HttpServlet
          // process the controller's return value (if any)
          if ( oControllerReturnValue != null )
          {
+            // is it a redirect?
             if ( oControllerReturnValue instanceof Redirect )
             {
-               Redirect oRedirect = ( Redirect ) oControllerReturnValue;
+               String sRedirectURL = _oRedirectResolverExecutor.resolve( ( Redirect ) oControllerReturnValue );
 
-               if ( oRedirect.getControllerClass() != null )
+               if ( sRedirectURL != null )
                {
-                  if ( oRedirect.getControllerMethodName() != null )
-                  {
-                     oResponse.sendRedirect( _oRedirectResolver
-                                                .resolve(   oRedirect.getControllerClass(),
-                                                            oRedirect.getControllerMethodName() ) );
-                  }
-                  else
-                  {
-                     oResponse.sendRedirect( _oRedirectResolver
-                                                .resolve( oRedirect.getControllerClass() ) );
-                  }
-               }
-               else if ( oRedirect.getURL() != null )
-               {
-                  oResponse.sendRedirect( _oRedirectResolver
-                                             .resolve( oRedirect.getURL() ) );
+                  oResponse.sendRedirect( sRedirectURL );
                }
                else
                {
@@ -304,6 +294,7 @@ public class HttpDispatcher extends HttpServlet
             }
             else
             {
+               // otherwise assume it is a view
                try
                {
                   // check if the value returned is type..
@@ -327,7 +318,7 @@ public class HttpDispatcher extends HttpServlet
       }
       else
       {
-         // next try to resolve the request to a controller
+         // next try to resolve the request to a view
          ViewResolver.Resolution oViewResolution = _oViewResolver.resolve( oRequest );
 
          if ( oViewResolution != null )
