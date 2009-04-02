@@ -75,7 +75,7 @@
 
     <controller-mapping>
         <url-to-class-map>
-            <url-pattern>/action/(\w+)(?:\.(\w+))?</url-pattern>
+            <url-pattern>/(\w+)(?:\.(\w+))?\.action</url-pattern>
             <class-pattern>(?:.*\.)?(\w*)Controller</class-pattern>
         </url-to-class-map>
 
@@ -86,14 +86,19 @@
     <view-mapping>
         <url-to-class-map>
             <url-pattern>/(\w+)</url-pattern>
-            <class-pattern>(?:.*\.)?(\w*)View</class-pattern>
+            <class-pattern>(?:.*\.)?(\w+)View</class-pattern>
         </url-to-class-map>
     </view-mapping>
 
     <redirect-mapping>
         <class-to-url-map>
-            <class-pattern>(?:.*\.)?(\w*)Controller</class-pattern>
-            <url-format>/action/$Name</url-format>
+            <class-pattern>(?:.*\.)?(\w+)Controller</class-pattern>
+            <url-format>/$Name.action</url-format>
+            <url-format>/$Name.$Method.action</url-format>
+        </class-to-url-map>
+        <class-to-url-map>
+            <class-pattern>(?:.*\.)?(\w+)View</class-pattern>
+            <url-format>/$Name</url-format>
         </class-to-url-map>
     </redirect-mapping>
 
