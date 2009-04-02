@@ -8,18 +8,17 @@
     <content url="file://C:/acciente/acciente-projects/software/project/induction/subversion/src">
       <sourceFolder url="file://C:/acciente/acciente-projects/software/project/induction/subversion/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.4" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="jdk 1.4.2 - tools">
-        <CLASSES>
-          <root url="jar://C:/acciente/acciente-projects/lib/j2sdk1.4.2/tools.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="library" exported="" name="apache-bcel-5.2" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-collections-3.2.1" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-digester-1.8" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-fileupload-1.2.1" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-io-1.4" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-logging-1.1.1" level="application" />
+    <orderEntry type="library" exported="" name="junit-4.4" level="application" />
+    <orderEntry type="library" exported="" name="freemarker-2.3.12" level="application" />
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/" />
@@ -28,15 +27,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="apache-commons-io-1.4" level="application" />
-    <orderEntry type="library" name="apache-commons-fileupload-1.2.1" level="application" />
-    <orderEntry type="library" name="j2sdk-tools-1.4.2" level="application" />
-    <orderEntry type="library" name="junit-4.4" level="application" />
-    <orderEntry type="library" name="freemarker-2.3.12" level="application" />
-    <orderEntry type="library" name="apache-commons-digester-1.8" level="application" />
-    <orderEntry type="library" name="apache-commons-collections-3.2.1" level="application" />
-    <orderEntry type="library" name="apache-commons-logging-1.1.1" level="application" />
-    <orderEntry type="library" name="apache-bcel-5.2" level="application" />
     <orderEntryProperties />
   </component>
 </module>

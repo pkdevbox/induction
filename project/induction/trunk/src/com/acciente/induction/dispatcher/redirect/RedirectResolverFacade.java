@@ -6,16 +6,16 @@ import com.acciente.induction.resolver.RedirectResolver;
 /**
  * Internal.
  *
- * RedirectResolverExecutor, this class wraps the RedirectResolver making it easier to use.
+ * RedirectResolverFacade, this class wraps the RedirectResolver making it easier to use.
  *
  * @author Adinath Raveendra Raj
  * @created Apr 1, 2009
  */
-public class RedirectResolverExecutor
+public class RedirectResolverFacade
 {
-   private RedirectResolver   _oRedirectResolver;
+   private  RedirectResolver   _oRedirectResolver;
 
-   public RedirectResolverExecutor( RedirectResolver oRedirectResolver )
+   public RedirectResolverFacade( RedirectResolver oRedirectResolver )
    {
       _oRedirectResolver = oRedirectResolver;
    }

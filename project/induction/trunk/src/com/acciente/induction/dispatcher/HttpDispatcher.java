@@ -22,9 +22,10 @@ import com.acciente.induction.controller.Redirect;
 import com.acciente.induction.dispatcher.controller.ControllerExecutor;
 import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
+import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
-import com.acciente.induction.dispatcher.redirect.RedirectResolverExecutor;
+import com.acciente.induction.dispatcher.redirect.RedirectResolverFacade;
 import com.acciente.induction.dispatcher.view.ViewExecutor;
 import com.acciente.induction.dispatcher.view.ViewExecutorException;
 import com.acciente.induction.dispatcher.view.ViewFactory;
@@ -63,7 +64,7 @@ public class HttpDispatcher extends HttpServlet
 {
    private  ControllerResolver         _oControllerResolver;
    private  ViewResolver               _oViewResolver;
-   private  RedirectResolverExecutor   _oRedirectResolverExecutor;
+   private  RedirectResolverFacade     _oRedirectResolverFacade;
 
    private  ControllerExecutor   _oControllerExecutor;
    private  ViewExecutor         _oViewExecutor;
@@ -217,7 +218,7 @@ public class HttpDispatcher extends HttpServlet
                                         oServletConfig,
                                         _oLogger );
 
-         _oRedirectResolverExecutor = new RedirectResolverExecutor( oRedirectResolver );
+         _oRedirectResolverFacade = new RedirectResolverFacade( oRedirectResolver );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
@@ -232,20 +233,20 @@ public class HttpDispatcher extends HttpServlet
       catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
-      // the ParamResolver manages resolution of parameter values based on the parameter type
-      ParamResolver  oParamResolver = new ParamResolver( oModelPool, oConfig.getFileUpload(), oTemplatingEngine );
-
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
 
       // the ControllerExecutor manages the execution of controllers
-      _oControllerExecutor = new ControllerExecutor( oControllerPool, oParamResolver );
+      _oControllerExecutor = new ControllerExecutor( oControllerPool,
+                                                     new ControllerParameterProviderFactory( oModelPool,
+                                                                                             oConfig.getFileUpload(),
+                                                                                             oTemplatingEngine ) );
 
       // the ViewExecutor manages the loading (when needed) and processing of views
       _oViewExecutor = new ViewExecutor( new ViewFactory( oClassLoader,
                                                           new ViewParameterProviderFactory( oModelPool,
                                                                                             oConfig.getFileUpload(),
-                                                                                            oTemplatingEngine ) ), 
+                                                                                            oTemplatingEngine ) ),
                                          oTemplatingEngine );
    }
 
@@ -281,7 +282,7 @@ public class HttpDispatcher extends HttpServlet
             // is it a redirect?
             if ( oControllerReturnValue instanceof Redirect )
             {
-               String sRedirectURL = _oRedirectResolverExecutor.resolve( ( Redirect ) oControllerReturnValue );
+               String sRedirectURL = _oRedirectResolverFacade.resolve( ( Redirect ) oControllerReturnValue );
 
                if ( sRedirectURL != null )
                {

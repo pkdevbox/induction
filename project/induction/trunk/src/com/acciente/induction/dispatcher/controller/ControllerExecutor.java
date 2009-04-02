@@ -17,14 +17,14 @@
  */
 package com.acciente.induction.dispatcher.controller;
 
+import com.acciente.commons.reflect.Invoker;
+import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.controller.Controller;
-import com.acciente.induction.dispatcher.ParamResolver;
-import com.acciente.induction.dispatcher.ParamResolverException;
+import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ReflectUtils;
-import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,18 +41,19 @@ import java.lang.reflect.Method;
  */
 public class ControllerExecutor
 {
-   private  ControllerPool          _oControllerPool;
-   private  ParamResolver           _oParamResolver;
+   private  ControllerPool                      _oControllerPool;
+   private  ControllerParameterProviderFactory  _oControllerParameterProviderFactory;
 
    /**
     * Creates a new controller executor instance
     * @param oControllerPool a controller pool
-    * @param oParamResolver a parameter value resolver
+    * @param oControllerParameterProviderFactory a parameter value resolver
     */
-   public ControllerExecutor( ControllerPool oControllerPool, ParamResolver oParamResolver )
+   public ControllerExecutor( ControllerPool                      oControllerPool,
+                              ControllerParameterProviderFactory  oControllerParameterProviderFactory )
    {
-      _oControllerPool     = oControllerPool;
-      _oParamResolver      = oParamResolver;
+      _oControllerPool                       = oControllerPool;
+      _oControllerParameterProviderFactory   = oControllerParameterProviderFactory;
    }
 
    /**
@@ -110,61 +111,17 @@ public class ControllerExecutor
          throw new ControllerExecutorException( "load: method not found", e );
       }
 
-      // ok, we have a controller, now compute values for its formal parameter list
-      Class[]  aoParameterTypes  = oControllerMethod.getParameterTypes();
-      Object[] aoParameterValues = new Object[ aoParameterTypes.length ];
-
-      for ( int i = 0; i < aoParameterTypes.length; i++ )
-      {
-         Class oParameterType = aoParameterTypes[ i ];
-
-         try
-         {
-            aoParameterValues[ i ]
-               = _oParamResolver.getParameterValue( oParameterType,
-                                                    oRequest,
-                                                    oResponse,
-                                                    oResolution );
-         }
-         catch ( ClassNotFoundException e )
-         {
-            throw new ControllerExecutorException( "model-load:  unable to load model definition", e );
-         }
-         catch ( ConstructorNotFoundException e )
-         {
-            throw new ControllerExecutorException( "model-load:  constructor not found", e );
-         }
-         catch ( MethodNotFoundException e )
-         {
-            throw new ControllerExecutorException( "model-load:  method not found", e );
-         }
-         catch ( InvocationTargetException e )
-         {
-            throw new ControllerExecutorException( "model-load:  target exception", e );
-         }
-         catch ( IllegalAccessException e )
-         {
-            throw new ControllerExecutorException( "model-load:  access exception", e );
-         }
-         catch ( InstantiationException e )
-         {
-            throw new ControllerExecutorException( "model-load:  instantiate exception", e );
-         }
-         catch ( ParamResolverException e )
-         {
-            throw new ControllerExecutorException( "model-load:  parameter resolution exception", e );
-         }
-         catch ( ParameterProviderException e )
-         {
-            throw new ControllerExecutorException( "model-load:  parameter resolution exception", e );
-         }
-      }
-
       // finally call the controller method!
       Object   oControllerReturnValue;
       try
       {
-         oControllerReturnValue = oControllerMethod.invoke( oController, aoParameterValues );
+         oControllerReturnValue = Invoker.invoke( oControllerMethod,
+                                                  oController,
+                                                  null,
+                                                  _oControllerParameterProviderFactory
+                                                     .getParameterProvider( oRequest,
+                                                                            oResponse,
+                                                                            oResolution ) );
       }
       catch ( IllegalAccessException e )
       {
@@ -173,6 +130,10 @@ public class ControllerExecutor
       catch ( InvocationTargetException e )
       {
          throw new ControllerExecutorException( "invoke: method threw exception", e );
+      }
+      catch ( ParameterProviderException e )
+      {
+         throw new ControllerExecutorException( "invoke: parameter error", e );
       }
 
       return oControllerReturnValue;

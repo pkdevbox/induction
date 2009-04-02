@@ -105,21 +105,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="apache-commons-fileupload-1.2.1" level="application" />
-    <orderEntry type="library" name="freemarker-2.3.12" level="application" />
-    <orderEntry type="library" name="apache-commons-digester-1.8" level="application" />
-    <orderEntry type="library" name="apache-commons-collections-3.2.1" level="application" />
-    <orderEntry type="library" name="apache-commons-logging-1.1.1" level="application" />
-    <orderEntry type="library" name="apache-bcel-5.2" level="application" />
     <orderEntry type="module" module-name="induction" />
     <orderEntryProperties />
   </component>
