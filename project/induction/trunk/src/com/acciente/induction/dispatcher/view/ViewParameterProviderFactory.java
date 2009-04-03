@@ -32,12 +32,17 @@ public class ViewParameterProviderFactory
    private  ModelPool            _oModelPool;
    private  Config.FileUpload    _oFileUploadConfig;
    private  TemplatingEngine     _oTemplatingEngine;
+   private  ClassLoader          _oClassLoader;
 
-   public ViewParameterProviderFactory( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, TemplatingEngine oTemplatingEngine )
+   public ViewParameterProviderFactory( ModelPool           oModelPool,
+                                        Config.FileUpload   oFileUploadConfig,
+                                        TemplatingEngine    oTemplatingEngine,
+                                        ClassLoader         oClassLoader  )
    {
       _oModelPool          = oModelPool;
       _oFileUploadConfig   = oFileUploadConfig;
       _oTemplatingEngine   = oTemplatingEngine;
+      _oClassLoader        = oClassLoader;
    }
 
    public ViewParameterProvider getParameterProvider( HttpServletRequest      oRequest,
@@ -100,6 +105,10 @@ public class ViewParameterProviderFactory
             else if ( oParamClass.isAssignableFrom( TemplatingEngine.class ) )
             {
                oParamValue = _oTemplatingEngine;
+            }
+            else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
+            {
+               oParamValue = _oClassLoader;
             }
             else
             {

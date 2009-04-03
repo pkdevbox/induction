@@ -49,12 +49,17 @@ public class ControllerParameterProviderFactory
    private  ModelPool            _oModelPool;
    private  Config.FileUpload    _oFileUploadConfig;
    private  TemplatingEngine     _oTemplatingEngine;
+   private  ClassLoader          _oClassLoader;
 
-   public ControllerParameterProviderFactory( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, TemplatingEngine oTemplatingEngine )
+   public ControllerParameterProviderFactory( ModelPool           oModelPool,
+                                              Config.FileUpload   oFileUploadConfig,
+                                              TemplatingEngine    oTemplatingEngine,
+                                              ClassLoader         oClassLoader )
    {
       _oModelPool          = oModelPool;
       _oFileUploadConfig   = oFileUploadConfig;
       _oTemplatingEngine   = oTemplatingEngine;
+      _oClassLoader        = oClassLoader;
    }
 
    public ControllerParameterProvider getParameterProvider( HttpServletRequest             oRequest,
@@ -117,6 +122,10 @@ public class ControllerParameterProviderFactory
             else if ( oParamClass.isAssignableFrom( TemplatingEngine.class ) )
             {
                oParamValue = _oTemplatingEngine;
+            }
+            else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
+            {
+               oParamValue = _oClassLoader;
             }
             else
             {
