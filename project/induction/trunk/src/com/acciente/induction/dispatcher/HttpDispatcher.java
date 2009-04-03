@@ -240,13 +240,15 @@ public class HttpDispatcher extends HttpServlet
       _oControllerExecutor = new ControllerExecutor( oControllerPool,
                                                      new ControllerParameterProviderFactory( oModelPool,
                                                                                              oConfig.getFileUpload(),
-                                                                                             oTemplatingEngine ) );
+                                                                                             oTemplatingEngine,
+                                                                                             oClassLoader ) );
 
       // the ViewExecutor manages the loading (when needed) and processing of views
       _oViewExecutor = new ViewExecutor( new ViewFactory( oClassLoader,
                                                           new ViewParameterProviderFactory( oModelPool,
                                                                                             oConfig.getFileUpload(),
-                                                                                            oTemplatingEngine ) ),
+                                                                                            oTemplatingEngine,
+                                                                                            oClassLoader ) ),
                                          oTemplatingEngine );
    }
 
