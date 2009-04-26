@@ -34,11 +34,6 @@ public class XML
    public static final XML Config_JavaClassPath_CompiledDirectory                = new XML( "compiled-directory", Config_JavaClassPath );
    public static final XML Config_JavaClassPath_CompiledDirectory_Directory      = new XML( "directory",          Config_JavaClassPath_CompiledDirectory );
    public static final XML Config_JavaClassPath_CompiledDirectory_PackagePrefix  = new XML( "package-prefix",     Config_JavaClassPath_CompiledDirectory );
-   public static final XML Config_JavaClassPath_SourceDirectory                  = new XML( "source-directory",   Config_JavaClassPath );
-   public static final XML Config_JavaClassPath_SourceDirectory_Directory        = new XML( "directory",          Config_JavaClassPath_SourceDirectory );
-   public static final XML Config_JavaClassPath_SourceDirectory_PackagePrefix    = new XML( "package-prefix",     Config_JavaClassPath_SourceDirectory );
-   public static final XML Config_JavaClassPath_JavaCompiler                     = new XML( "java-compiler",      Config_JavaClassPath );
-   public static final XML Config_JavaClassPath_JavaCompiler_Class               = new XML( "class",              Config_JavaClassPath_JavaCompiler );
 
    public static final XML Config_ModelDefs                                      = new XML( "model-defs",         Config );
    public static final XML Config_ModelDefs_ModelDef                             = new XML( "model-def",          Config_ModelDefs );

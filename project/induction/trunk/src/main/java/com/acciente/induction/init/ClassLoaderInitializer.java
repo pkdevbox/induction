@@ -17,9 +17,7 @@
  */
 package com.acciente.induction.init;
 
-import com.acciente.commons.javac.JavaCompilerManager;
 import com.acciente.commons.loader.JavaCompiledClassDefLoader;
-import com.acciente.commons.loader.JavaSourceClassDefLoader;
 import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
 
@@ -66,22 +64,6 @@ public class ClassLoaderInitializer
 
                // add the class def loader to the search list
                oClassLoader.addClassDefLoader( oJavaCompiledClassDefLoader );
-            }
-            else if ( oJavaClassPathConfig.getDirList().get( i ) instanceof Config.JavaClassPath.SourceDir )
-            {
-               Config.JavaClassPath.SourceDir oSourceDir = ( Config.JavaClassPath.SourceDir ) oJavaClassPathConfig.getDirList().get( i );
-
-               oLogger.log( "configuring reloading classloader for source classes in  : " + oSourceDir.getDir() );
-
-               // set up a source class definition loader
-               JavaSourceClassDefLoader oJavaSourceClassDefLoader = new JavaSourceClassDefLoader();
-
-               oJavaSourceClassDefLoader.setJavaCompilerManager( new JavaCompilerManager( oJavaClassPathConfig.getJavaCompiler().getJavaCompilerClassName() ) );
-               oJavaSourceClassDefLoader.setSourceDirectory( oSourceDir.getDir() );
-               oJavaSourceClassDefLoader.setPackageNamePrefix( oSourceDir.getPackageNamePrefix() );
-
-               // add the class def loader to the search list
-               oClassLoader.addClassDefLoader( oJavaSourceClassDefLoader );
             }
          }
 
