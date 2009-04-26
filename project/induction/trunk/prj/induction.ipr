@@ -259,6 +259,7 @@
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/commons.iml" filepath="$PROJECT_DIR$/commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/demoapp.iml" filepath="$PROJECT_DIR$/demoapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/induction.iml" filepath="$PROJECT_DIR$/induction.iml" />
       <module fileurl="file://$PROJECT_DIR$/induction-test.iml" filepath="$PROJECT_DIR$/induction-test.iml" />
@@ -281,10 +282,11 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="VcsDirectoryMappings">
+    <mapping directory="C:/acciente/acciente-projects/software/project/acciente-commons" vcs="svn" />
+    <mapping directory="C:/acciente/acciente-projects/software/project/acciente-induction" vcs="svn" />
     <mapping directory="C:/acciente/acciente-projects/software/project/demoapp/subversion" vcs="svn" />
     <mapping directory="C:/acciente/acciente-projects/software/project/induction-test-data/subversion" vcs="svn" />
     <mapping directory="C:/acciente/acciente-projects/software/project/induction-test/subversion" vcs="svn" />
-    <mapping directory="C:/acciente/acciente-projects/software/project/induction/subversion" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
 </project>
