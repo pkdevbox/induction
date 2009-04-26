@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                            http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+
+   <!-- artifact identification -->
+   <groupId>com.acciente</groupId>
+   <artifactId>acciente-commons</artifactId>
+   <version>1.2.0-SNAPSHOT</version>
+
+   <!-- project information -->
+   <name>Acciente Commons Library</name>
+   <description>A set of useful components developed as part of the Induction project</description>
+   <url>http://www.inductionframework.org</url>
+   <inceptionYear>2008</inceptionYear>
+   <licenses>
+      <license>
+         <name>Apache License 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>manual</distribution>
+         <comments>Comercial friendly ope-source license</comments>   
+      </license>   
+   </licenses>
+   <organization>
+      <name>Acciente, LLC</name>
+      <url>http://www.acciente.com</url>
+   </organization>
+   <developers>
+      <developer>
+         <id>adinath</id>
+         <name>Adinath</name>
+         <organization>Acciente, LLC</organization>
+         <organizationUrl>http://www.acciente.com</organizationUrl>
+         <roles>
+            <role>architect</role>
+            <role>developer</role>
+         </roles>
+         <timezone>-7</timezone>
+      </developer>
+   </developers>
+
+   <!-- dependencies -->
+   <dependencies>
+
+      <!-- compile time -->
+      <dependency>
+         <groupId>org.apache.bcel</groupId>
+         <artifactId>bcel</artifactId>
+         <version>5.2</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>3.2.1</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-digester</groupId>
+         <artifactId>commons-digester</artifactId>
+         <version>1.8</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-fileupload</groupId>
+         <artifactId>commons-fileupload</artifactId>
+         <version>1.2.1</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>1.4</version>
+      </dependency>
+      <dependency>
+         <groupId>org.freemarker</groupId>
+         <artifactId>freemarker</artifactId>
+         <version>2.3.12</version>
+      </dependency>
+
+      <!-- compile time (provided) -->
+      <dependency>
+         <groupId>servletapi</groupId>
+         <artifactId>servlet-api</artifactId>
+         <version>2.4</version>
+         <scope>provided</scope>
+      </dependency>
+
+      <!-- runtime -->
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.1.1</version>
+         <scope>runtime</scope>
+      </dependency>
+   </dependencies>
+
+</project>
