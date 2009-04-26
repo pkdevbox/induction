@@ -193,31 +193,15 @@ public class Config
    public static class JavaClassPath
    {
       private  List           _oDirList      = new ArrayList();
-      private  JavaCompiler   _oJavaCompiler = new JavaCompiler();
 
       public void addCompiledDir( File oDir, String sPackagePrefixName )
       {
          _oDirList.add( new CompiledDir( oDir, sPackagePrefixName ) );
       }
 
-      public void addSourceDir( File oDir, String sPackagePrefixName )
-      {
-         _oDirList.add( new SourceDir( oDir, sPackagePrefixName ) );
-      }
-
       public List getDirList()
       {
          return _oDirList;
-      }
-
-      /**
-       * This method is used to configure the java compiler used for compiling java sources at runtime.
-       *
-       * @return an object reference that has the compiler settings
-       */
-      public JavaCompiler getJavaCompiler()
-      {
-         return _oJavaCompiler;
       }
 
       public String toString()
@@ -227,9 +211,7 @@ public class Config
 
       public String toXML()
       {
-         String   sXML_JavaCompiler = _oJavaCompiler.toXML();
-
-         if ( _oDirList.size() == 0 && sXML_JavaCompiler.equals( "" ) )
+         if ( _oDirList.size() == 0 )
          {
             return "";
          }
@@ -248,17 +230,11 @@ public class Config
                {
                   oBuffer.append ( ( ( CompiledDir ) oPathItem ).toXML() );
                }
-               else if ( oPathItem instanceof SourceDir )
-               {
-                  oBuffer.append ( ( ( SourceDir ) oPathItem ).toXML() );
-               }
                else
                {
                   throw new IllegalArgumentException( "config-error: internal error: unknown java class path item : " + oPathItem + ", of type: " + oPathItem.getClass() );
                }
             }
-
-            oBuffer.append( sXML_JavaCompiler );
 
             oBuffer.append( "\n" );
             oBuffer.append( XML.Config_JavaClassPath.CLOSE_IND );
@@ -303,87 +279,6 @@ public class Config
                   .toXML( XML.Config_JavaClassPath_CompiledDirectory_Directory.toXML( _oDir )
                           + XML.Config_JavaClassPath_CompiledDirectory_PackagePrefix.toXML( _sPackageNamePrefix )
                         );
-         }
-      }
-
-      /**
-       * Modular configuration container
-       */
-      public static class SourceDir
-      {
-         private  File     _oDir;
-         private  String   _sPackageNamePrefix;
-
-         private SourceDir( File oDir, String sPackagePrefixName )
-         {
-            _oDir                =  oDir;
-            _sPackageNamePrefix  =  sPackagePrefixName;
-         }
-
-         public File getDir()
-         {
-            return _oDir;
-         }
-
-         public String getPackageNamePrefix()
-         {
-            return _sPackageNamePrefix;
-         }
-
-         public String toString()
-         {
-            return toXML();
-         }
-
-         public String toXML()
-         {
-            return
-               XML.Config_JavaClassPath_SourceDirectory
-                  .toXML( XML.Config_JavaClassPath_SourceDirectory_Directory.toXML( _oDir )
-                          + XML.Config_JavaClassPath_SourceDirectory_PackagePrefix.toXML( _sPackageNamePrefix )
-                        );
-         }
-      }
-
-      /**
-       * Modular configuration container
-       */
-      public static class JavaCompiler
-      {
-         private static final String    DEFAULT = "com.acciente.commons.javac.JavaCompiler_JDK_1_4";
-
-         private String    _sJavaCompilerClassName;
-
-         public String getJavaCompilerClassName()
-         {
-            return ( _sJavaCompilerClassName != null
-                     ? _sJavaCompilerClassName
-                     : DEFAULT
-                   );
-         }
-
-         public void setJavaCompilerClassName( String sJavaCompilerClassName )
-         {
-            _sJavaCompilerClassName = sJavaCompilerClassName;
-         }
-
-         public String toString()
-         {
-            return toXML();
-         }
-
-         public String toXML()
-         {
-            if ( _sJavaCompilerClassName == null )
-            {
-               return "";
-            }
-            else
-            {
-               return
-                  XML.Config_JavaClassPath_JavaCompiler
-                     .toXML( XML.Config_JavaClassPath_JavaCompiler_Class.toXML( _sJavaCompilerClassName ) );
-            }
          }
       }
    }

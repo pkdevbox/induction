@@ -49,20 +49,11 @@ public class DigesterFactory
       {
          JavaClassPathRule oJavaClassPathRule = new JavaClassPathRule( oConfig.getJavaClassPath() );
 
-         oDigester.addRule( XML.Config_JavaClassPath_JavaCompiler_Class.PATTERN, oJavaClassPathRule.createSetJavaCompilerClassNameRule() );
-
          {
             JavaClassPathRule.AddCompiledDirRule oAddCompiledDirRule = oJavaClassPathRule.createAddCompiledDirRule();
             oDigester.addRule( XML.Config_JavaClassPath_CompiledDirectory.PATTERN,                 oAddCompiledDirRule );
             oDigester.addRule( XML.Config_JavaClassPath_CompiledDirectory_Directory.PATTERN,       oAddCompiledDirRule.createParamDirRule() );
             oDigester.addRule( XML.Config_JavaClassPath_CompiledDirectory_PackagePrefix.PATTERN,   oAddCompiledDirRule.createParamPackageNamePrefixRule() );
-         }
-
-         {
-            JavaClassPathRule.AddSourceDirRule oAddSourceDirRule = oJavaClassPathRule.createAddSourceDirRule();
-            oDigester.addRule( XML.Config_JavaClassPath_SourceDirectory.PATTERN,                   oAddSourceDirRule );
-            oDigester.addRule( XML.Config_JavaClassPath_SourceDirectory_Directory.PATTERN,         oAddSourceDirRule.createParamDirRule() );
-            oDigester.addRule( XML.Config_JavaClassPath_SourceDirectory_PackagePrefix.PATTERN,     oAddSourceDirRule.createParamPackageNamePrefixRule() );
          }
       }
 

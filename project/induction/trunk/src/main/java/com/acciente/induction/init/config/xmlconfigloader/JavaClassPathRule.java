@@ -50,16 +50,6 @@ public class JavaClassPathRule
       return new AddCompiledDirRule();
    }
 
-   public AddSourceDirRule createAddSourceDirRule()
-   {
-      return new AddSourceDirRule();
-   }
-
-   public SetJavaCompilerClassNameRule createSetJavaCompilerClassNameRule()
-   {
-      return new SetJavaCompilerClassNameRule();
-   }
-
    /**
     * AddCompiledDirRule
     */
@@ -118,85 +108,6 @@ public class JavaClassPathRule
          {
             _sPackageNamePrefix = sText;
          }
-      }
-   }
-
-   /**
-    * AddSourceDirRule
-    *
-    * Log
-    * May 1, 2008 APR  -  created
-    */
-   public class AddSourceDirRule extends Rule
-   {
-      private  File        _oDir;
-      private  String      _sPackageNamePrefix;
-
-      public void begin( String sNamespace, String sName, Attributes oAttributes )
-      {
-         // reset data stored in rule
-         _oDir                = null;
-         _sPackageNamePrefix  = null;
-      }
-
-      public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
-      {
-         if ( _oDir == null || Strings.isEmpty( _oDir.getPath() ) )
-         {
-            throw new XMLConfigLoaderException( "config > java-class-path > source-directory: must specify a directory name" );
-         }
-         _oJavaClassPath.addSourceDir( _oDir, _sPackageNamePrefix );
-      }
-
-      /**
-       * Factory methods for the "nested"-rules
-       */
-
-      public ParamDirRule createParamDirRule()
-      {
-         return new ParamDirRule();
-      }
-
-      public ParamPackageNamePrefixRule createParamPackageNamePrefixRule()
-      {
-         return new ParamPackageNamePrefixRule();
-      }
-
-      /**
-       * ParamDirRule
-       */
-      private class ParamDirRule extends Rule
-      {
-         public void body( String sNamespace, String sName, String sText )
-         {
-            _oDir = new File( sText );
-         }
-      }
-
-      /**
-       * ParamPackageNamePrefixRule rule
-       */
-      private class ParamPackageNamePrefixRule extends Rule
-      {
-         public void body( String sNamespace, String sName, String sText )
-         {
-            _sPackageNamePrefix = sText;
-         }
-      }
-   }
-
-   /**
-    * SetJavaCompilerClassNameRule
-    */
-   private class SetJavaCompilerClassNameRule extends Rule
-   {
-      public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
-      {
-         if ( Strings.isEmpty( sText ) )
-         {
-            throw new XMLConfigLoaderException( "config > java-class-path > java-compiler: must specify a class name" );
-         }
-         _oJavaClassPath.getJavaCompiler().setJavaCompilerClassName( sText );
       }
    }
 }
