@@ -10,10 +10,11 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="induction" />
+    <orderEntry type="library" name="junit-4.4" level="application" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://C:/acciente/acciente-projects/software/project/induction/subversion/conf" />
+          <root url="file://C:/acciente/acciente-projects/software/project/induction/src/main/config" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

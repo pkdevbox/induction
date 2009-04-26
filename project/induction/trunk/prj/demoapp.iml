@@ -28,6 +28,10 @@
           <setting name="BUILD_ONLY_WEB_RESOURCES" value="false" />
         </building>
         <packaging>
+          <containerElement type="module" name="commons">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
           <containerElement type="module" name="demoapp">
             <attribute name="method" value="0" />
             <attribute name="URI" value="&lt;N/A&gt;" />
@@ -69,15 +73,7 @@
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/lib" />
           </containerElement>
-          <containerElement type="library" name="j2sdk-tools-1.4.2" level="application">
-            <attribute name="method" value="0" />
-            <attribute name="URI" value="/WEB-INF/lib" />
-          </containerElement>
           <containerElement type="library" name="jdk 1.4.2 - tools" level="module">
-            <attribute name="method" value="0" />
-            <attribute name="URI" value="/WEB-INF/lib" />
-          </containerElement>
-          <containerElement type="library" name="junit-4.4" level="application">
             <attribute name="method" value="0" />
             <attribute name="URI" value="/WEB-INF/lib" />
           </containerElement>
@@ -106,6 +102,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="induction" />
+    <orderEntry type="library" name="apache-commons-logging-1.1.1" level="application" />
     <orderEntryProperties />
   </component>
 </module>
