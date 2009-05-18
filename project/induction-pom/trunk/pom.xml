@@ -11,6 +11,11 @@
    <version>1.0.0</version>
    <packaging>pom</packaging>
 
+   <!-- shared properties -->
+   <properties>
+      <induction-version>1.2.0-rc2</induction-version>
+   </properties>
+
    <!-- shared project information -->
    <url>http://www.inductionframework.org</url>
    <inceptionYear>2008</inceptionYear>
