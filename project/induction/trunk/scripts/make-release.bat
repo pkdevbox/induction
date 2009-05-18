@@ -2,6 +2,7 @@
 @rem Log
 @rem May 27, 2008 APR	created
 @rem Jun 23, 2008 APR	updated
+@rem May 04, 2009 APR	updated
 
 @set path=%path%;c:\dev\jdk1.6.0_04\bin
 
@@ -11,15 +12,10 @@
 
 @rem -- determine the root we should use for the source files
 @if exist c:\acciente\acciente-projects\software  goto :home_root
-@if exist t:\acciente-projects\software           goto :work_root
 @goto :error_root
 
 @:home_root
 @set common_root=c:\acciente\acciente-projects\software
-@goto :end_root
-
-@:work_root
-@set common_root=t:\acciente-projects\software
 @goto :end_root
 
 @:end_root
@@ -27,27 +23,12 @@
 @echo INFO: Using root %common_root%
 
 @rem -- target folder containing this release
-@set release_root=%common_root%\release\induction\%release_version%
-
-@rem -- source folder for (induction+commons) compiled class files 
-@set classes_root=%common_root%\project\induction\class_release
-
-@rem -- source folder for (induction+commons) source files
-@set src_root=%common_root%\project\induction\subversion\src
-
-@rem -- temp folder for (induction+commons) javadoc generation
-@set javadoc_root=%release_root%\tmp-javadoc
-
-@rem -- source folder for (demoapp) files 
-@set demoapp_root=%common_root%\project\demoapp
-
-@rem -- target folder for (induction+commons) temp copy of source 
-@set tmp_src_root=%release_root%\tmp-src
+@set release_root=%common_root%\release\acciente-induction\%release_version%
 
 @rem -- full file names for (induction+commons) LICENSE.txt, NOTICE.txt and induction-complete-sample-config.xml
-@set license_root=%common_root%\project\induction\subversion
-@set sample_conf_file1=%common_root%\project\induction\subversion\conf\induction-complete-sample-config.xml
-@set sample_conf_file2=%common_root%\project\induction\subversion\conf\induction-complete-sample-config-include.xml
+@set license_root=%common_root%\project\acciente-induction\subversion
+@set sample_conf_file1=%common_root%\project\acciente-induction\subversion\conf\induction-complete-sample-config.xml
+@set sample_conf_file2=%common_root%\project\acciente-induction\subversion\conf\induction-complete-sample-config-include.xml
 
 @rem -- check if the release root already exists, if it does complain and exit!
 @if exist %release_root% goto :error_version_exists
@@ -57,36 +38,6 @@
 @md %release_root%\jdk1_4-compile
 @md %release_root%\jdk1_6-compile
 
-@rem -- generate the javadocs
-
-@rem setup the classpath for javadoc generation
-@set classpath=
-@set classpath=%classpath%;../../../../lib/apache-bcel/5.2/bcel-5.2.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-collections/3.2.1/commons-collections-3.2.1.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-digester/1.8/commons-digester-1.8.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-fileupload/1.2.1/commons-fileupload-1.2.1.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-io/1.4/commons-io-1.4.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-1.1.1.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-adapters-1.1.1.jar
-@set classpath=%classpath%;../../../../lib/apache-commons-logging/1.1.1/commons-logging-api-1.1.1.jar
-@set classpath=%classpath%;../../../../lib/freemarker/2.3.12/freemarker-2.3.12.jar
-@set classpath=%classpath%;../../../../lib/j2ee/1.3.1/j2ee-1.3.1.jar
-@set classpath=%classpath%;../../class
-
-@set custom_tags=-tag created:X -tag change-summary:X
-@set custom_header_footer=-header "<a href="http://www.inductionframework.org" target="_top">Return to www.inductionframework.org</a>" -bottom "<a href="http://www.acciente.com" target="_top">Copyright (c) 2008 Acciente, LLC. All rights reserved.</a>"
-
-@rem generate javadocs for Acciente Commons
-@set custom_title=-doctitle "<h1>Acciente Commons v%release_version% API Documentation</h1>" -windowtitle "Commons v%release_version% API Documentation"
-@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d %javadoc_root%/commons   -sourcepath %src_root%  @commons-package-list.txt
-
-@rem generate javadocs for Acciente Induction
-@set custom_title=-doctitle "<h1>Acciente Induction v%release_version% API Documentation</h1>" -windowtitle "Induction v%release_version% API Documentation"
-@javadoc %custom_title% %custom_tags% %custom_header_footer% -public -classpath %classpath% -d %javadoc_root%/induction -sourcepath %src_root%  @induction-package-list.txt
-
-@rem -- make a temp copy of the sources to exclude .svn files in .jar
-@xcopy %src_root%	%tmp_src_root%	/s /i /exclude:src-excludes.txt /q
-
 @rem -- copy the LICENSE.txt, NOTICE.txt to the distribution root
 @copy %license_root%\LICENSE.txt						%release_root%
 @copy %license_root%\NOTICE.txt							%release_root%
@@ -95,9 +46,14 @@
 @copy %sample_conf_file1%							%release_root%
 @copy %sample_conf_file2%							%release_root%
 
-@rem -- create jars for Acciente Commons
-@jar -cfM %release_root%\jdk1_4-compile\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_4	/com/acciente/commons
-@jar -cfM %release_root%\jdk1_6-compile\acciente-commons-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\jdk1_6	/com/acciente/commons
+@rem -- package Acciente Commons
+@mvn package -P jdk1_4
+@mvn package -P jdk1_6
+@mvn source:jar
+@mvn javadoc:jar
+
+@jar -cfM %release_root%\jdk1_4-compile\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\classes-jdk1_4	/com/acciente/commons
+@jar -cfM %release_root%\jdk1_6-compile\acciente-commons-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %classes_root%\classes-jdk1_6	/com/acciente/commons
 @jar -cfM %release_root%\acciente-commons-%release_version%-sources.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %tmp_src_root%		/com/acciente/commons
 @jar -cfM %release_root%\acciente-commons-%release_version%-javadoc.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt -C %javadoc_root%/commons	/
 
