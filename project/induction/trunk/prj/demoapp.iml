@@ -28,7 +28,7 @@
           <setting name="BUILD_ONLY_WEB_RESOURCES" value="false" />
         </building>
         <packaging>
-          <containerElement type="module" name="commons">
+          <containerElement type="module" name="acciente-commons">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/classes" />
           </containerElement>
@@ -36,7 +36,7 @@
             <attribute name="method" value="0" />
             <attribute name="URI" value="&lt;N/A&gt;" />
           </containerElement>
-          <containerElement type="module" name="induction">
+          <containerElement type="module" name="acciente-induction">
             <attribute name="method" value="1" />
             <attribute name="URI" value="/WEB-INF/classes" />
           </containerElement>
@@ -101,7 +101,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="induction" />
+    <orderEntry type="module" module-name="acciente-induction" />
     <orderEntry type="library" name="apache-commons-logging-1.1.1" level="application" />
     <orderEntryProperties />
   </component>

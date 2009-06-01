@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="commons" exported="" />
+    <orderEntry type="module" module-name="acciente-commons" exported="" />
     <orderEntry type="library" exported="" name="freemarker-2.3.12" level="application" />
     <orderEntryProperties />
   </component>
