@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="induction" />
+    <orderEntry type="module" module-name="acciente-induction" />
     <orderEntry type="library" name="junit-4.4" level="application" />
     <orderEntry type="module-library">
       <library>

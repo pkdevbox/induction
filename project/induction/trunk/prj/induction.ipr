@@ -259,9 +259,9 @@
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/commons.iml" filepath="$PROJECT_DIR$/commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/acciente-commons.iml" filepath="$PROJECT_DIR$/acciente-commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/acciente-induction.iml" filepath="$PROJECT_DIR$/acciente-induction.iml" />
       <module fileurl="file://$PROJECT_DIR$/demoapp.iml" filepath="$PROJECT_DIR$/demoapp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/induction.iml" filepath="$PROJECT_DIR$/induction.iml" />
       <module fileurl="file://$PROJECT_DIR$/induction-test.iml" filepath="$PROJECT_DIR$/induction-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/induction-test-data.iml" filepath="$PROJECT_DIR$/induction-test-data.iml" />
     </modules>
