@@ -94,38 +94,41 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
       File[] oFileList = oPath.listFiles();
 
-      // iterate thru the classes in this directory
-      for ( int i = 0; i < oFileList.length; i++ )
+      if ( oFileList != null )
       {
-         File oFile = oFileList[ i ];
-
-         if ( oFile.isDirectory() )
+         // iterate thru the classes in this directory
+         for ( int i = 0; i < oFileList.length; i++ )
          {
-            if ( sPackageName == null )
-            {
-               oClassNameList.addAll( findClassNames( oFile, oFile.getName(), oClassNamePattern ) );
-            }
-            else
-            {
-               oClassNameList.addAll( findClassNames( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern ) );
-            }
-         }
-         else if ( oFile.isFile() )
-         {
-            String   sClassName;
+            File oFile = oFileList[ i ];
 
-            if ( sPackageName == null )
+            if ( oFile.isDirectory() )
             {
-               sClassName = getClassName( oFile );
+               if ( sPackageName == null )
+               {
+                  oClassNameList.addAll( findClassNames( oFile, oFile.getName(), oClassNamePattern ) );
+               }
+               else
+               {
+                  oClassNameList.addAll( findClassNames( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern ) );
+               }
             }
-            else
+            else if ( oFile.isFile() )
             {
-               sClassName = sPackageName + "." + getClassName( oFile );
-            }
+               String   sClassName;
 
-            if ( oClassNamePattern.matcher( sClassName ).matches() )
-            {
-               oClassNameList.add( sClassName );
+               if ( sPackageName == null )
+               {
+                  sClassName = getClassName( oFile );
+               }
+               else
+               {
+                  sClassName = sPackageName + "." + getClassName( oFile );
+               }
+
+               if ( oClassNamePattern.matcher( sClassName ).matches() )
+               {
+                  oClassNameList.add( sClassName );
+               }
             }
          }
       }
