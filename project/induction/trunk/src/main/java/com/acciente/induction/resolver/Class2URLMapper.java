@@ -1,14 +1,14 @@
 package com.acciente.induction.resolver;
 
 import com.acciente.commons.lang.Strings;
-import com.acciente.commons.loader.ClassDefLoader;
-import com.acciente.commons.loader.ReloadingClassLoader;
+import com.acciente.commons.loader.ClassFinder;
 import com.acciente.induction.init.config.Config;
 
-import java.util.Collection;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,36 +27,31 @@ class Class2URLMapper
 
    private String    _sAlternateURLFormat;
 
-   Class2URLMapper( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat, ReloadingClassLoader oClassLoader )
+   Class2URLMapper( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat, ClassLoader oClassLoader ) throws IOException
    {
-      _sURLFormat = sURLFormat;
-      _sAlternateURLFormat = sAlternateURLFormat;
-
-      _bURLFormatHasMethodName = _sURLFormat.indexOf( Config.RedirectMapping.ClassToURLMap.METHODNAME_LITERAL ) != -1;
+      _sURLFormat                = sURLFormat;
+      _sAlternateURLFormat       = sAlternateURLFormat;
+      _bURLFormatHasMethodName   = _sURLFormat.indexOf( Config.RedirectMapping.ClassToURLMap.METHODNAME_LITERAL ) != -1;
 
       // build a mapping for all classes we can find matching the specified class pattern
       _oClassName2ShortNameMap = new HashMap();
 
-      for ( Iterator oClassDefLoaderIter = oClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
+      Set oClassNameSet = ClassFinder.find( oClassLoader, asClassPackages, oClassPattern );
+
+      for ( Iterator oClassNameIter = oClassNameSet.iterator(); oClassNameIter.hasNext(); )
       {
-         ClassDefLoader oClassDefLoader = ( ClassDefLoader ) oClassDefLoaderIter.next();
-         Collection     oClassNames     = oClassDefLoader.findClassNames( oClassPattern );
+         String   sClassName = ( String ) oClassNameIter.next();
+         Matcher  oClassMatcher;
 
-         for ( Iterator oClassNameIter = oClassNames.iterator(); oClassNameIter.hasNext(); )
+         oClassMatcher = oClassPattern.matcher( sClassName );
+
+         if ( oClassMatcher.matches() )
          {
-            String   sClassName = ( String ) oClassNameIter.next();
-            Matcher  oClassMatcher;
+            String   sShortName = oClassMatcher.group( 1 );
 
-            oClassMatcher = oClassPattern.matcher( sClassName );
-
-            if ( oClassMatcher.matches() )
+            if ( sShortName != null )
             {
-               String   sShortName = oClassMatcher.group( 1 );
-
-               if ( sShortName != null )
-               {
-                  _oClassName2ShortNameMap.put( sClassName, sShortName.toLowerCase() );
-               }
+               _oClassName2ShortNameMap.put( sClassName, sShortName.toLowerCase() );
             }
          }
       }

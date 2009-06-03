@@ -102,9 +102,10 @@ public class DigesterFactory
          oDigester.addRule( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.PATTERN,       oControllerMappingRule.createSetIgnoreHandlerMethodCaseRule() );
          {
             ControllerMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oControllerMappingRule.createAddURLToClassMapRule();
-            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap.PATTERN,              oAddURLToClassMapRule );
-            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_URLPattern.PATTERN,   oAddURLToClassMapRule.createParamURLPatternRule() );
-            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPattern.PATTERN, oAddURLToClassMapRule.createParamClassPatternRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap.PATTERN,                 oAddURLToClassMapRule );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_URLPattern.PATTERN,      oAddURLToClassMapRule.createParamURLPatternRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPackages.PATTERN,   oAddURLToClassMapRule.createParamClassPackagesRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPattern.PATTERN,    oAddURLToClassMapRule.createParamClassPatternRule() );
          }
       }
 
@@ -115,6 +116,7 @@ public class DigesterFactory
             ViewMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oViewMappingRule.createAddURLToClassMapRule();
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap.PATTERN,                    oAddURLToClassMapRule );
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_URLPattern.PATTERN,         oAddURLToClassMapRule.createParamURLPatternRule() );
+            oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassPackages.PATTERN,      oAddURLToClassMapRule.createParamClassPackagesRule() );
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassPattern.PATTERN,       oAddURLToClassMapRule.createParamClassPatternRule() );
          }
       }
@@ -127,6 +129,7 @@ public class DigesterFactory
          {
             RedirectMappingRule.AddClassToURLMapRule oAddClassToURLMapRule = oRedirectMappingRule.createAddClassToURLMapRule();
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap.PATTERN,                oAddClassToURLMapRule );
+            oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassPackages.PATTERN,  oAddClassToURLMapRule.createParamClassPackagesRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.PATTERN,   oAddClassToURLMapRule.createParamClassPatternRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormat.PATTERN,      oAddClassToURLMapRule.createParamURLFormatRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.PATTERN,   oAddClassToURLMapRule.createParamURLFormatAltRule() );

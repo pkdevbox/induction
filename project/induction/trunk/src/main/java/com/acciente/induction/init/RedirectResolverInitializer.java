@@ -27,6 +27,7 @@ import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
 
 /**
  * Internal.
@@ -42,7 +43,7 @@ public class RedirectResolverInitializer
                                                        ClassLoader               oClassLoader,
                                                        ServletConfig             oServletConfig,
                                                        Logger                    oLogger )
-      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
+      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, IOException
    {
       RedirectResolver  oRedirectResolver;
       String            sRedirectResolverClassName = oRedirectResolverConfig.getClassName();

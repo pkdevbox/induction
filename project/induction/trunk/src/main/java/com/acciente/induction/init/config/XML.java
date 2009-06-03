@@ -58,6 +58,7 @@ public class XML
    public static final XML Config_ControllerMapping                              = new XML( "controller-mapping",          Config );
    public static final XML Config_ControllerMapping_URLToClassMap                = new XML( "url-to-class-map",            Config_ControllerMapping );
    public static final XML Config_ControllerMapping_URLToClassMap_URLPattern     = new XML( "url-pattern",                 Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassPackages  = new XML( "class-packages",              Config_ControllerMapping_URLToClassMap );
    public static final XML Config_ControllerMapping_URLToClassMap_ClassPattern   = new XML( "class-pattern",               Config_ControllerMapping_URLToClassMap );
    public static final XML Config_ControllerMapping_DefaultHandlerMethod         = new XML( "default-handler-method",      Config_ControllerMapping );
    public static final XML Config_ControllerMapping_IgnoreHandlerMethodCase      = new XML( "ignore-handler-method-case",  Config_ControllerMapping );
@@ -65,10 +66,12 @@ public class XML
    public static final XML Config_ViewMapping                                    = new XML( "view-mapping",                Config );
    public static final XML Config_ViewMapping_URLToClassMap                      = new XML( "url-to-class-map",            Config_ViewMapping );
    public static final XML Config_ViewMapping_URLToClassMap_URLPattern           = new XML( "url-pattern",                 Config_ViewMapping_URLToClassMap );
+   public static final XML Config_ViewMapping_URLToClassMap_ClassPackages        = new XML( "class-packages",              Config_ViewMapping_URLToClassMap );
    public static final XML Config_ViewMapping_URLToClassMap_ClassPattern         = new XML( "class-pattern",               Config_ViewMapping_URLToClassMap );
 
    public static final XML Config_RedirectMapping                                = new XML( "redirect-mapping",            Config );
    public static final XML Config_RedirectMapping_ClassToURLMap                  = new XML( "class-to-url-map",            Config_RedirectMapping );
+   public static final XML Config_RedirectMapping_ClassToURLMap_ClassPackages    = new XML( "class-packages",              Config_RedirectMapping_ClassToURLMap );
    public static final XML Config_RedirectMapping_ClassToURLMap_ClassPattern     = new XML( "class-pattern",               Config_RedirectMapping_ClassToURLMap );
    public static final XML Config_RedirectMapping_ClassToURLMap_URLFormat        = new XML( "url-format",                  Config_RedirectMapping_ClassToURLMap );
    public static final XML Config_RedirectMapping_ClassToURLMap_URLFormatAlt     = new XML( "url-format-alt",              Config_RedirectMapping_ClassToURLMap );
