@@ -179,6 +179,8 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
       catch ( ParameterProviderException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
+      catch ( IOException e )
+      {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
 
       // setup a resolver that maps a request to a view
       try
@@ -203,6 +205,8 @@ public class HttpDispatcher extends HttpServlet
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
       catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
+      catch ( IOException e )
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
 
       // setup a resolver that maps a redirect to a URL
@@ -231,6 +235,8 @@ public class HttpDispatcher extends HttpServlet
       catch ( ConstructorNotFoundException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
       catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
+      catch ( IOException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes

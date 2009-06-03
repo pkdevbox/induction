@@ -1,15 +1,15 @@
 package com.acciente.induction.resolver;
 
 import com.acciente.commons.htmlform.Symbols;
-import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * ShortURLRedirectResolver
@@ -23,19 +23,10 @@ public class ShortURLRedirectResolver implements RedirectResolver
    private Config.RedirectMapping   _oRedirectMapping;
 
    public ShortURLRedirectResolver( Config.RedirectMapping  oRedirectMapping,
-                                    ClassLoader             oClassLoader )
+                                    ClassLoader             oClassLoader ) throws IOException
    {
-      _oRedirectMapping = oRedirectMapping;
-
-      if ( oClassLoader instanceof ReloadingClassLoader )
-      {
-         _oClass2URLMapperList = createClass2URLMapperList( oRedirectMapping, ( ReloadingClassLoader ) oClassLoader );
-      }
-      else
-      {
-         // todo: need to determine a way to scan for classes using a general classloader
-         _oClass2URLMapperList = Collections.EMPTY_LIST;
-      }
+      _oRedirectMapping       = oRedirectMapping;
+      _oClass2URLMapperList   = createClass2URLMapperList( oRedirectMapping, oClassLoader );
    }
 
    public String resolve( Class oClass )
@@ -115,7 +106,15 @@ public class ShortURLRedirectResolver implements RedirectResolver
 
             oQueryString.append( oEntry.getKey().toString().trim() );
             oQueryString.append( "=" );
-            oQueryString.append( URLEncoder.encode( oEntry.getValue().toString() ) );
+
+            try
+            {
+               oQueryString.append( URLEncoder.encode( oEntry.getValue().toString(), "UTF-8" ) );
+            }
+            catch ( UnsupportedEncodingException e )
+            {
+               oQueryString.append( "[encode-error]" );
+            }
 
             if ( oIter.hasNext() )
             {
@@ -127,7 +126,7 @@ public class ShortURLRedirectResolver implements RedirectResolver
       return oQueryString.toString();
    }
 
-   private List createClass2URLMapperList( Config.RedirectMapping oRedirectMapping, ReloadingClassLoader oClassLoader )
+   private List createClass2URLMapperList( Config.RedirectMapping oRedirectMapping, ClassLoader oClassLoader ) throws IOException
    {
       List oClass2URLMapperList;
 
@@ -140,7 +139,8 @@ public class ShortURLRedirectResolver implements RedirectResolver
          oClassToURLMap = ( Config.RedirectMapping.ClassToURLMap ) oClassToURLMapIter.next();
 
          // store the URL pattern and the classname map in the list
-         oClass2URLMapperList.add( new Class2URLMapper( oClassToURLMap.getClassPattern(),
+         oClass2URLMapperList.add( new Class2URLMapper( oClassToURLMap.getClassPackages(),
+                                                        oClassToURLMap.getClassPattern(),
                                                         oClassToURLMap.getURLFormat(),
                                                         oClassToURLMap.getAlternateURLFormat(),
                                                         oClassLoader ) );

@@ -27,6 +27,7 @@ import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
+import java.io.IOException;
 
 /**
  * Internal.
@@ -45,7 +46,7 @@ public class ViewResolverInitializer
                                                ClassLoader           oClassLoader,
                                                ServletConfig         oServletConfig,
                                                Logger                oLogger )
-      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
+      throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, IOException
    {
       ViewResolver   oViewResolver;
       String         sViewResolverClassName = oViewResolverConfig.getClassName();

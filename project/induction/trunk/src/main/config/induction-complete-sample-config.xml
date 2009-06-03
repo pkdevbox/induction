@@ -132,10 +132,12 @@
     <controller-mapping>
         <url-to-class-map>
             <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
         </url-to-class-map>
         <url-to-class-map>
             <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(another_java_regex_string)</class-pattern>
         </url-to-class-map>
 
@@ -146,21 +148,25 @@
     <view-mapping>
         <url-to-class-map>
             <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
         </url-to-class-map>
         <url-to-class-map>
             <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(another_java_regex_string)</class-pattern>
         </url-to-class-map>
     </view-mapping>
 
     <redirect-mapping>
         <class-to-url-map>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
             <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
             <url-format-alt>alternate_url_format_with_both_$Name_and_$Method</url-format-alt>
         </class-to-url-map>
         <class-to-url-map>
+            <class-packages>a.package;b.package</class-packages>
             <class-pattern>(another_java_regex_string)</class-pattern>
             <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
         </class-to-url-map>

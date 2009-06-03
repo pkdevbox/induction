@@ -817,9 +817,9 @@ public class Config
       private String    _sDefaultHandlerMethodName = "handler";
       private boolean   _bIgnoreMethodNameCase     = false;
 
-      public void addURLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+      public void addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
       {
-         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, oClassPattern ) );
+         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, asClassPackages, oClassPattern ) );
       }
 
       public List getURLToClassMapList()
@@ -895,21 +895,29 @@ public class Config
        */
       public static class URLToClassMap
       {
+         private String[]  _asClassPackages;
          private Pattern   _oURLPattern;
          private Pattern   _oClassPattern;
 
-         private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+         private URLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
          {
             validateURLPattern( oURLPattern );
+            validateClassPackages( asClassPackages );
             validateClassPattern( oClassPattern );
 
-            _oURLPattern   = oURLPattern;
-            _oClassPattern = oClassPattern;
+            _oURLPattern      = oURLPattern;
+            _asClassPackages  = asClassPackages;
+            _oClassPattern    = oClassPattern;
          }
 
          public Pattern getURLPattern()
          {
             return _oURLPattern;
+         }
+
+         public String[] getClassPackages()
+         {
+            return _asClassPackages;
          }
 
          public Pattern getClassPattern()
@@ -927,6 +935,7 @@ public class Config
             return
                XML.Config_ControllerMapping_URLToClassMap
                   .toXML( XML.Config_ControllerMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
+                          + XML.Config_ControllerMapping_URLToClassMap_ClassPackages.toXML( _asClassPackages )
                           + XML.Config_ControllerMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
                         );
          }
@@ -940,9 +949,9 @@ public class Config
    {
       private List      _oURLToClassMapList        = new ArrayList();
 
-      public void addURLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+      public void addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
       {
-         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, oClassPattern ) );
+         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, asClassPackages, oClassPattern ) );
       }
 
       public List getURLToClassMapList()
@@ -978,21 +987,29 @@ public class Config
        */
       public static class URLToClassMap
       {
+         private String[]  _asClassPackages;
          private Pattern   _oURLPattern;
          private Pattern   _oClassPattern;
 
-         private URLToClassMap( Pattern oURLPattern, Pattern oClassPattern )
+         private URLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
          {
             validateURLPattern( oURLPattern );
+            validateClassPackages( asClassPackages );
             validateClassPattern( oClassPattern );
 
-            _oURLPattern   = oURLPattern;
-            _oClassPattern = oClassPattern;
+            _oURLPattern      = oURLPattern;
+            _asClassPackages  = asClassPackages;
+            _oClassPattern    = oClassPattern;
          }
 
          public Pattern getURLPattern()
          {
             return _oURLPattern;
+         }
+
+         public String[] getClassPackages()
+         {
+            return _asClassPackages;
          }
 
          public Pattern getClassPattern()
@@ -1010,6 +1027,7 @@ public class Config
             return
                XML.Config_ViewMapping_URLToClassMap
                   .toXML( XML.Config_ViewMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
+                          + XML.Config_ViewMapping_URLToClassMap_ClassPackages.toXML( _asClassPackages )
                           + XML.Config_ViewMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
                         );
          }
@@ -1024,9 +1042,9 @@ public class Config
       private List   _oClassToURLMapList = new ArrayList();
       private String _sURLBase           = "";
 
-      public void addClassToURLMap( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
+      public void addClassToURLMap( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
       {
-         _oClassToURLMapList.add( new ClassToURLMap( oClassPattern, sURLFormat, sAlternateURLFormat ) );
+         _oClassToURLMapList.add( new ClassToURLMap( asClassPackages, oClassPattern, sURLFormat, sAlternateURLFormat ) );
       }
 
       public List getClassToURLMapList()
@@ -1088,11 +1106,12 @@ public class Config
          public static final String    SHORTNAME_SEARCH_REGEX  = "\\$Name";
          public static final String    METHODNAME_SEARCH_REGEX = "\\$Method";
 
-         private Pattern   _oClassPattern;
-         private String    _sURLFormat;
-         private String    _sAlternateURLFormat;
+         private String[]     _asClassPackages;
+         private Pattern      _oClassPattern;
+         private String       _sURLFormat;
+         private String       _sAlternateURLFormat;
 
-         private ClassToURLMap( Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
+         private ClassToURLMap( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
          {
             validateClassPattern( oClassPattern );
 
@@ -1115,10 +1134,15 @@ public class Config
                                                    + METHODNAME_LITERAL );
             }
 
-            _oClassPattern = oClassPattern;
-
+            _asClassPackages     = asClassPackages;
+            _oClassPattern       = oClassPattern;
             _sURLFormat          = sURLFormat;
             _sAlternateURLFormat = sAlternateURLFormat;
+         }
+
+         public String[] getClassPackages()
+         {
+            return _asClassPackages;
          }
 
          public Pattern getClassPattern()
@@ -1145,7 +1169,8 @@ public class Config
          {
             return
                XML.Config_RedirectMapping_ClassToURLMap
-                  .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern )
+                  .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassPackages.toXML( _asClassPackages )
+                          + XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern )
                           + XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat )
                           + XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.toXML( _sAlternateURLFormat )
                         );
@@ -1353,6 +1378,11 @@ public class Config
 
    private static void validateURLPattern( Pattern oURLPattern )
    {
+      if ( oURLPattern == null )
+      {
+         throw new IllegalArgumentException( "config-error: url pattern cannot be empty!" );
+      }
+
       // we validate the regex to ensure that it has atleast on matching group
       int iGroupCount = oURLPattern.matcher( "" ).groupCount();
 
@@ -1363,8 +1393,21 @@ public class Config
       }
    }
 
+   private static void validateClassPackages( String[] asClassPackages )
+   {
+      if ( asClassPackages == null )
+      {
+         throw new IllegalArgumentException( "config-error: package names(s) cannot be empty!" );
+      }
+   }
+
    private static void validateClassPattern( Pattern oClassPattern )
    {
+      if ( oClassPattern == null )
+      {
+         throw new IllegalArgumentException( "config-error: class pattern cannot be empty!" );
+      }
+
       // we validate the regex to ensure that it has atleast on matching group
       if ( oClassPattern.matcher( "" ).groupCount() != 1 )
       {

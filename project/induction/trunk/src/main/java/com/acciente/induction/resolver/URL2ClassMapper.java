@@ -1,12 +1,12 @@
 package com.acciente.induction.resolver;
 
-import com.acciente.commons.loader.ClassDefLoader;
-import com.acciente.commons.loader.ReloadingClassLoader;
+import com.acciente.commons.loader.ClassFinder;
 
-import java.util.Collection;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,33 +23,30 @@ class URL2ClassMapper
    private  Pattern  _oURLPattern;
    private  Map      _oShortName2ClassNameMap;
 
-   URL2ClassMapper( Pattern oURLPattern, Pattern oClassPattern, ReloadingClassLoader oClassLoader )
+   URL2ClassMapper( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern, ClassLoader oClassLoader ) throws IOException
    {
+      // record the URL pattern
       _oURLPattern = oURLPattern;
 
       // build a mapping for all classes we can find matching the specified class pattern
       _oShortName2ClassNameMap = new HashMap();
 
-      for ( Iterator oClassDefLoaderIter = oClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
+      Set oClassNameSet = ClassFinder.find( oClassLoader, asClassPackages, oClassPattern );
+
+      for ( Iterator oClassNameIter = oClassNameSet.iterator(); oClassNameIter.hasNext(); )
       {
-         ClassDefLoader oClassDefLoader = ( ClassDefLoader ) oClassDefLoaderIter.next();
-         Collection     oClassNames     = oClassDefLoader.findClassNames( oClassPattern );
+         String   sClassName = ( String ) oClassNameIter.next();
+         Matcher oClassMatcher;
 
-         for ( Iterator oClassNameIter = oClassNames.iterator(); oClassNameIter.hasNext(); )
+         oClassMatcher = oClassPattern.matcher( sClassName );
+
+         if ( oClassMatcher.matches() )
          {
-            String   sClassName = ( String ) oClassNameIter.next();
-            Matcher oClassMatcher;
+            String   sShortName = oClassMatcher.group( 1 );
 
-            oClassMatcher = oClassPattern.matcher( sClassName );
-
-            if ( oClassMatcher.matches() )
+            if ( sShortName != null )
             {
-               String   sShortName = oClassMatcher.group( 1 );
-
-               if ( sShortName != null )
-               {
-                  _oShortName2ClassNameMap.put( sShortName.toLowerCase(), sClassName );
-               }
+               _oShortName2ClassNameMap.put( sShortName.toLowerCase(), sClassName );
             }
          }
       }

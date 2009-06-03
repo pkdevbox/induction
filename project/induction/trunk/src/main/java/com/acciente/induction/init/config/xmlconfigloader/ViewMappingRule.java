@@ -53,13 +53,15 @@ public class ViewMappingRule extends Rule
    public class AddURLToClassMapRule extends Rule
    {
       private  Pattern  _oURLPattern;
+      private  String[] _oClassPackages;
       private  Pattern  _oClassPattern;
 
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
          // reset data stored in rule
-         _oURLPattern = null;
-         _oClassPattern = null;
+         _oURLPattern      = null;
+         _oClassPackages   = null;
+         _oClassPattern    = null;
       }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
@@ -69,17 +71,27 @@ public class ViewMappingRule extends Rule
             throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > URL pattern is a required attribute" );
          }
 
+         if ( _oClassPackages == null )
+         {
+            throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > class packages is a required attribute" );
+         }
+
          if ( _oClassPattern == null )
          {
             throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > class pattern is a required attribute" );
          }
 
-         _oViewMapping.addURLToClassMap( _oURLPattern, _oClassPattern  );
+         _oViewMapping.addURLToClassMap( _oURLPattern, _oClassPackages, _oClassPattern  );
       }
 
       public ParamURLPatternRule createParamURLPatternRule()
       {
          return new ParamURLPatternRule();
+      }
+
+      public ParamClassPackagesRule createParamClassPackagesRule()
+      {
+         return new ParamClassPackagesRule();
       }
 
       public ParamClassPatternRule createParamClassPatternRule()
@@ -92,6 +104,14 @@ public class ViewMappingRule extends Rule
          public void body( String sNamespace, String sName, String sText )
          {
             _oURLPattern = Pattern.compile( sText );
+         }
+      }
+
+      private class ParamClassPackagesRule extends Rule
+      {
+         public void body( String sNamespace, String sName, String sText )
+         {
+            _oClassPackages = sText.split( ";|," );
          }
       }
 

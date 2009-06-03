@@ -1,12 +1,11 @@
 package com.acciente.induction.resolver;
 
 import com.acciente.commons.lang.Strings;
-import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,19 +21,10 @@ public class ShortURLControllerResolver implements ControllerResolver
    private  List                       _oURL2ClassMapperList;
 
    public ShortURLControllerResolver( Config.ControllerMapping    oControllerMapping,
-                                      ClassLoader                 oClassLoader )
+                                      ClassLoader                 oClassLoader ) throws IOException
    {
       _oControllerMapping   = oControllerMapping;
-
-      if ( oClassLoader instanceof ReloadingClassLoader )
-      {
-         _oURL2ClassMapperList = createURL2ClassMapperList( oControllerMapping, ( ReloadingClassLoader ) oClassLoader );
-      }
-      else
-      {
-         // todo: need to determine a way to scan for classes using a general classloader
-         _oURL2ClassMapperList = Collections.EMPTY_LIST;
-      }
+      _oURL2ClassMapperList = createURL2ClassMapperList( oControllerMapping, oClassLoader );
    }
 
    public Resolution resolve( HttpServletRequest oRequest )
@@ -70,7 +60,7 @@ public class ShortURLControllerResolver implements ControllerResolver
       return null;
    }
 
-   private List createURL2ClassMapperList( Config.ControllerMapping oControllerMapping, ReloadingClassLoader oClassLoader )
+   private List createURL2ClassMapperList( Config.ControllerMapping oControllerMapping, ClassLoader oClassLoader ) throws IOException
    {
       List oURL2ClassMapperList;
 
@@ -84,6 +74,7 @@ public class ShortURLControllerResolver implements ControllerResolver
 
          // store the URL pattern and the classname map in the list
          oURL2ClassMapperList.add( new URL2ClassMapper( oURLToClassMap.getURLPattern(),
+                                                        oURLToClassMap.getClassPackages(),
                                                         oURLToClassMap.getClassPattern(),
                                                         oClassLoader ) );
       }

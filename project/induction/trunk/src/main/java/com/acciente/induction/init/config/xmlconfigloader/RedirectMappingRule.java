@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
 public class RedirectMappingRule extends Rule
 {
    private  Config.RedirectMapping  _oRedirectMapping;
-
    private  String                  _sURLBase;
 
    public RedirectMappingRule( Config.RedirectMapping oRedirectMapping )
@@ -81,6 +80,7 @@ public class RedirectMappingRule extends Rule
 
    public class AddClassToURLMapRule extends Rule
    {
+      private  String[] _oClassPackages;
       private  Pattern  _oClassPattern;
       private  String   _sURLFormat;
       private  String   _sAlternateURLFormat;
@@ -88,6 +88,7 @@ public class RedirectMappingRule extends Rule
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
          // reset data stored in rule
+         _oClassPackages      = null;
          _oClassPattern       = null;
          _sURLFormat          = null;
          _sAlternateURLFormat = null;
@@ -95,6 +96,11 @@ public class RedirectMappingRule extends Rule
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
       {
+         if ( _oClassPackages == null )
+         {
+            throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > class packages is a required attribute" );
+         }
+
          if ( _oClassPattern == null )
          {
             throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > class pattern is a required attribute" );
@@ -105,7 +111,12 @@ public class RedirectMappingRule extends Rule
             throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > url format is a required attribute" );
          }
 
-         _oRedirectMapping.addClassToURLMap( _oClassPattern, _sURLFormat, _sAlternateURLFormat );
+         _oRedirectMapping.addClassToURLMap( _oClassPackages, _oClassPattern, _sURLFormat, _sAlternateURLFormat );
+      }
+
+      public ParamClassPackagesRule createParamClassPackagesRule()
+      {
+         return new ParamClassPackagesRule();
       }
 
       public ParamClassPatternRule createParamClassPatternRule()
@@ -121,6 +132,14 @@ public class RedirectMappingRule extends Rule
       public ParamURLFormatAltRule createParamURLFormatAltRule()
       {
          return new ParamURLFormatAltRule();
+      }
+
+      private class ParamClassPackagesRule extends Rule
+      {
+         public void body( String sNamespace, String sName, String sText )
+         {
+            _oClassPackages = sText.split( ";|," );
+         }
       }
 
       private class ParamClassPatternRule extends Rule
