@@ -18,8 +18,8 @@
 package com.acciente.commons.loader;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -81,17 +81,60 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
       return oClassDef;
    }
 
-   public Collection findClassNames( Pattern oClassNamePattern )
+   public Set findClassNames( String[] asPackageNames, Pattern oClassNamePattern )
    {
-      return findClassNames( _oCompiledDirectory,
-                             _sPackageNamePrefix,
-                             oClassNamePattern );
+      Set oClassNameSet = new HashSet();
+
+      // first validate the each package name specified in asPackageNames
+      if ( asPackageNames == null )
+      {
+         findClassNames( _oCompiledDirectory, _sPackageNamePrefix, oClassNamePattern, oClassNameSet );
+      }
+      else
+      {
+         for ( int i = 0; i < asPackageNames.length; i++ )
+         {
+            String      sPackageName   = asPackageNames[ i ];
+
+            if ( sPackageName == null )
+            {
+               findClassNames( _oCompiledDirectory, _sPackageNamePrefix, oClassNamePattern, oClassNameSet );
+            }
+            else // sPackageName != null
+            {
+               if ( _sPackageNamePrefix != null && ! sPackageName.startsWith( _sPackageNamePrefix ) )
+               {
+                  continue; // do not search in non-compliant packages
+               }
+
+               // remove trailing "." if any
+               if ( sPackageName.endsWith( "." ) )
+               {
+                  sPackageName = sPackageName.substring( 0, sPackageName.length() - 1 );
+               }
+
+               File sRootPath;
+
+               if ( _sPackageNamePrefix != null && ( sPackageName.length() > _sPackageNamePrefix.length() ) )
+               {
+                  sRootPath = new File( _oCompiledDirectory,
+                                        sPackageName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) );
+               }
+               else
+               {
+                  sRootPath = _oCompiledDirectory;
+               }
+
+               findClassNames( sRootPath, sPackageName, oClassNamePattern, oClassNameSet );
+            }
+         }
+      }
+
+      return oClassNameSet;
    }
 
-   private Collection findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern )
+   private void findClassNames( File oPath, String sPackageName, Pattern oClassNamePattern, Set oClassNameSet )
    {
-      Collection oClassNameList = new LinkedList();
-
       File[] oFileList = oPath.listFiles();
 
       if ( oFileList != null )
@@ -105,14 +148,14 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
             {
                if ( sPackageName == null )
                {
-                  oClassNameList.addAll( findClassNames( oFile, oFile.getName(), oClassNamePattern ) );
+                  findClassNames( oFile, oFile.getName(), oClassNamePattern, oClassNameSet );
                }
                else
                {
-                  oClassNameList.addAll( findClassNames( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern ) );
+                  findClassNames( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern, oClassNameSet );
                }
             }
-            else if ( oFile.isFile() )
+            else if ( oFile.isFile() && oFile.getName().endsWith( ".class" ) )
             {
                String   sClassName;
 
@@ -127,13 +170,11 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
                if ( oClassNamePattern.matcher( sClassName ).matches() )
                {
-                  oClassNameList.add( sClassName );
+                  oClassNameSet.add( sClassName );
                }
             }
          }
       }
-
-      return oClassNameList;
    }
 
    private String getClassName( File oFile )
