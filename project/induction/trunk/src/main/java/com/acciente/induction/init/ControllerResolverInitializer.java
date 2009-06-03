@@ -24,10 +24,12 @@ import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.ShortURLControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
-import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
@@ -44,12 +46,16 @@ public class ControllerResolverInitializer
                                                            Config.ControllerMapping    oControllerMappingConfig,
                                                            ModelPool                   oModelPool,
                                                            ClassLoader                 oClassLoader,
-                                                           ServletConfig               oServletConfig,
-                                                           Logger                      oLogger )
+                                                           ServletConfig               oServletConfig )
       throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, IOException
    {
-      ControllerResolver   oControllerResolver;
-      String               sControllerResolverClassName = oControllerResolverConfig.getClassName();
+      ControllerResolver      oControllerResolver;
+      String                  sControllerResolverClassName;
+      Log                     oLog;
+
+      oLog = LogFactory.getLog( ControllerResolverInitializer.class );
+
+      sControllerResolverClassName = oControllerResolverConfig.getClassName();
 
       if ( sControllerResolverClassName == null )
       {
@@ -57,7 +63,7 @@ public class ControllerResolverInitializer
       }
       else
       {
-         oLogger.log( "loading user-defined controller resolver: " + sControllerResolverClassName );
+         oLog.info( "loading user-defined controller resolver: " + sControllerResolverClassName );
 
          Class    oControllerResolverClass  = oClassLoader.loadClass( sControllerResolverClassName );
 

@@ -17,15 +17,14 @@
  */
 package com.acciente.induction.dispatcher.model;
 
-import com.acciente.induction.init.Logger;
-import com.acciente.induction.util.ObjectFactory;
-import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.induction.util.ObjectFactory;
 
 import javax.servlet.ServletConfig;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Map;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
@@ -41,13 +40,11 @@ public class ConfiguredModelFactoryPool
    private ClassLoader     _oClassLoader;
 
    private ServletConfig   _oServletConfig;
-   private Logger          _oLogger;
 
-   public ConfiguredModelFactoryPool( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+   public ConfiguredModelFactoryPool( ClassLoader oClassLoader, ServletConfig oServletConfig )
    {
       _oClassLoader     = oClassLoader;
       _oServletConfig   = oServletConfig;
-      _oLogger          = oLogger;
 
       _oConfiguredModelFactoryMap = new Hashtable(); // Hashtable for concurrency safety
    }
@@ -114,7 +111,7 @@ public class ConfiguredModelFactoryPool
    private Object createConfiguredModelFactory( Class oModelFactoryClass )
       throws InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
-      return ObjectFactory.createObject( oModelFactoryClass, new Object[]{ _oServletConfig, _oLogger }, null );
+      return ObjectFactory.createObject( oModelFactoryClass, new Object[]{ _oServletConfig }, null );
    }
 }
 

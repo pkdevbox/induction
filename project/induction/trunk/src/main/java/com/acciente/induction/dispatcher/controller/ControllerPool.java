@@ -17,11 +17,10 @@
  */
 package com.acciente.induction.dispatcher.controller;
 
+import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.controller.Controller;
-import com.acciente.induction.init.Logger;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
-import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.ServletConfig;
 import java.lang.reflect.InvocationTargetException;
@@ -41,15 +40,13 @@ import java.util.Map;
 public class ControllerPool
 {
    private Map             _oControllerCache = new Hashtable();
-   private Logger          _oLogger;
    private ClassLoader     _oClassLoader;
    private ServletConfig   _oServletConfig;
 
-   public ControllerPool( ClassLoader oClassLoader, ServletConfig oServletConfig, Logger oLogger )
+   public ControllerPool( ClassLoader oClassLoader, ServletConfig oServletConfig )
    {
       _oClassLoader     = oClassLoader;
       _oServletConfig   = oServletConfig;
-      _oLogger          = oLogger;
    }
 
    /**

@@ -21,8 +21,8 @@ import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.controller.Redirect;
 import com.acciente.induction.dispatcher.controller.ControllerExecutor;
 import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
-import com.acciente.induction.dispatcher.controller.ControllerPool;
 import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
+import com.acciente.induction.dispatcher.controller.ControllerPool;
 import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.dispatcher.redirect.RedirectResolverFacade;
@@ -33,7 +33,6 @@ import com.acciente.induction.dispatcher.view.ViewParameterProviderFactory;
 import com.acciente.induction.init.ClassLoaderInitializer;
 import com.acciente.induction.init.ConfigLoaderInitializer;
 import com.acciente.induction.init.ControllerResolverInitializer;
-import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.RedirectResolverInitializer;
 import com.acciente.induction.init.TemplatingEngineInitializer;
 import com.acciente.induction.init.ViewResolverInitializer;
@@ -44,6 +43,8 @@ import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -62,14 +63,14 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private  ControllerResolver         _oControllerResolver;
-   private  ViewResolver               _oViewResolver;
-   private  RedirectResolverFacade     _oRedirectResolverFacade;
+   private ControllerResolver          _oControllerResolver;
+   private ViewResolver                _oViewResolver;
+   private RedirectResolverFacade      _oRedirectResolverFacade;
 
-   private  ControllerExecutor   _oControllerExecutor;
-   private  ViewExecutor         _oViewExecutor;
+   private ControllerExecutor          _oControllerExecutor;
+   private ViewExecutor                _oViewExecutor;
 
-   private  Logger               _oLogger;
+   private Log                         _oLog;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
@@ -81,7 +82,7 @@ public class HttpDispatcher extends HttpServlet
       throws   ServletException
    {
       // first setup a logger
-      _oLogger = new ServletLogger( oServletConfig );
+      _oLog = LogFactory.getLog( HttpDispatcher.class );
 
       Config oConfig;
 
@@ -90,7 +91,7 @@ public class HttpDispatcher extends HttpServlet
       {
          oConfig
          =  ConfigLoaderInitializer
-                  .getConfigLoader( oServletConfig, _oLogger ).getConfig();
+                  .getConfigLoader( oServletConfig ).getConfig();
 
          //System.out.println( "config: \n" + oConfig );
       }
@@ -115,7 +116,7 @@ public class HttpDispatcher extends HttpServlet
       {
          oClassLoader
          =  ClassLoaderInitializer
-                  .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader(), _oLogger );
+                  .getClassLoader( oConfig.getJavaClassPath(), getClass().getClassLoader() );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: class-loader-initializer", e );    }
@@ -129,8 +130,7 @@ public class HttpDispatcher extends HttpServlet
          =  TemplatingEngineInitializer
                .getTemplatingEngine( oConfig.getTemplating(),
                                      oClassLoader,
-                                     oServletConfig,
-                                     _oLogger );
+                                     oServletConfig );
       }
       catch ( IOException e )
       {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
@@ -149,7 +149,7 @@ public class HttpDispatcher extends HttpServlet
 
       // we setup the model factory and pool managers early since we now support inject models into the
       // controller and redirect resolver initializers
-      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine, _oLogger );
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine );
       ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
 
       // now set the pool for the model factory to use in model-to-model injection
@@ -164,8 +164,7 @@ public class HttpDispatcher extends HttpServlet
                                           oConfig.getControllerMapping(),
                                           oModelPool,
                                           oClassLoader,
-                                          oServletConfig,
-                                          _oLogger );
+                                          oServletConfig );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: controller-resolver-initializer", e ); }
@@ -191,8 +190,7 @@ public class HttpDispatcher extends HttpServlet
                                     oConfig.getViewMapping(),
                                     oModelPool,
                                     oClassLoader,
-                                    oServletConfig,
-                                    _oLogger );
+                                    oServletConfig );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
@@ -219,8 +217,7 @@ public class HttpDispatcher extends HttpServlet
                                         oConfig.getRedirectMapping(),
                                         oModelPool,
                                         oClassLoader,
-                                        oServletConfig,
-                                        _oLogger );
+                                        oServletConfig );
 
          _oRedirectResolverFacade = new RedirectResolverFacade( oRedirectResolver );
       }
@@ -240,7 +237,7 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
-      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig, _oLogger );
+      ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig );
 
       // the ControllerExecutor manages the execution of controllers
       _oControllerExecutor = new ControllerExecutor( oControllerPool,
@@ -353,34 +350,14 @@ public class HttpDispatcher extends HttpServlet
    {
       if ( oError == null )
       {
-         _oLogger.log( "dispatch-error: " + sError );
+         _oLog.error( "dispatch-error: " + sError );
          oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError );
       }
       else
       {
-         _oLogger.log( "dispatch-error: " + sError, oError );
-         oError.printStackTrace();
+         _oLog.error( "dispatch-error: " + sError, oError );
+         //oError.printStackTrace();
          oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError + " (more details in dispatcher log)" );
-      }
-   }
-
-   private static class ServletLogger implements Logger
-   {
-      private ServletConfig _oServletConfig;
-
-      private ServletLogger( ServletConfig oServletConfig )
-      {
-         _oServletConfig = oServletConfig;
-      }
-
-      public void log( String sMessage )
-      {
-         _oServletConfig.getServletContext().log( sMessage );
-      }
-
-      public void log( String sMessage, Throwable oThrowable )
-      {
-         _oServletConfig.getServletContext().log( sMessage );
       }
    }
 }

@@ -24,10 +24,12 @@ import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.resolver.ShortURLRedirectResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
-import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
@@ -41,12 +43,16 @@ public class RedirectResolverInitializer
                                                        Config.RedirectMapping    oRedirectMappingConfig,
                                                        ModelPool                 oModelPool,
                                                        ClassLoader               oClassLoader,
-                                                       ServletConfig             oServletConfig,
-                                                       Logger                    oLogger )
+                                                       ServletConfig             oServletConfig )
       throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, IOException
    {
-      RedirectResolver  oRedirectResolver;
-      String            sRedirectResolverClassName = oRedirectResolverConfig.getClassName();
+      RedirectResolver     oRedirectResolver;
+      String               sRedirectResolverClassName;
+      Log                  oLog;
+
+      oLog = LogFactory.getLog( RedirectResolverInitializer.class );
+
+      sRedirectResolverClassName = oRedirectResolverConfig.getClassName();
 
       if ( sRedirectResolverClassName == null )
       {
@@ -54,7 +60,7 @@ public class RedirectResolverInitializer
       }
       else
       {
-         oLogger.log( "loading user-defined redirect resolver: " + sRedirectResolverClassName );
+         oLog.info( "loading user-defined redirect resolver: " + sRedirectResolverClassName );
 
          Class    oRedirectResolverClass  = oClassLoader.loadClass( sRedirectResolverClassName );
 

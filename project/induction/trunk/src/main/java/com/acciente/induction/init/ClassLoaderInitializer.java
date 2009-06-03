@@ -20,6 +20,8 @@ package com.acciente.induction.init;
 import com.acciente.commons.loader.JavaCompiledClassDefLoader;
 import com.acciente.commons.loader.ReloadingClassLoader;
 import com.acciente.induction.init.config.Config;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Internal.
@@ -32,9 +34,13 @@ import com.acciente.induction.init.config.Config;
  */
 public class ClassLoaderInitializer
 {
-   public static ClassLoader getClassLoader( Config.JavaClassPath oJavaClassPathConfig, ClassLoader oParentClassLoader, Logger oLogger )
+   public static ClassLoader getClassLoader( Config.JavaClassPath oJavaClassPathConfig, ClassLoader oParentClassLoader )
       throws ClassNotFoundException
    {
+      Log oLog;
+
+      oLog = LogFactory.getLog( ClassLoaderInitializer.class );
+
       if ( oJavaClassPathConfig.getDirList().size() == 0 )
       {
          return oParentClassLoader;
@@ -55,7 +61,7 @@ public class ClassLoaderInitializer
             {
                Config.JavaClassPath.CompiledDir oCompiledDir = ( Config.JavaClassPath.CompiledDir ) oJavaClassPathConfig.getDirList().get( i );
 
-               oLogger.log( "configuring reloading classloader for compiled classes in: " + oCompiledDir.getDir() );
+               oLog.info( "configuring reloading classloader for compiled classes in: " + oCompiledDir.getDir() );
 
                // set up a compiled class definition loader
                JavaCompiledClassDefLoader oJavaCompiledClassDefLoader = new JavaCompiledClassDefLoader();
