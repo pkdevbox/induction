@@ -17,7 +17,6 @@
  */
 package com.acciente.induction.template;
 
-import com.acciente.induction.init.Logger;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.view.Template;
 import freemarker.cache.ClassTemplateLoader;
@@ -28,6 +27,8 @@ import freemarker.cache.WebappTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.TemplateException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
 import java.io.IOException;
@@ -49,10 +50,13 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 
    public FreemarkerTemplatingEngine( Config.Templating        oConfig,
                                       ClassLoader              oClassLoader,
-                                      ServletConfig            oServletConfig,
-                                      Logger                   oLogger )
+                                      ServletConfig            oServletConfig )
       throws IOException, ClassNotFoundException
    {
+      Log oLog;
+
+      oLog = LogFactory.getLog( FreemarkerTemplatingEngine.class );
+
       _oConfiguration = new Configuration();
 
       // set up the template loading path
@@ -68,13 +72,12 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 
             if ( ! oDir.getDir().exists() )
             {
-               oLogger.log( "freemarker > template load path > ignoring missing directory > "
-                              + oDir.getDir() );
+               oLog.warn( "freemarker > template load path > ignoring missing directory > " + oDir.getDir() );
             }
             else
             {
-               oLogger.log( "freemarker > template load path > adding directory > "
-                              + oDir.getDir() );
+               oLog.info( "freemarker > template load path > adding directory > " + oDir.getDir() );
+
                oTemplateLoaderList.add( new FileTemplateLoader( oDir.getDir() ) );
             }
          }
@@ -84,10 +87,10 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 
             Class oClass = Class.forName( oLoaderClass.getLoaderClassName() );
 
-            oLogger.log( "freemarker > template load path > adding class > "
-                           + oLoaderClass.getLoaderClassName()
-                           + ", prefix: "
-                           + oLoaderClass.getPath() );
+            oLog.info( "freemarker > template load path > adding class > "
+                       + oLoaderClass.getLoaderClassName()
+                       + ", prefix: "
+                       + oLoaderClass.getPath() );
 
             oTemplateLoaderList.add( new ClassTemplateLoader( oClass, oLoaderClass.getPath() ) );
          }
@@ -95,8 +98,8 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
          {
             Config.Templating.TemplatePath.WebappPath oWebappPath = ( Config.Templating.TemplatePath.WebappPath ) oLoaderPathItem;
 
-            oLogger.log( "freemarker > template load path > adding webapp path > "
-                           + oWebappPath.getPath() );
+            oLog.info( "freemarker > template load path > adding webapp path > "
+                       + oWebappPath.getPath() );
 
             oTemplateLoaderList.add( new WebappTemplateLoader( oServletConfig.getServletContext(),
                                                                oWebappPath.getPath() ) );
@@ -117,18 +120,19 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       // should publics fields in views be available in the templates
       oDefaultObjectWrapper.setExposeFields( oConfig.isExposePublicFields() );
 
-      oLogger.log( "freemarker > expose public fields > " + oConfig.isExposePublicFields() );
+      oLog.info( "freemarker > expose public fields > " + oConfig.isExposePublicFields() );
 
       _oConfiguration.setObjectWrapper( oDefaultObjectWrapper );
 
       if ( oConfig.getLocale() != null )
       {
          _oConfiguration.setLocale( oConfig.getLocale() );
-         oLogger.log( "freemarker > using configured locale > " + oConfig.getLocale() );
+
+         oLog.info( "freemarker > using configured locale > " + oConfig.getLocale() );
       }
       else
       {
-         oLogger.log( "freemarker > no locale configured, using default > " + _oConfiguration.getLocale() );
+         oLog.warn( "freemarker > no locale configured, using default > " + _oConfiguration.getLocale() );
       }
    }
 

@@ -41,8 +41,7 @@ public class TemplatingEngineInitializer
 {
    public static TemplatingEngine getTemplatingEngine( Config.Templating   oTemplatingConfig,
                                                        ClassLoader         oClassLoader,
-                                                       ServletConfig       oServletConfig,
-                                                       Logger oLogger )
+                                                       ServletConfig       oServletConfig )
       throws ClassNotFoundException, IOException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       TemplatingEngine  oTemplatingEngine;
@@ -50,7 +49,7 @@ public class TemplatingEngineInitializer
       if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngine().getClassName() ) )
       {
          // if no templating engine is configured use the freemarker engine as the default
-         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oClassLoader, oServletConfig, oLogger );
+         oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oClassLoader, oServletConfig );
       }
       else
       {
@@ -61,8 +60,7 @@ public class TemplatingEngineInitializer
                ObjectFactory.createObject( oTemplatingEngineClass,
                                            new Object[]{ oServletConfig,
                                                          oTemplatingConfig,
-                                                         oClassLoader,
-                                                         oLogger
+                                                         oClassLoader
                                                        },
                                            null );
       }

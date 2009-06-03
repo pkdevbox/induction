@@ -14,6 +14,7 @@
     <orderEntry type="library" exported="" name="apache-commons-digester-1.8" level="application" />
     <orderEntry type="library" exported="" name="apache-commons-fileupload-1.2.1" level="application" />
     <orderEntry type="library" exported="" name="apache-commons-io-1.4" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-logging-1.1.1" level="application" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>

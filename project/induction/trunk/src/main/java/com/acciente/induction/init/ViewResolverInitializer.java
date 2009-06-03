@@ -24,10 +24,12 @@ import com.acciente.induction.resolver.ShortURLViewResolver;
 import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
-import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Internal.
@@ -44,12 +46,16 @@ public class ViewResolverInitializer
                                                Config.ViewMapping    oViewMappingConfig,
                                                ModelPool             oModelPool,
                                                ClassLoader           oClassLoader,
-                                               ServletConfig         oServletConfig,
-                                               Logger                oLogger )
+                                               ServletConfig         oServletConfig )
       throws ClassNotFoundException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, IOException
    {
-      ViewResolver   oViewResolver;
-      String         sViewResolverClassName = oViewResolverConfig.getClassName();
+      ViewResolver      oViewResolver;
+      String            sViewResolverClassName;
+      Log               oLog;
+
+      oLog = LogFactory.getLog( ViewResolverInitializer.class );
+
+      sViewResolverClassName = oViewResolverConfig.getClassName();
 
       if ( sViewResolverClassName == null )
       {
@@ -57,7 +63,7 @@ public class ViewResolverInitializer
       }
       else
       {
-         oLogger.log( "loading user-defined view resolver: " + sViewResolverClassName );
+         oLog.info( "loading user-defined view resolver: " + sViewResolverClassName );
 
          Class    oViewResolverClass  = oClassLoader.loadClass( sViewResolverClassName );
 

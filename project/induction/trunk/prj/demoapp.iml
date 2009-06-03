@@ -102,7 +102,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="acciente-induction" />
-    <orderEntry type="library" name="apache-commons-logging-1.1.1" level="application" />
     <orderEntryProperties />
   </component>
 </module>
