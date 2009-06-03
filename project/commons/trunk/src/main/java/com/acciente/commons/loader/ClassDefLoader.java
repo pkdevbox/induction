@@ -17,7 +17,7 @@
  */
 package com.acciente.commons.loader;
 
-import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -54,13 +54,15 @@ public interface ClassDefLoader
    ResourceDef getResourceDef( String sResourceName );
 
    /**
-    * Searches for class names that match the specified regex. This method is expected to search and
+    * Searches for class names that match the specified package root and regex. This method is expected to search and
     * return a list of fully qualified classnames.
     *
+    * @param asPackageNames an array of starting package names to start the search, if the package names arg
+    * is null all package names are searched
     * @param oClassNamePattern a java regex that defines the classnames that match the search
-    * @return a collection of string classnames that match the specified regex
+    * @return a set  of string classnames that match the specified regex
     */
-   Collection  findClassNames( Pattern oClassNamePattern );
+   Set findClassNames( String[] asPackageNames, Pattern oClassNamePattern );
 }
 
 // EOF

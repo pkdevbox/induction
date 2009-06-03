@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -24,20 +24,15 @@ public class ClassFinder
    private static final String URL_PREFIX_JARFILE  = "jar:file:/";
    private static final String URL_DELIM_JARFILE   = ".jar!/";
 
-   private ClassLoader _oClassLoader;
-
-   public ClassFinder( ClassLoader oClassLoader )
+   public static Set find( ClassLoader oClassLoader, String[] asPackageNames, Pattern oClassPattern ) throws IOException
    {
-      _oClassLoader = oClassLoader;
-   }
+      Set oClassNameSet = new HashSet();
 
-   public List find( String[] sPackageNames, Pattern oClassPattern ) throws IOException
-   {
-      for ( int i = 0; i < sPackageNames.length; i++ )
+      for ( int i = 0; i < asPackageNames.length; i++ )
       {
-         String sPackageName = sPackageNames[ i ].replace( '.', '/' );
+         String sPackageName = asPackageNames[ i ];
 
-         Enumeration oResources = _oClassLoader.getResources( sPackageName );
+         Enumeration oResources = oClassLoader.getResources( sPackageName.replace( '.', '/' ) );
 
          while ( oResources.hasMoreElements() )
          {
@@ -53,7 +48,7 @@ public class ClassFinder
 
                   System.out.println( "scanning jar: " + oJarFile );
 
-                  return findInJar( oJarFile, sPackageName, oClassPattern );
+                  findInJar( oJarFile, sPackageName, oClassPattern, oClassNameSet );
                }
             }
             else if ( sResourceURL.startsWith( URL_PREFIX_FILE ) )
@@ -62,18 +57,32 @@ public class ClassFinder
 
                System.out.println( "scanning directory: " + oDirectory );
 
-               return findInDirectory( oDirectory, sPackageName, oClassPattern );
+               findInDirectory( oDirectory, sPackageName, oClassPattern, oClassNameSet );
             }
          }
       }
 
-      return Collections.EMPTY_LIST;
+      // if the classloader is a ReloadingClassLoader the above loop would have processed the classed reachable via
+      // the parent classloader, now we process the classes reachable via this classloader
+      if ( oClassLoader instanceof ReloadingClassLoader )
+      {
+         ReloadingClassLoader oReloadingClassLoader = ( ReloadingClassLoader ) oClassLoader;
+
+         for ( Iterator oClassDefLoaderIter = oReloadingClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
+         {
+            ClassDefLoader oClassDefLoader = ( ClassDefLoader ) oClassDefLoaderIter.next();
+
+            Set oAddClassNameSet = oClassDefLoader.findClassNames( asPackageNames, oClassPattern );
+
+            oClassNameSet.addAll( oAddClassNameSet );
+         }
+      }
+
+      return oClassNameSet;
    }
 
-   private List findInDirectory( File oPath, String sPackageName, Pattern oClassNamePattern )
+   private static Set findInDirectory( File oPath, String sPackageName, Pattern oClassNamePattern, Set oClassNameSet )
    {
-      List oClassNameList = new LinkedList();
-
       File[] oFileList = oPath.listFiles();
 
       if ( oFileList != null )
@@ -87,14 +96,14 @@ public class ClassFinder
             {
                if ( sPackageName == null )
                {
-                  oClassNameList.addAll( findInDirectory( oFile, oFile.getName(), oClassNamePattern ) );
+                  findInDirectory( oFile, oFile.getName(), oClassNamePattern, oClassNameSet );
                }
                else
                {
-                  oClassNameList.addAll( findInDirectory( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern ) );
+                  findInDirectory( oFile, sPackageName + "." + oFile.getName(), oClassNamePattern, oClassNameSet );
                }
             }
-            else if ( oFile.isFile() )
+            else if ( oFile.isFile() && oFile.getName().endsWith( ".class" ) )
             {
                String   sClassname;
 
@@ -109,40 +118,38 @@ public class ClassFinder
 
                if ( oClassNamePattern.matcher( sClassname ).matches() )
                {
-                  oClassNameList.add( sClassname );
+                  oClassNameSet.add( sClassname );
                }
             }
          }
       }
 
-      return oClassNameList;
+      return oClassNameSet;
    }
 
-   private List findInJar( File oJarFile, String sPackageName, Pattern oClassNamePattern ) throws IOException
+   private static Set findInJar( File oJarFile, String sPackageName, Pattern oClassNamePattern, Set oClassNameSet ) throws IOException
    {
-      List           oClassNameList;
       ZipFile        oZipFile;
       Enumeration    oZipFileEntries;
 
-      oClassNameList    = new LinkedList();
       oZipFile          = new ZipFile( oJarFile );
       oZipFileEntries   = oZipFile.entries();
 
       while ( oZipFileEntries.hasMoreElements() )
       {
          ZipEntry oZipFileEntry  = ( ZipEntry ) oZipFileEntries.nextElement();
-         String   sClassname     = getClassname( oZipFileEntry );
+         String   sClassname     = getFQClassname( oZipFileEntry );
 
          if ( ! oZipFileEntry.isDirectory() && sClassname.startsWith( sPackageName ) )
          {
             if ( oClassNamePattern.matcher( sClassname ).matches() )
             {
-               oClassNameList.add( sClassname );
+               oClassNameSet.add( sClassname );
             }
          }
       }
 
-      return oClassNameList;
+      return oClassNameSet;
    }
 
    /**
@@ -150,13 +157,13 @@ public class ClassFinder
     * @param oFile a file object to extract the class name
     * @return a classname (not fully qualified)
     */
-   private String getClassname( File oFile )
+   private static String getClassname( File oFile )
    {
       String sFileName = oFile.getName();
 
       if ( sFileName.endsWith( ".class" ) )
       {
-         return sFileName.substring( 0, sFileName.length() - ".class".length() );
+         sFileName = sFileName.substring( 0, sFileName.length() - ".class".length() );
       }
 
       return sFileName;
@@ -167,13 +174,13 @@ public class ClassFinder
     * @param oZipFileEntry a zip file entry
     * @return a fully qualified classname
     */
-   private String getClassname( ZipEntry oZipFileEntry )
+   private static String getFQClassname( ZipEntry oZipFileEntry )
    {
       String sFileName = oZipFileEntry.getName();
 
       if ( sFileName.endsWith( ".class" ) )
       {
-         return sFileName.substring( 0, sFileName.length() - ".class".length() );
+         sFileName = sFileName.substring( 0, sFileName.length() - ".class".length() );
       }
 
       return sFileName.replace( '/', '.' );
