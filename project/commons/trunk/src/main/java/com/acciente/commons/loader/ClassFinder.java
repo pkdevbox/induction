@@ -1,5 +1,8 @@
 package com.acciente.commons.loader;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -23,6 +26,12 @@ public class ClassFinder
    private static final String URL_PREFIX_FILE     = "file:/";
    private static final String URL_PREFIX_JARFILE  = "jar:file:/";
    private static final String URL_DELIM_JARFILE   = ".jar!/";
+   private static final Log    __oLog;
+
+   static
+   {
+      __oLog = LogFactory.getLog( ClassFinder.class );
+   }
 
    public static Set find( ClassLoader oClassLoader, String[] asPackageNames, Pattern oClassPattern ) throws IOException
    {
@@ -46,7 +55,7 @@ public class ClassFinder
                {
                   File oJarFile = new File( sResourceURL.substring( URL_PREFIX_JARFILE.length(), iDelimPos + 4 ) );
 
-                  System.out.println( "scanning jar: " + oJarFile );
+                  __oLog.info( "scanning jar: " + oJarFile );
 
                   findInJar( oJarFile, sPackageName, oClassPattern, oClassNameSet );
                }
@@ -55,7 +64,7 @@ public class ClassFinder
             {
                File oDirectory = new File( sResourceURL.substring( URL_PREFIX_FILE.length() ) );
 
-               System.out.println( "scanning directory: " + oDirectory );
+               __oLog.info( "scanning dir: " + oDirectory );
 
                findInDirectory( oDirectory, sPackageName, oClassPattern, oClassNameSet );
             }
@@ -66,6 +75,8 @@ public class ClassFinder
       // the parent classloader, now we process the classes reachable via this classloader
       if ( oClassLoader instanceof ReloadingClassLoader )
       {
+         __oLog.info( "reloading classloader detected, scanning..." );
+
          ReloadingClassLoader oReloadingClassLoader = ( ReloadingClassLoader ) oClassLoader;
 
          for ( Iterator oClassDefLoaderIter = oReloadingClassLoader.getClassDefLoaders().iterator(); oClassDefLoaderIter.hasNext(); )
