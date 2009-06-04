@@ -22,7 +22,7 @@ import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Form;
 import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
-import com.acciente.induction.controller.HTMLFormException;
+import com.acciente.induction.controller.FormException;
 import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class MultiActionDemoController implements Controller
    }
 
    public void action_2( Form form, Response response )
-      throws IOException, FileUploadException, ParserException, HTMLFormException
+      throws IOException, FileUploadException, ParserException, FormException
    {
       response.out().println( "Hello " + form.getString( "name" ) + " using Induction form support" );
    }
