@@ -19,7 +19,7 @@
 
    <!-- project information -->
    <name>Acciente Commons Library</name>
-   <description>A set of useful components developed as part of the Induction project</description>
+   <description>A set of components developed as part of the Induction project</description>
 
    <!-- dependencies -->
    <dependencies>
