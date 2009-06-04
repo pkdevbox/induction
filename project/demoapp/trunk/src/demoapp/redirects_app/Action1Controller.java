@@ -20,7 +20,7 @@ package demoapp.redirects_app;
 import com.acciente.commons.htmlform.ParserException;
 import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Form;
-import com.acciente.induction.controller.HTMLFormException;
+import com.acciente.induction.controller.FormException;
 import com.acciente.induction.controller.Response;
 import org.apache.commons.fileupload.FileUploadException;
 
@@ -39,7 +39,7 @@ public class Action1Controller implements Controller
       return;
    }
 
-   public void anotherHandler( Form oForm, Response oResponse ) throws IOException, InterruptedException, HTMLFormException, FileUploadException, ParserException
+   public void anotherHandler( Form oForm, Response oResponse ) throws IOException, InterruptedException, FormException, FileUploadException, ParserException
    {
       oResponse.setContentType( "text/html" );
 
