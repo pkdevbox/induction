@@ -26,13 +26,12 @@
 @set release_root=%common_root%\release\acciente-induction\%release_version%
 
 @rem -- full file names for (induction+commons) LICENSE.txt, NOTICE.txt and induction-complete-sample-config.xml
-@set license_root=%common_root%\project\acciente-induction 
+@set license_root=%common_root%\project\acciente-induction
 @set sample_conf_file1=%common_root%\project\acciente-induction\src\main\config\induction-complete-sample-config.xml
 @set sample_conf_file2=%common_root%\project\acciente-induction\src\main\config\induction-complete-sample-config-include.xml
 
 @rem -- check if the release root already exists, if it does complain and exit!
 @if exist %release_root% goto :error_version_exists
-@pause
 
 @rem -- otherwise create the release folder
 @md %release_root%
@@ -49,47 +48,40 @@
 @cd ..\acciente-induction-pom
 @call mvn clean
 @call mvn install
-@pause
 
 @rem -- package Acciente Commons
 @cd ..\acciente-commons
 @call mvn clean
-@pause
-@call mvn package -P jdk1_4
-@call mvn package -P jdk1_6
-@call mvn source:jar
-@call mvn javadoc:jar
-@pause
+@call mvn install -P jdk1_4 -D induction-version=%release_version%
+@call mvn install -P jdk1_6 -D induction-version=%release_version%
+@call mvn source:jar        -D induction-version=%release_version%
+@call mvn javadoc:jar       -D induction-version=%release_version%
 @move target\*.jar						%release_root%
 
 @rem -- package Acciente Induction
-@cd ..\acciente-induction\mvn clean
-@pause
-@call mvn package -P jdk1_4
-@call mvn package -P jdk1_6
-@call mvn source:jar
-@call mvn javadoc:jar
-@pause
+@cd ..\acciente-induction
+@call mvn clean
+@call mvn install -P jdk1_4 -D induction-version=%release_version%
+@call mvn install -P jdk1_6 -D induction-version=%release_version%
+@call mvn source:jar        -D induction-version=%release_version%
+@call mvn javadoc:jar       -D induction-version=%release_version%
 @move target\*.jar					%release_root%
 
-@jar -ufM %release_root%\jdk1_4-compile\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
-@jar -ufM %release_root%\jdk1_6-compile\acciente-commons-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-commons-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-commons-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 @jar -ufM %release_root%\acciente-commons-%release_version%-sources.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 @jar -ufM %release_root%\acciente-commons-%release_version%-javadoc.jar			-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 
 @rem -- create jars for Acciente Induction
-@jar -cfM %release_root%\jdk1_4-compile\acciente-induction-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
-@jar -cfM %release_root%\jdk1_6-compile\acciente-induction-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
-@jar -cfM %release_root%\acciente-induction-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
-@jar -cfM %release_root%\acciente-induction-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-induction-%release_version%-jdk1_4.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-induction-%release_version%-jdk1_6.jar	-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-induction-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
+@jar -ufM %release_root%\acciente-induction-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 
-@rem -- make a release of Acciente DemoApp
-@xcopy %demoapp_root%\subversion\src		%release_root%\demoapp\src		/s /i /exclude:src-excludes.txt /q
-@xcopy %demoapp_root%\subversion\conf		%release_root%\demoapp\conf		/s /i /exclude:src-excludes.txt /q
-
-@rem -- remove temp copy of sources, and java docs
-@rd %tmp_src_root% /s/q
-@rd %javadoc_root% /s/q
+@rem -- make a release of the demoapp
+@set demoapp_root=%common_root%\project\demoapp
+@xcopy %demoapp_root%\subversion\src		%release_root%\demoapp\src		/s /i /exclude:scripts\src-excludes.txt /q
+@xcopy %demoapp_root%\subversion\conf		%release_root%\demoapp\conf		/s /i /exclude:scripts\src-excludes.txt /q
 
 @echo INFO: released package to: %release_root%
 @goto :end_script
