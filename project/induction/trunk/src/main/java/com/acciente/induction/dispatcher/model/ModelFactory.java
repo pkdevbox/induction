@@ -26,6 +26,8 @@ import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ReflectUtils;
+import com.acciente.induction.controller.Form;
+import com.acciente.induction.controller.HTMLForm;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -46,15 +48,21 @@ public class ModelFactory
    private  ClassLoader                   _oClassLoader;
    private  ServletConfig                 _oServletConfig;
    private  TemplatingEngine              _oTemplatingEngine;
+   private  Config.FileUpload             _oFileUploadConfig;
+
    private  ConfiguredModelFactoryPool    _oConfiguredModelFactoryPool;
    private  ModelPool                     _oModelPool;
    private  ThreadLocal                   _oCreateInProgressModelClassNameSet  = new ModelClassNameSet();
 
-   public ModelFactory( ClassLoader oClassLoader, ServletConfig oServletConfig, TemplatingEngine oTemplatingEngine )
+   public ModelFactory( ClassLoader       oClassLoader,
+                        ServletConfig     oServletConfig,
+                        TemplatingEngine  oTemplatingEngine,
+                        Config.FileUpload oFileUploadConfig )
    {
       _oClassLoader      = oClassLoader;
       _oServletConfig    = oServletConfig;
       _oTemplatingEngine = oTemplatingEngine;
+      _oFileUploadConfig = oFileUploadConfig;
 
       _oConfiguredModelFactoryPool = new ConfiguredModelFactoryPool( oClassLoader, oServletConfig );
    }
@@ -93,7 +101,7 @@ public class ModelFactory
       try
       {
          Object[]                oParameterValues        = new Object[]{ _oServletConfig, oModelDef, oHttpServletRequest, _oTemplatingEngine, _oClassLoader };
-         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, oHttpServletRequest );
+         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, _oFileUploadConfig, oHttpServletRequest );
 
          // does this model class have a factory class defined?
          if ( ! oModelDef.hasModelFactoryClassName() )
@@ -150,37 +158,62 @@ public class ModelFactory
    /**
     * Internal.
     */
-   public static class ModelParameterProvider implements ParameterProvider
+   private static class ModelParameterProvider implements ParameterProvider
    {
       private ModelPool          _oModelPool;
       private HttpServletRequest _oHttpServletRequest;
+      private Config.FileUpload  _oFileUploadConfig;
 
-      public ModelParameterProvider( ModelPool oModelPool, HttpServletRequest oHttpServletRequest )
+      public ModelParameterProvider( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, HttpServletRequest oHttpServletRequest )
       {
-         _oModelPool = oModelPool;
+         _oModelPool          = oModelPool;
          _oHttpServletRequest = oHttpServletRequest;
+         _oFileUploadConfig   = oFileUploadConfig;
       }
 
-      public Object getParameter( Class oValueType ) throws ParameterProviderException
+      public Object getParameter( Class oParamClass ) throws ParameterProviderException
       {
          final String sMessagePrefix = "model-factory: error resolving value for type: ";
 
+         Object   oParamValue = null;
+
          try
          {
-            return _oModelPool.getModel( oValueType.getName(), _oHttpServletRequest );
+            if ( oParamClass.isAssignableFrom( Form.class ) && _oHttpServletRequest != null )
+            {
+               // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
+               // are resolved before controller invocation, and become local variables in the
+               // controller for the duration of the request
+               oParamValue = new HTMLForm( _oHttpServletRequest, _oFileUploadConfig );
+            }
+            else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) && _oHttpServletRequest != null )
+            {
+               oParamValue = _oHttpServletRequest;
+            }
+            else
+            {
+               oParamValue = _oModelPool.getModel( oParamClass.getName(), _oHttpServletRequest );
+            }
+
+            if ( oParamValue == null )
+            {
+               throw ( new ParameterProviderException( sMessagePrefix + oParamClass ) );
+            }
+
+            return oParamValue;
          }
          catch ( MethodNotFoundException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
          catch ( InvocationTargetException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
          catch ( ClassNotFoundException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
          catch ( ConstructorNotFoundException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
          catch ( IllegalAccessException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
          catch ( InstantiationException e )
-         {  throw new ParameterProviderException( sMessagePrefix + oValueType, e );     }
+         {  throw new ParameterProviderException( sMessagePrefix + oParamClass, e );     }
       }
    }
 

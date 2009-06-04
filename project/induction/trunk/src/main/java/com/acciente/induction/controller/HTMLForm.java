@@ -50,49 +50,49 @@ public class HTMLForm implements Form
       _bFormParsed         = false;
    }
 
-   public Object getObject( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public Object getObject( String sParamName ) throws FormException
    {
       return getParamValue( sParamName );
    }
 
-   public String getString( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public String getString( String sParamName ) throws FormException
    {
       return ( String ) getParamValue( sParamName );
    }
 
-   public int getInteger( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public int getInteger( String sParamName ) throws FormException
    {
       return ( ( Integer ) getParamValue( sParamName ) ).intValue();
    }
 
-   public float getFloat( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public float getFloat( String sParamName ) throws FormException
    {
       return ( ( Float ) getParamValue( sParamName ) ).floatValue();
    }
 
-   public long getLong( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public long getLong( String sParamName ) throws FormException
    {
       return ( ( Long ) getParamValue( sParamName ) ).longValue();
    }
 
-   public boolean getBoolean( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public boolean getBoolean( String sParamName ) throws FormException
    {
       return ( ( Boolean ) getParamValue( sParamName ) ).booleanValue();
    }
 
-   public FileHandle getFile( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public FileHandle getFile( String sParamName ) throws FormException
    {
       return ( FileHandle ) getParamValue( sParamName );
    }
 
-   public Set getParamNames() throws IOException, FileUploadException, ParserException
+   public Set getParamNames() throws FormException
    {
       parseForm();
 
       return _oFormParams == null ? null : _oFormParams.keySet();
    }
 
-   public boolean containsParam( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException
+   public boolean containsParam( String sParamName ) throws FormException
    {
       parseForm();
 
@@ -100,7 +100,7 @@ public class HTMLForm implements Form
    }
 
    private Object getParamValue( String sParamName )
-      throws IOException, FileUploadException, ParserException, HTMLFormException
+      throws FormException
    {
       parseForm();
 
@@ -108,7 +108,7 @@ public class HTMLForm implements Form
       {
          if ( ! _oFormParams.containsKey( sParamName ) )
          {
-            throw ( new HTMLFormException( "Attempt to access undefined HTML form parameter: " + sParamName ) );
+            throw ( new FormException( "Attempt to access undefined HTML form parameter: " + sParamName ) );
          }
 
          return _oFormParams.get( sParamName );
@@ -117,14 +117,30 @@ public class HTMLForm implements Form
       return null;
    }
 
-   private void parseForm() throws IOException, FileUploadException, ParserException
+   private void parseForm() throws FormException
    {
       if ( ! _bFormParsed )
       {
-         _oFormParams
-            =  Parser.parseForm( _oServletRequest,
-                                 _oFileUploadConfig.getStoreOnDiskThresholdInBytes(),
-                                 _oFileUploadConfig.getUploadedFileStorageDir() );
+         try
+         {
+            _oFormParams
+               =  Parser.parseForm( _oServletRequest,
+                                    _oFileUploadConfig.getStoreOnDiskThresholdInBytes(),
+                                    _oFileUploadConfig.getUploadedFileStorageDir() );
+         }
+         catch ( IOException e )
+         {
+            throw new FormException( "Error parsing form: ", e );
+         }
+         catch ( FileUploadException e )
+         {
+            throw new FormException( "Error parsing form: ", e );
+         }
+         catch ( ParserException e )
+         {
+            throw new FormException( "Error parsing form", e );
+         }
+
          _bFormParsed = true;
       }
    }

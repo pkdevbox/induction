@@ -43,6 +43,7 @@ import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import com.acciente.induction.util.MethodNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -149,8 +150,30 @@ public class HttpDispatcher extends HttpServlet
 
       // we setup the model factory and pool managers early since we now support inject models into the
       // controller and redirect resolver initializers
-      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader, oServletConfig, oTemplatingEngine );
-      ModelPool      oModelPool     = new ModelPool( oConfig.getModelDefs(), oModelFactory );
+      ModelFactory   oModelFactory  = new ModelFactory( oClassLoader,
+                                                        oServletConfig,
+                                                        oTemplatingEngine,
+                                                        oConfig.getFileUpload() );
+      ModelPool      oModelPool     = null;
+
+      try
+      {
+         oModelPool = new ModelPool( oConfig.getModelDefs(), oModelFactory );
+      }
+      catch ( MethodNotFoundException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: model-pool", e ); }
 
       // now set the pool for the model factory to use in model-to-model injection
       oModelFactory.setModelPool( oModelPool );

@@ -298,8 +298,15 @@ public class Config
        * @param bIsApplicationScope true if a single model object should be created per application
        * @param bIsSessionScope true if a single model object should be created per session
        * @param bIsRequestScope true if a single model object should be created per request
+       * @param bIsInitOnStartUp true if this model should be created on system startup, otherwise all models are
+       * created on demand. This attribute is only valid for application scope models
        */
-      public void addModelDef( String sModelClassName, String sModelFactoryClassName, boolean bIsApplicationScope, boolean bIsSessionScope, boolean bIsRequestScope )
+      public void addModelDef( String     sModelClassName,
+                               String     sModelFactoryClassName,
+                               boolean    bIsApplicationScope,
+                               boolean    bIsSessionScope,
+                               boolean    bIsRequestScope,
+                               boolean    bIsInitOnStartUp )
       {
          sModelClassName = sModelClassName.trim();
 
@@ -308,7 +315,14 @@ public class Config
             throw new IllegalArgumentException( "config-error: model classname: " + sModelClassName + " already defined" );
          }
 
-         _oModelDefMap.put( sModelClassName, new ModelDef( sModelClassName, sModelFactoryClassName, bIsApplicationScope, bIsSessionScope, bIsRequestScope ) );
+         if ( bIsInitOnStartUp && ! bIsApplicationScope )
+         {
+            throw new IllegalArgumentException( "config-error: model classname: "
+                                                + sModelClassName
+                                                + " init on startup may only be turned on application scope models" );
+         }
+         
+         _oModelDefMap.put( sModelClassName, new ModelDef( sModelClassName, sModelFactoryClassName, bIsApplicationScope, bIsSessionScope, bIsRequestScope, bIsInitOnStartUp ) );
       }
 
       public ModelDef getModelDef( String sModelClassName )
@@ -361,8 +375,14 @@ public class Config
          private boolean   _bIsApplicationScope;
          private boolean   _bIsSessionScope;
          private boolean   _bIsRequestScope;
+         private boolean   _bIsInitOnStartUp;
 
-         private ModelDef( String sModelClassName, String sModelFactoryClassName, boolean bIsApplicationScope, boolean bIsSessionScope, boolean bIsRequestScope )
+         private  ModelDef( String     sModelClassName,
+                            String     sModelFactoryClassName,
+                            boolean    bIsApplicationScope,
+                            boolean    bIsSessionScope,
+                            boolean    bIsRequestScope,
+                            boolean    bIsInitOnStartUp )
          {
             if ( sModelClassName == null )
             {
@@ -402,6 +422,7 @@ public class Config
             _bIsApplicationScope    = bIsApplicationScope;
             _bIsSessionScope        = bIsSessionScope;
             _bIsRequestScope        = bIsRequestScope;
+            _bIsInitOnStartUp       = bIsInitOnStartUp;
          }
 
          public String getModelClassName()
@@ -434,6 +455,11 @@ public class Config
             return _bIsRequestScope;
          }
 
+         public boolean isInitOnStartUp()
+         {
+            return _bIsInitOnStartUp;
+         }
+
          public String toString()
          {
             return toXML();
@@ -455,6 +481,7 @@ public class Config
                                                                              )
                                                                          )
                                                                      )
+                          + XML.Config_ModelDefs_ModelDef_InitOnStartUp.toXML( _bIsInitOnStartUp )
                         );
          }
       }

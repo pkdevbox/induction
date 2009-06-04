@@ -40,6 +40,7 @@ public class XML
    public static final XML Config_ModelDefs_ModelDef_Class                       = new XML( "class",              Config_ModelDefs_ModelDef );
    public static final XML Config_ModelDefs_ModelDef_FactoryClass                = new XML( "factory-class",      Config_ModelDefs_ModelDef );
    public static final XML Config_ModelDefs_ModelDef_Scope                       = new XML( "scope",              Config_ModelDefs_ModelDef );
+   public static final XML Config_ModelDefs_ModelDef_InitOnStartUp               = new XML( "init-on-startup",    Config_ModelDefs_ModelDef );
 
    public static final XML Config_Templating                                     = new XML( "templating",            Config );
    public static final XML Config_Templating_TemplatePath                        = new XML( "template-path",         Config_Templating );

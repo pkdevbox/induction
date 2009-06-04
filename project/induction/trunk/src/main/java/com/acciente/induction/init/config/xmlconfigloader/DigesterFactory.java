@@ -66,6 +66,7 @@ public class DigesterFactory
          oDigester.addRule( XML.Config_ModelDefs_ModelDef_Class.PATTERN,         oAddModelDefRule.createParamClassRule() );
          oDigester.addRule( XML.Config_ModelDefs_ModelDef_FactoryClass.PATTERN,  oAddModelDefRule.createParamFactoryClassRule() );
          oDigester.addRule( XML.Config_ModelDefs_ModelDef_Scope.PATTERN,         oAddModelDefRule.createParamScopeRule() );
+         oDigester.addRule( XML.Config_ModelDefs_ModelDef_InitOnStartUp.PATTERN, oAddModelDefRule.createParamInitOnStartUpRule() );
       }
 
       // templating config rules
