@@ -64,6 +64,12 @@
             <factory-class>the_name_of_the_factory_class_for_the_model</factory-class>
             <scope>Session</scope>
         </model-def>
+        <model-def>
+            <class>the_name_of_the_model_class_or_an_interface_that_it_implements</class>
+            <factory-class>the_name_of_the_factory_class_for_the_model</factory-class>
+            <scope>Application</scope>
+            <init-on-startup>true<init-on-startup/>
+        </model-def>
     </model-defs>
 
     <!-- The following section configures the templating engine -->
