@@ -46,11 +46,12 @@ public class ModelDefsRule extends Rule
 
    public class AddModelDefRule extends Rule
    {
-      private  String   _sModelClassName;
-      private  String   _sModelFactoryClassName;
-      private boolean   _bIsApplicationScope;
-      private boolean   _bIsSessionScope;
-      private boolean   _bIsRequestScope;
+      private String       _sModelClassName;
+      private String       _sModelFactoryClassName;
+      private boolean      _bIsApplicationScope;
+      private boolean      _bIsSessionScope;
+      private boolean      _bIsRequestScope;
+      private boolean      _bIsInitOnStartUp;
 
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
@@ -60,7 +61,7 @@ public class ModelDefsRule extends Rule
          _bIsApplicationScope    = false;
          _bIsSessionScope        = false;
          _bIsRequestScope        = false;
-
+         _bIsInitOnStartUp       = false;
       }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
@@ -73,7 +74,8 @@ public class ModelDefsRule extends Rule
          {
             throw new XMLConfigLoaderException( "config > modeldefs > model: scope is a required attribute" );
          }
-         _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope  );
+         
+         _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope, _bIsInitOnStartUp );
       }
 
       public ParamClassRule createParamClassRule()
@@ -89,6 +91,11 @@ public class ModelDefsRule extends Rule
       public ParamScopeRule createParamScopeRule()
       {
          return new ParamScopeRule();
+      }
+
+      public ParamInitOnStartUpRule createParamInitOnStartUpRule()
+      {
+         return new ParamInitOnStartUpRule();
       }
 
       private class ParamClassRule extends Rule
@@ -111,6 +118,8 @@ public class ModelDefsRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
          {
+            sText = sText.trim();
+
             if ( "application".equalsIgnoreCase( sText ) )
             {
                _bIsApplicationScope = true;
@@ -129,6 +138,24 @@ public class ModelDefsRule extends Rule
             }
          }
       }
+
+      private class ParamInitOnStartUpRule extends Rule
+      {
+         public void body( String sNamespace, String sName, String sText ) throws XMLConfigLoaderException
+         {
+            sText = sText.trim();
+
+            if ( "1".equalsIgnoreCase( sText ) || "true".equalsIgnoreCase( sText ) )
+            {
+               _bIsInitOnStartUp = true;
+            }
+            else
+            {
+               throw new XMLConfigLoaderException( "modeldefs config: unrecognized init-on-start-up value: " + sText + " for model class: " + _sModelClassName );
+            }
+         }
+      }
+
    }
 }
 

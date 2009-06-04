@@ -32,8 +32,6 @@ import java.util.Set;
  * @created Feb 25, 2008
  *
  * @author Adinath Raveendra Raj
- *
- * todo: remove dependency on FileUploadException
  */
 public interface Form
 {
@@ -44,9 +42,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   Object      getObject( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   Object      getObject( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a string value
@@ -55,9 +53,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   String      getString( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   String      getString( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as an integer value
@@ -66,9 +64,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   int         getInteger( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   int         getInteger( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a float value
@@ -77,9 +75,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   float       getFloat( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   float       getFloat( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a long value
@@ -88,9 +86,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   long        getLong( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   long        getLong( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a boolean value
@@ -99,9 +97,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   boolean     getBoolean( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   boolean     getBoolean( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a file handle, this method should only be used to access
@@ -111,15 +109,15 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   FileHandle  getFile( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   FileHandle  getFile( String sParamName ) throws FormException;
 
    /**
     * Returns a list of the parameter names in the HTML form
     * @return a list containing strings, each string being a parameter name
     */
-   Set getParamNames() throws IOException, FileUploadException, ParserException;
+   Set getParamNames() throws FormException;
 
    /**
     * Used to check if the specified HTML form has the specified parameter. Parameter names are case-sensitive.
@@ -128,9 +126,9 @@ public interface Form
     * @throws IOException
     * @throws FileUploadException
     * @throws ParserException
-    * @throws HTMLFormException
+    * @throws FormException
     */
-   boolean containsParam( String sParamName ) throws IOException, FileUploadException, ParserException, HTMLFormException;
+   boolean containsParam( String sParamName ) throws FormException;
 }
 
 // EOF

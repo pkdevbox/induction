@@ -25,14 +25,14 @@ package com.acciente.induction.controller;
  *
  * @author Adinath Raveendra Raj
  */
-public class HTMLFormException extends Exception
+public class FormException extends Exception
 {
-   public HTMLFormException( String sMessage )
+   public FormException( String sMessage )
    {
       super( sMessage );
    }
 
-   public HTMLFormException( String sMessage, Throwable oCause )
+   public FormException( String sMessage, Throwable oCause )
    {
       super( sMessage, oCause );
    }

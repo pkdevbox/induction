@@ -26,24 +26,24 @@ public class InitializerParameterProvider implements ParameterProvider
       _sMessagePrefix   = sMessagePrefix;
    }
 
-   public Object getParameter( Class oValueType ) throws ParameterProviderException
+   public Object getParameter( Class oParamClass ) throws ParameterProviderException
    {
       try
       {
-         return _oModelPool.getModel( oValueType.getName(), null );
+         return _oModelPool.getModel( oParamClass.getName(), null );
       }
       catch ( MethodNotFoundException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
       catch ( InvocationTargetException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
       catch ( ClassNotFoundException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
       catch ( ConstructorNotFoundException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
       catch ( IllegalAccessException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
       catch ( InstantiationException e )
-      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oValueType, e );     }
+      {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }
    }
 }
 
