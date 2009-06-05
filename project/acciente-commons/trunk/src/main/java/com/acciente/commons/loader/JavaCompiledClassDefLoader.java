@@ -115,14 +115,23 @@ public class JavaCompiledClassDefLoader implements ClassDefLoader
 
                File sRootPath;
 
-               if ( _sPackageNamePrefix != null && ( sPackageName.length() > _sPackageNamePrefix.length() ) )
+               if ( _sPackageNamePrefix != null )
                {
-                  sRootPath = new File( _oCompiledDirectory,
-                                        sPackageName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) );
+                  // if _sPackageNamePrefix is specified we expect the _oCompiledDirectory be a folder
+                  // including the package in _sPackageNamePrefix
+                  if ( sPackageName.length() > _sPackageNamePrefix.length() )
+                  {
+                     sRootPath = new File( _oCompiledDirectory,
+                                           sPackageName.substring( _sPackageNamePrefix.length() + 1 ).replace( '.', '/' ) );
+                  }
+                  else
+                  {
+                     sRootPath = _oCompiledDirectory;
+                  }
                }
-               else
+               else // _sPackageNamePrefix == null
                {
-                  sRootPath = _oCompiledDirectory;
+                  sRootPath = new File( _oCompiledDirectory, sPackageName.replace( '.', '/' ) );
                }
 
                findClassNames( sRootPath, sPackageName, oClassNamePattern, oClassNameSet );
