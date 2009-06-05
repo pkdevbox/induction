@@ -22,8 +22,7 @@
     Induction will automatically reload a class if the file has changed -->
     <java-class-path>
         <compiled-directory>
-            <directory>c:/acciente/acciente-projects/software/project/demoapp/class/demoapp</directory>
-            <package-prefix>demoapp</package-prefix>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/class</directory>
         </compiled-directory>
     </java-class-path>
 

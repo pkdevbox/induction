@@ -22,12 +22,12 @@ public class ClassFinderController implements Controller
    public void test_1( Response oResponse, ClassLoader oClassLoader ) throws IOException
    {
       // the regex should match all class names starting with the letter "C"
-      run( oResponse, oClassLoader, new String[]{ "com", "org.apache", "demoapp" }, "((\\w+\\.)+)?Cou(\\w+)" );
+      //run( oResponse, oClassLoader, new String[]{ "com", "org.apache", "demoapp" }, "((\\w+\\.)+)?Cou(\\w+)" );
 
       // the regex should match all class names ending in "Controller"
       //run( oResponse, oClassLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)Controller" );
 
-      //run( oResponse, oClassLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)" );
+      run( oResponse, oClassLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)" );
    }
 
    private void run( Response oResponse, ClassLoader oClassLoader, String[] sPackageNames, String sPattern ) throws IOException
