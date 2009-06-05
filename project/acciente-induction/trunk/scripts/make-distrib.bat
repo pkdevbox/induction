@@ -10,15 +10,10 @@
 
 @rem -- determine the root we should use for the source files
 @if exist c:\acciente\acciente-projects\software  goto :home_root
-@if exist t:\acciente-projects\software           goto :work_root
 @goto :error_root
 
 @:home_root
 @set common_root=c:\acciente\acciente-projects\software
-@goto :end_root
-
-@:work_root
-@set common_root=t:\acciente-projects\software
 @goto :end_root
 
 @:end_root
@@ -26,12 +21,12 @@
 @echo INFO: Using root %common_root%
 
 @rem -- target folder containing this distrib
-@set induction_distrib_core_file=%common_root%\distrib\induction\%release_version%\acciente-induction-%release_version%-core.zip
-@set induction_distrib_req_libs_file=%common_root%\distrib\induction\%release_version%\acciente-induction-%release_version%-required-libs.zip
-@set induction_distrib_samples_file=%common_root%\distrib\induction\%release_version%\acciente-induction-%release_version%-samples.zip
+@set induction_distrib_core_file=%common_root%\distrib\acciente-induction\%release_version%\acciente-induction-%release_version%-core.zip
+@set induction_distrib_req_libs_file=%common_root%\distrib\acciente-induction\%release_version%\acciente-induction-%release_version%-required-libs.zip
+@set induction_distrib_samples_file=%common_root%\distrib\acciente-induction\%release_version%\acciente-induction-%release_version%-samples.zip
 
 @rem -- source folder containing this release
-@set release_root=%common_root%\release\induction\%release_version%
+@set release_root=%common_root%\release\acciente-induction\%release_version%
 
 @rem -- check if the distrib root already exists, if it does complain and exit!
 @if exist %induction_distrib_core_file%		goto :error_distrib_exists
@@ -43,8 +38,8 @@
 
 @rem -- create the distribution for the core product
 @set induction_distrib_core_content=
-@set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.txt 
-@set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.xml 
+@set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.txt
+@set induction_distrib_core_content=%induction_distrib_core_content% %release_root%\*.xml
 @7z a -tzip    %induction_distrib_core_file% %induction_distrib_core_content%
 @7z a -tzip -r %induction_distrib_core_file% %release_root%\*.jar
 
@@ -64,9 +59,9 @@
 @set induction_distrib_samples_content=%induction_distrib_samples_content% %release_root%\demoapp
 @7z a -tzip %induction_distrib_samples_file% %induction_distrib_samples_content%
 
-@echo INFO: created the 3 distribution files below: 
-@echo %induction_distrib_core_file% 
-@echo %induction_distrib_req_libs_file% 
+@echo INFO: created the 3 distribution files below:
+@echo %induction_distrib_core_file%
+@echo %induction_distrib_req_libs_file%
 @echo %induction_distrib_samples_file%
 @goto :end_script
 

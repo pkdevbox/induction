@@ -78,10 +78,9 @@
 @jar -ufM %release_root%\acciente-induction-%release_version%-sources.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 @jar -ufM %release_root%\acciente-induction-%release_version%-javadoc.jar		-C %license_root% LICENSE.txt -C %license_root% NOTICE.txt
 
-@rem -- make a release of the demoapp
-@set demoapp_root=%common_root%\project\demoapp
-@xcopy %demoapp_root%\subversion\src		%release_root%\demoapp\src		/s /i /exclude:scripts\src-excludes.txt /q
-@xcopy %demoapp_root%\subversion\conf		%release_root%\demoapp\conf		/s /i /exclude:scripts\src-excludes.txt /q
+@rem -- add the demoapp to the release
+@xcopy %common_root%\project\demoapp\subversion\src		%release_root%\demoapp\src		/s /i /exclude:scripts\src-excludes.txt /q
+@xcopy %common_root%\project\demoapp\subversion\conf		%release_root%\demoapp\conf		/s /i /exclude:scripts\src-excludes.txt /q
 
 @echo INFO: released package to: %release_root%
 @goto :end_script
