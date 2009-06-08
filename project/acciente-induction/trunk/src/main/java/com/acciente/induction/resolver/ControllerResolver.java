@@ -51,7 +51,7 @@ public interface ControllerResolver
    Resolution resolve( HttpServletRequest oRequest );
 
    /**
-    * A container object containg the resolution information.
+    * A container object for the resolution information.
     *
     * @created Mar 14, 2008
     * @author Adinath Raveendra Raj
