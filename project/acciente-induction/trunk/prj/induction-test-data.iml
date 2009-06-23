@@ -4,8 +4,8 @@
     <output url="file://C:/acciente/acciente-projects/software/project/induction-test-data/class" />
     <exclude-output />
     <output-test url="file://C:/acciente/acciente-projects/software/project/induction-test-data/class" />
-    <content url="file://C:/acciente/acciente-projects/software/project/induction-test-data/subversion/src">
-      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/induction-test-data/subversion/src" isTestSource="false" />
+    <content url="file://C:/acciente/acciente-projects/software/project/induction-test-data/src">
+      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/induction-test-data/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

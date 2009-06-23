@@ -4,17 +4,17 @@
     <facet type="web" name="demoapp-web">
       <configuration>
         <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/web.xml" optional="false" version="2.5" />
-          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/induction-demoapp.xml">
+          <deploymentDescriptor name="web.xml" url="file://C:/acciente/acciente-projects/software/project/demoapp/conf/WEB-INF/web.xml" optional="false" version="2.5" />
+          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/conf/WEB-INF/induction-demoapp.xml">
             <option name="DEFAULT_DIR" value="WEB-INF" />
           </deploymentDescriptor>
-          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorld3.ftl">
+          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/src/demoapp/helloworld3_app/HelloWorld3.ftl">
             <option name="DEFAULT_DIR" value="WEB-INF/templates" />
           </deploymentDescriptor>
         </descriptors>
         <webroots />
         <sourceRoots>
-          <root url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src" />
+          <root url="file://C:/acciente/acciente-projects/software/project/demoapp/src" />
         </sourceRoots>
         <building>
           <setting name="EXPLODED_URL" value="file://C:/acciente/acciente-projects/software/project/demoapp/deploy" />
@@ -96,8 +96,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
     <output-test url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
-    <content url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src">
-      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src" isTestSource="false" />
+    <content url="file://C:/acciente/acciente-projects/software/project/demoapp/src">
+      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/demoapp/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
