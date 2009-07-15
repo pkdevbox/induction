@@ -87,8 +87,8 @@
 
 @:error_usage
 @echo INFO: Usage:
-@echo INFO: make-release-latest version-number-or-name
-@echo INFO: e.g: make-release-latest 1.1.0b
+@echo INFO: make-release [version-number-or-name]
+@echo INFO: e.g: make-release 1.1.0b
 @echo .
 @goto end_script
 
