@@ -13,9 +13,6 @@
           </deploymentDescriptor>
         </descriptors>
         <webroots />
-        <sourceRoots>
-          <root url="file://C:/acciente/acciente-projects/software/project/demoapp/src" />
-        </sourceRoots>
         <building>
           <setting name="EXPLODED_URL" value="file://C:/acciente/acciente-projects/software/project/demoapp/deploy" />
           <setting name="EXPLODED_ENABLED" value="true" />

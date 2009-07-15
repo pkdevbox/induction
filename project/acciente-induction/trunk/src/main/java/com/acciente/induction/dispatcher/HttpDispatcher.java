@@ -54,6 +54,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 /**
  * This is the Induction dispatcher servlet.
@@ -177,6 +178,38 @@ public class HttpDispatcher extends HttpServlet
 
       // now set the pool for the model factory to use in model-to-model injection
       oModelFactory.setModelPool( oModelPool );
+
+      // pre-initialize any app scope models that requested it
+      Log oLog = LogFactory.getLog( ModelPool.class );
+
+      for ( Iterator oIter = oConfig.getModelDefs().getModelDefList().iterator(); oIter.hasNext(); )
+      {
+         Config.ModelDefs.ModelDef oModelDef = ( Config.ModelDefs.ModelDef ) oIter.next();
+
+         if ( oModelDef.isApplicationScope() && oModelDef.isInitOnStartUp() )
+         {
+            oLog.info( "model-pool: initializing model: " + oModelDef.getModelClassName() );
+
+            try
+            {
+               oModelPool.getModel( oModelDef.getModelClassName(), null );
+            }
+            catch ( MethodNotFoundException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( InvocationTargetException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( ClassNotFoundException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( ConstructorNotFoundException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( ParameterProviderException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( IllegalAccessException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+            catch ( InstantiationException e )
+            {  throw new ServletException( "init-error: model-init-on-startup", e ); }
+         }
+      }
 
       // setup a resolver that maps a request to a controller
       try
@@ -363,7 +396,7 @@ public class HttpDispatcher extends HttpServlet
          }
          else
          {
-            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller or view", null );
+            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller or view: " + oRequest.getPathInfo(), null );
          }
       }
    }

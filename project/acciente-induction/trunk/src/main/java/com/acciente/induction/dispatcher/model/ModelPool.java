@@ -22,14 +22,11 @@ import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -52,21 +49,6 @@ public class ModelPool
       _oModelDefs          = oModelDefs;
       _oModelFactory       = oModelFactory;
       _oAppScopeModelMap   = new Hashtable();   // we use a hashtable instead of a HashMap for safe concurrent access
-
-      Log oLog = LogFactory.getLog( ModelPool.class );
-
-      // initialize the models set to initialize on startup
-      for ( Iterator oIter = oModelDefs.getModelDefList().iterator(); oIter.hasNext(); )
-      {
-         Config.ModelDefs.ModelDef oModelDef = ( Config.ModelDefs.ModelDef ) oIter.next();
-
-         if ( oModelDef.isApplicationScope() && oModelDef.isInitOnStartUp() )
-         {
-            oLog.info( "model-pool: initializing model: " + oModelDef.getModelClassName() );
-
-            getApplicationScopeModel( oModelDef, null );
-         }
-      }
    }
 
    public Object getModel( String sModelClassName, HttpServletRequest oHttpServletRequest )
