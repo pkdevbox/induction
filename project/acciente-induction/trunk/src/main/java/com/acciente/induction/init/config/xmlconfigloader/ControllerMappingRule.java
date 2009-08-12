@@ -161,7 +161,7 @@ public class ControllerMappingRule extends Rule
       {
          public void body( String sNamespace, String sName, String sText )
          {
-            _oURLPattern = Pattern.compile( sText );
+            _oURLPattern = Pattern.compile( sText, Pattern.CASE_INSENSITIVE );
          }
       }
 
