@@ -78,6 +78,10 @@ public class XML
    public static final XML Config_RedirectMapping_ClassToURLMap_URLFormatAlt     = new XML( "url-format-alt",              Config_RedirectMapping_ClassToURLMap );
    public static final XML Config_RedirectMapping_URLBase                        = new XML( "url-base",                    Config_RedirectMapping );
 
+   public static final XML Config_RequestInterceptors                            = new XML( "request-interceptors",        Config );
+   public static final XML Config_RequestInterceptor                             = new XML( "request-interceptor",         Config_RequestInterceptors );
+   public static final XML Config_RequestInterceptor_Class                       = new XML( "class",                       Config_RequestInterceptor );
+
    public static final XML Config_ControllerResolver                             = new XML( "controller-resolver",         Config );
    public static final XML Config_ControllerResolver_Class                       = new XML( "class",                       Config_ControllerResolver );
 

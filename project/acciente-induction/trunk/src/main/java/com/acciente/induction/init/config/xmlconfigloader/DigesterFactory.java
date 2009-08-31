@@ -61,12 +61,14 @@ public class DigesterFactory
       {
          ModelDefsRule oModelDefsRule = new ModelDefsRule( oConfig.getModelDefs() );
 
-         ModelDefsRule.AddModelDefRule oAddModelDefRule = oModelDefsRule.createAddModelDefRule();
-         oDigester.addRule( XML.Config_ModelDefs_ModelDef.PATTERN,               oAddModelDefRule );
-         oDigester.addRule( XML.Config_ModelDefs_ModelDef_Class.PATTERN,         oAddModelDefRule.createParamClassRule() );
-         oDigester.addRule( XML.Config_ModelDefs_ModelDef_FactoryClass.PATTERN,  oAddModelDefRule.createParamFactoryClassRule() );
-         oDigester.addRule( XML.Config_ModelDefs_ModelDef_Scope.PATTERN,         oAddModelDefRule.createParamScopeRule() );
-         oDigester.addRule( XML.Config_ModelDefs_ModelDef_InitOnStartUp.PATTERN, oAddModelDefRule.createParamInitOnStartUpRule() );
+         {
+            ModelDefsRule.AddModelDefRule oModelDefsAddModelDefRule = oModelDefsRule.createAddModelDefRule();
+            oDigester.addRule( XML.Config_ModelDefs_ModelDef.PATTERN,               oModelDefsAddModelDefRule );
+            oDigester.addRule( XML.Config_ModelDefs_ModelDef_Class.PATTERN,         oModelDefsAddModelDefRule.createParamClassRule() );
+            oDigester.addRule( XML.Config_ModelDefs_ModelDef_FactoryClass.PATTERN,  oModelDefsAddModelDefRule.createParamFactoryClassRule() );
+            oDigester.addRule( XML.Config_ModelDefs_ModelDef_Scope.PATTERN,         oModelDefsAddModelDefRule.createParamScopeRule() );
+            oDigester.addRule( XML.Config_ModelDefs_ModelDef_InitOnStartUp.PATTERN, oModelDefsAddModelDefRule.createParamInitOnStartUpRule() );
+         }
       }
 
       // templating config rules
@@ -134,6 +136,18 @@ public class DigesterFactory
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.PATTERN,   oAddClassToURLMapRule.createParamClassPatternRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormat.PATTERN,      oAddClassToURLMapRule.createParamURLFormatRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.PATTERN,   oAddClassToURLMapRule.createParamURLFormatAltRule() );
+         }
+      }
+
+      // request-interceptors config rules
+      {
+         RequestInterceptorsRule oRequestInterceptorsRule = new RequestInterceptorsRule( oConfig.getRequestInterceptors() );
+         oDigester.addRule( XML.Config_RequestInterceptors.PATTERN,                 oRequestInterceptorsRule );
+
+         {
+            RequestInterceptorsRule.AddRequestInterceptorRule oAddRequestInterceptorRule = oRequestInterceptorsRule.createAddRequestInterceptorRule();
+            oDigester.addRule( XML.Config_RequestInterceptor.PATTERN,               oAddRequestInterceptorRule );
+            oDigester.addRule( XML.Config_RequestInterceptor_Class.PATTERN,         oAddRequestInterceptorRule.createParamClassRule() );
          }
       }
 

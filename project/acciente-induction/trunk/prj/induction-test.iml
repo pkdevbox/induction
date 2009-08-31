@@ -14,7 +14,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://C:/acciente/acciente-projects/software/project/induction/src/main/config" />
+          <root url="file://C:/acciente/acciente-projects/software/project/acciente-induction/src/main/config" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
