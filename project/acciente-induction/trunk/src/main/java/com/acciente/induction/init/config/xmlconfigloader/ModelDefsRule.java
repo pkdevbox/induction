@@ -74,7 +74,7 @@ public class ModelDefsRule extends Rule
          {
             throw new XMLConfigLoaderException( "config > modeldefs > model: scope is a required attribute" );
          }
-         
+
          _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope, _bIsInitOnStartUp );
       }
 
@@ -145,9 +145,13 @@ public class ModelDefsRule extends Rule
          {
             sText = sText.trim();
 
-            if ( "1".equalsIgnoreCase( sText ) || "true".equalsIgnoreCase( sText ) )
+            if ( "1".equals( sText ) || "true".equalsIgnoreCase( sText ) )
             {
                _bIsInitOnStartUp = true;
+            }
+            else if ( "0".equals( sText ) || "false".equalsIgnoreCase( sText ) )
+            {
+               _bIsInitOnStartUp = false;
             }
             else
             {
@@ -155,7 +159,6 @@ public class ModelDefsRule extends Rule
             }
          }
       }
-
    }
 }
 

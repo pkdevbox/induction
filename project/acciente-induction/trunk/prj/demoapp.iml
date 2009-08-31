@@ -8,11 +8,9 @@
           <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/conf/WEB-INF/induction-demoapp.xml">
             <option name="DEFAULT_DIR" value="WEB-INF" />
           </deploymentDescriptor>
-          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/src/demoapp/helloworld3_app/HelloWorld3.ftl">
-            <option name="DEFAULT_DIR" value="WEB-INF/templates" />
-          </deploymentDescriptor>
         </descriptors>
         <webroots />
+        <sourceRoots />
         <building>
           <setting name="EXPLODED_URL" value="file://C:/acciente/acciente-projects/software/project/demoapp/deploy" />
           <setting name="EXPLODED_ENABLED" value="true" />

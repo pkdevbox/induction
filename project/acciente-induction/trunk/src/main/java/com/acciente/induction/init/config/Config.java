@@ -41,16 +41,17 @@ import java.util.regex.Pattern;
  */
 public class Config
 {
-   private JavaClassPath         _oJavaClassPath      = new JavaClassPath();
-   private ModelDefs             _oModelDefs          = new ModelDefs();
-   private Templating            _oTemplating         = new Templating();
-   private ControllerMapping     _oControllerMapping  = new ControllerMapping();
-   private ViewMapping           _oViewMapping        = new ViewMapping();
-   private RedirectMapping       _oRedirectMapping    = new RedirectMapping();
-   private ControllerResolver    _oControllerResolver = new ControllerResolver();
-   private ViewResolver          _oViewResolver       = new ViewResolver();
-   private RedirectResolver      _oRedirectResolver   = new RedirectResolver();
-   private FileUpload            _oFileUpload         = new FileUpload();
+   private JavaClassPath         _oJavaClassPath         = new JavaClassPath();
+   private ModelDefs             _oModelDefs             = new ModelDefs();
+   private Templating            _oTemplating            = new Templating();
+   private ControllerMapping     _oControllerMapping     = new ControllerMapping();
+   private ViewMapping           _oViewMapping           = new ViewMapping();
+   private RedirectMapping       _oRedirectMapping       = new RedirectMapping();
+   private RequestInterceptors   _oRequestInterceptors   = new RequestInterceptors();
+   private ControllerResolver    _oControllerResolver    = new ControllerResolver();
+   private ViewResolver          _oViewResolver          = new ViewResolver();
+   private RedirectResolver      _oRedirectResolver      = new RedirectResolver();
+   private FileUpload            _oFileUpload            = new FileUpload();
 
    /**
     * Defined the classpath to be used for loading java class files. The classpath is
@@ -118,6 +119,16 @@ public class Config
    }
 
    /**
+    * This method is used to access the configured request interceptor list.
+    *
+    * @return an object reference that keeps the request interceptor list config settings
+    */
+   public RequestInterceptors getRequestInterceptors()
+   {
+      return _oRequestInterceptors;
+   }
+
+   /**
     * This method is used to access the settings used to configure the controller resolver.
     *
     * @return an object reference that keeps the controller resolver config settings
@@ -175,6 +186,8 @@ public class Config
       oBuffer.append( _oControllerMapping.toXML() );
       oBuffer.append( _oViewMapping.toXML() );
       oBuffer.append( _oRedirectMapping.toXML() );
+
+      oBuffer.append( _oRequestInterceptors.toXML() );
 
       oBuffer.append( _oControllerResolver.toXML() );
       oBuffer.append( _oViewResolver.toXML() );
@@ -321,7 +334,7 @@ public class Config
                                                 + sModelClassName
                                                 + " init on startup may only be turned on application scope models" );
          }
-         
+
          _oModelDefMap.put( sModelClassName, new ModelDef( sModelClassName, sModelFactoryClassName, bIsApplicationScope, bIsSessionScope, bIsRequestScope, bIsInitOnStartUp ) );
       }
 
@@ -565,8 +578,6 @@ public class Config
 
       private String toXML_Locale()
       {
-         StringBuffer oBuffer = new StringBuffer();
-
          if ( _oLocale == null )
          {
             return "";
@@ -1201,6 +1212,88 @@ public class Config
                           + XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat )
                           + XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.toXML( _sAlternateURLFormat )
                         );
+         }
+      }
+   }
+
+   /**
+    * Modular configuration container
+    */
+   public static class RequestInterceptors
+   {
+      private List _oRequestInterceptorList = new ArrayList();
+
+      public void addRequestInterceptor( String sClassname )
+      {
+         _oRequestInterceptorList.add( new RequestInterceptor( sClassname ) );
+      }
+
+      public List getRequestInterceptorList()
+      {
+         return _oRequestInterceptorList;
+      }
+
+      public String toXML()
+      {
+         if ( _oRequestInterceptorList.size() == 0 )
+         {
+            return "";
+         }
+         else
+         {
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_RequestInterceptors.OPEN_IND );
+
+            for ( Iterator oIter = _oRequestInterceptorList.iterator(); oIter.hasNext(); )
+            {
+               RequestInterceptor oRequestInterceptor = ( RequestInterceptor ) oIter.next();
+
+               oBuffer.append ( oRequestInterceptor.toXML() );
+            }
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_RequestInterceptors.CLOSE_IND );
+
+            return oBuffer.toString();
+         }
+      }
+
+      public static class RequestInterceptor
+      {
+         private String    _sClassName;
+
+         /**
+          * Creates a new request interceptor
+          *
+          * @param sClassName a fully qualified class name used to intercept an HTTP request
+          */
+         private RequestInterceptor( String sClassName )
+         {
+            _sClassName = sClassName;
+         }
+
+         /**
+          * Returns the name of the class used to intercept an HTTP request
+          *
+          * @return a string representing a fully qualified class name
+          */
+         public String getClassName()
+         {
+            return _sClassName;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_RequestInterceptor
+                  .toXML( XML.Config_RequestInterceptor_Class.toXML( _sClassName ) );
          }
       }
    }
