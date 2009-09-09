@@ -20,8 +20,10 @@ public interface RequestInterceptor
     *
     * @param oRequest the HTTP request object provided by the servlet container
     * @param oResponse the HTTP response object provided by the servlet container
+    * @return if true is returned the next interceptor in the chain gets control, if false is returned
+    * the no interceptors are executed after this interceptor
     */
-   void preResolution( HttpServletRequest oRequest, HttpServletResponse oResponse );
+   boolean  preResolution( HttpServletRequest oRequest, HttpServletResponse oResponse );
 
    /**
     * This interceptor method is invoked AFTER attempting to resolve the target of the
@@ -29,13 +31,17 @@ public interface RequestInterceptor
     *
     * @param oRequest the HTTP request object provided by the servlet container
     * @param oResponse the HTTP response object provided by the servlet container
-    * @param oControllerResolution
-    * @param oViewResolution
+    * @param oControllerResolution the controller resolution to which the request was resolved,
+    * or <code>null</code> if the request did not resolve to a controller.
+    * @param oViewResolution the view resolution to which the request was resolved, or <code>null</code>
+    * if the request did not resolve to a view.
+    * @return if true is returned the next interceptor in the chain gets control, if false is returned
+    * the no interceptors are executed after this interceptor
     */
-   void postResolution( HttpServletRequest               oRequest,
-                        HttpServletResponse              oResponse,
-                        ControllerResolver.Resolution    oControllerResolution,
-                        ViewResolver.Resolution          oViewResolution );
+   boolean  postResolution(   HttpServletRequest               oRequest,
+                              HttpServletResponse              oResponse,
+                              ControllerResolver.Resolution    oControllerResolution,
+                              ViewResolver.Resolution          oViewResolution );
 
    /**
     * This interceptor method called as follows:
@@ -57,11 +63,13 @@ public interface RequestInterceptor
     * or <code>null</code> if the request did not resolve to a controller.
     * @param oViewResolution the view resolution to which the request was resolved, or <code>null</code>
     * if the request did not resolve to a view.
+    * @return if true is returned the next interceptor in the chain gets control, if false is returned
+    * the no interceptors are executed after this interceptor
     */
-   void preResponse( HttpServletRequest               oRequest,
-                     HttpServletResponse              oResponse,
-                     ControllerResolver.Resolution    oControllerResolution,
-                     ViewResolver.Resolution          oViewResolution );
+   boolean  preResponse(   HttpServletRequest               oRequest,
+                           HttpServletResponse              oResponse,
+                           ControllerResolver.Resolution    oControllerResolution,
+                           ViewResolver.Resolution          oViewResolution );
 
    /**
     * This interceptor method is invoked AFTER processing a view or redirect object.
@@ -72,9 +80,11 @@ public interface RequestInterceptor
     * or <code>null</code> if the request did not resolve to a controller.
     * @param oViewResolution the view resolution to which the request was resolved, or <code>null</code>
     * if the request did not resolve to a view.
+    * @return if true is returned the next interceptor in the chain gets control, if false is returned
+    * the no interceptors are executed after this interceptor
     */
-   void postResponse(   HttpServletRequest               oRequest,
-                        HttpServletResponse              oResponse,
-                        ControllerResolver.Resolution    oControllerResolution,
-                        ViewResolver.Resolution          oViewResolution );
+   boolean  postResponse(  HttpServletRequest               oRequest,
+                           HttpServletResponse              oResponse,
+                           ControllerResolver.Resolution    oControllerResolution,
+                           ViewResolver.Resolution          oViewResolution );
 }
