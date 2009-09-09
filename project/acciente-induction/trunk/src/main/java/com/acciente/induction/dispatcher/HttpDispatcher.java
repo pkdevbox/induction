@@ -23,6 +23,7 @@ import com.acciente.induction.dispatcher.controller.ControllerExecutor;
 import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
+import com.acciente.induction.dispatcher.interceptor.RequestInterceptorExecutor;
 import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.dispatcher.redirect.RedirectResolverFacade;
@@ -34,10 +35,12 @@ import com.acciente.induction.init.ClassLoaderInitializer;
 import com.acciente.induction.init.ConfigLoaderInitializer;
 import com.acciente.induction.init.ControllerResolverInitializer;
 import com.acciente.induction.init.RedirectResolverInitializer;
+import com.acciente.induction.init.RequestInterceptorInitializer;
 import com.acciente.induction.init.TemplatingEngineInitializer;
 import com.acciente.induction.init.ViewResolverInitializer;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.init.config.ConfigLoaderException;
+import com.acciente.induction.interceptor.RequestInterceptor;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.resolver.ViewResolver;
@@ -65,6 +68,7 @@ import java.util.Iterator;
  */
 public class HttpDispatcher extends HttpServlet
 {
+   private RequestInterceptorExecutor  _oRequestInterceptorExecutor;
    private ControllerResolver          _oControllerResolver;
    private ViewResolver                _oViewResolver;
    private RedirectResolverFacade      _oRedirectResolverFacade;
@@ -211,6 +215,33 @@ public class HttpDispatcher extends HttpServlet
          }
       }
 
+      // setup the interceptor chain
+      try
+      {
+         RequestInterceptor[] oRequestInterceptorArray;
+
+         oRequestInterceptorArray
+            =  RequestInterceptorInitializer
+                  .getRequestInterceptor( oConfig.getRequestInterceptors(),
+                                          oModelPool,
+                                          oClassLoader,
+                                          oServletConfig );
+
+         _oRequestInterceptorExecutor = new RequestInterceptorExecutor( oRequestInterceptorArray );
+      }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
+
       // setup a resolver that maps a request to a controller
       try
       {
@@ -264,9 +295,10 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
 
       // setup a resolver that maps a redirect to a URL
-      RedirectResolver oRedirectResolver;
       try
       {
+         RedirectResolver oRedirectResolver;
+
          oRedirectResolver
             =  RedirectResolverInitializer
                   .getRedirectResolver( oConfig.getRedirectResolver(),
@@ -320,11 +352,34 @@ public class HttpDispatcher extends HttpServlet
    public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )
       throws IOException
    {
+      // fire the preResolution interceptor
+      try
+      {
+         _oRequestInterceptorExecutor.preResolution( oRequest, oResponse );
+      }
+      catch ( Exception e )
+      {
+         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+      }
+
       // first try to resolve the request to a controller
-      ControllerResolver.Resolution oControllerResolution = _oControllerResolver.resolve( oRequest );
+      ControllerResolver.Resolution    oControllerResolution   = null;
+      ViewResolver.Resolution          oViewResolution         = null;
+
+      oControllerResolution = _oControllerResolver.resolve( oRequest );
 
       if ( oControllerResolution != null )
       {
+         // fire the postResolution interceptor
+         try
+         {
+            _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, oControllerResolution, null );
+         }
+         catch ( Exception e )
+         {
+            logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+         }
+
          // execute the controller
          Object   oControllerReturnValue = null;
 
@@ -335,6 +390,16 @@ public class HttpDispatcher extends HttpServlet
          catch ( ControllerExecutorException e )
          {
             logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+         }
+
+         // fire the preResponse interceptor
+         try
+         {
+            _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, oControllerResolution, null );
+         }
+         catch ( Exception e )
+         {
+            logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
          }
 
          // process the controller's return value (if any)
@@ -351,7 +416,7 @@ public class HttpDispatcher extends HttpServlet
                }
                else
                {
-                  logAndRespond( oResponse, "redirect-resolve: invalid redirect request", null );
+                  logAndRespond( oResponse, "redirect-resolve: could not resolve redirect request: " + oControllerReturnValue, null );
                }
             }
             else
@@ -381,10 +446,22 @@ public class HttpDispatcher extends HttpServlet
       else
       {
          // next try to resolve the request to a view
-         ViewResolver.Resolution oViewResolution = _oViewResolver.resolve( oRequest );
+         oViewResolution = _oViewResolver.resolve( oRequest );
 
          if ( oViewResolution != null )
          {
+            // fire the postResolution and preResponse interceptors
+            try
+            {
+               _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, null, oViewResolution );
+               _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, null, oViewResolution );
+            }
+            catch ( Exception e )
+            {
+               logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            }
+
+            // now execute the view
             try
             {
                _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
@@ -398,6 +475,16 @@ public class HttpDispatcher extends HttpServlet
          {
             logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller or view: " + oRequest.getPathInfo(), null );
          }
+      }
+
+      // fire the postResponse interceptors
+      try
+      {
+         _oRequestInterceptorExecutor.postResponse( oRequest, oResponse, oControllerResolution, oViewResolution );
+      }
+      catch ( Exception e )
+      {
+         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
       }
    }
 

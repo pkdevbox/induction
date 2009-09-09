@@ -160,6 +160,31 @@ public class Redirect
       return _oURLQueryParameters;
    }
 
+   public String toString()
+   {
+      String   sAsString;
+
+      if ( _sTargetURL != null )
+      {
+         sAsString = "redirect url: "
+                     + _sTargetURL
+                     + " query parameters: "
+                     + _oURLQueryParameters;
+      }
+      else
+      {
+         sAsString = "redirect class: "
+                     + _oTargetClass
+                     + " method: "
+                     + _sTargetMethodName
+                     + " query parameters: "
+                     + _oURLQueryParameters;
+
+      }
+
+      return sAsString;
+   }
+
    private void validateURLQueryParameters( Map oURLQueryParameters )
    {
       if ( oURLQueryParameters == null )
