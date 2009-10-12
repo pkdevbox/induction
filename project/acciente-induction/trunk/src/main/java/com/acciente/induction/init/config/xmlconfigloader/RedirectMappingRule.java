@@ -22,6 +22,8 @@ import org.apache.commons.digester.Rule;
 import org.xml.sax.Attributes;
 
 import java.util.regex.Pattern;
+import java.util.List;
+import java.util.ArrayList;
 
 // EOF
 
@@ -82,16 +84,18 @@ public class RedirectMappingRule extends Rule
    {
       private  String[] _oClassPackages;
       private  Pattern  _oClassPattern;
+      private  List     _oClassFindReplaceDirectives;
       private  String   _sURLFormat;
       private  String   _sAlternateURLFormat;
 
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
          // reset data stored in rule
-         _oClassPackages      = null;
-         _oClassPattern       = null;
-         _sURLFormat          = null;
-         _sAlternateURLFormat = null;
+         _oClassPackages               = null;
+         _oClassPattern                = null;
+         _oClassFindReplaceDirectives  = new ArrayList();
+         _sURLFormat                   = null;
+         _sAlternateURLFormat          = null;
       }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
@@ -111,7 +115,15 @@ public class RedirectMappingRule extends Rule
             throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > url format is a required attribute" );
          }
 
-         _oRedirectMapping.addClassToURLMap( _oClassPackages, _oClassPattern, _sURLFormat, _sAlternateURLFormat );
+         Config.RedirectMapping.ClassToURLMap oClassToURLMap
+            = _oRedirectMapping.addClassToURLMap( _oClassPackages, _oClassPattern, _sURLFormat, _sAlternateURLFormat );
+
+         for ( int i = 0; i < _oClassFindReplaceDirectives.size(); i++)
+         {
+            String[] asFindReplace = ( String[] ) _oClassFindReplaceDirectives.get( i );
+
+            oClassToURLMap.addClassFindReplaceDirective( asFindReplace[ 0 ], asFindReplace[ 1 ] );
+         }
       }
 
       public ParamClassPackagesRule createParamClassPackagesRule()
@@ -122,6 +134,11 @@ public class RedirectMappingRule extends Rule
       public ParamClassPatternRule createParamClassPatternRule()
       {
          return new ParamClassPatternRule();
+      }
+
+      public AddClassFindReplaceDirectiveRule createAddClassFindReplaceDirectiveRule()
+      {
+         return new AddClassFindReplaceDirectiveRule();
       }
 
       public ParamURLFormatRule createParamURLFormatRule()
@@ -163,6 +180,60 @@ public class RedirectMappingRule extends Rule
          public void body( String sNamespace, String sName, String sText )
          {
             _sAlternateURLFormat = sText;
+         }
+      }
+
+      public class AddClassFindReplaceDirectiveRule extends Rule
+      {
+         private  String   _sFindStr;
+         private  String   _sReplaceStr;
+
+         public void begin( String sNamespace, String sName, Attributes oAttributes )
+         {
+            // reset data stored in rule
+            _sFindStr      = null;
+            _sReplaceStr   = null;
+         }
+
+         public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
+         {
+            if ( _sFindStr == null )
+            {
+               throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > class-replace > find string is a required attribute" );
+            }
+
+            if ( _sReplaceStr == null )
+            {
+               throw new XMLConfigLoaderException( "config > redirect-mapping > class-to-url-map > class-replace > replace string is a required attribute" );
+            }
+
+            _oClassFindReplaceDirectives.add( new String[]{ _sFindStr, _sReplaceStr } );
+         }
+
+         public ParamFindRule createParamFindRule()
+         {
+            return new ParamFindRule();
+         }
+
+         public ParamReplaceRule createParamReplaceRule()
+         {
+            return new ParamReplaceRule();
+         }
+
+         private class ParamFindRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _sFindStr = sText;
+            }
+         }
+
+         private class ParamReplaceRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _sReplaceStr = sText;
+            }
          }
       }
    }

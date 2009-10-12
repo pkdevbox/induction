@@ -134,12 +134,23 @@
 
                   Since the regex for these settings are expected to have an exact number of matching groups
                   you should use the (?: parenthesis instead of ( to start a group that controls the match
-                  but is be returned as a matching group. -->
+                  but should NOT be returned as a matching group. -->
     <controller-mapping>
         <url-to-class-map>
             <url-pattern>(a_java_regex_string)</url-pattern>
             <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
         </url-to-class-map>
         <url-to-class-map>
             <url-pattern>(another_java_regex_string)</url-pattern>
@@ -156,6 +167,17 @@
             <url-pattern>(a_java_regex_string)</url-pattern>
             <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
         </url-to-class-map>
         <url-to-class-map>
             <url-pattern>(another_java_regex_string)</url-pattern>
@@ -168,6 +190,17 @@
         <class-to-url-map>
             <class-packages>a.package;b.package</class-packages>
             <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
             <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
             <url-format-alt>alternate_url_format_with_both_$Name_and_$Method</url-format-alt>
         </class-to-url-map>

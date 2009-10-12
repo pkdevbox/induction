@@ -109,6 +109,14 @@ public class DigesterFactory
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_URLPattern.PATTERN,      oAddURLToClassMapRule.createParamURLPatternRule() );
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPackages.PATTERN,   oAddURLToClassMapRule.createParamClassPackagesRule() );
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPattern.PATTERN,    oAddURLToClassMapRule.createParamClassPatternRule() );
+            {
+               ControllerMappingRule.AddURLToClassMapRule.AddClassFindReplaceDirectiveRule
+                  oAddClassFindReplaceDirectiveRule = oAddURLToClassMapRule.createAddClassFindReplaceDirectiveRule();
+
+               oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace.PATTERN,          oAddClassFindReplaceDirectiveRule );
+               oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Find.PATTERN,     oAddClassFindReplaceDirectiveRule.createParamFindRule() );
+               oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Replace.PATTERN,  oAddClassFindReplaceDirectiveRule.createParamReplaceRule() );
+            }
          }
       }
 
@@ -121,6 +129,14 @@ public class DigesterFactory
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_URLPattern.PATTERN,         oAddURLToClassMapRule.createParamURLPatternRule() );
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassPackages.PATTERN,      oAddURLToClassMapRule.createParamClassPackagesRule() );
             oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassPattern.PATTERN,       oAddURLToClassMapRule.createParamClassPatternRule() );
+            {
+               ViewMappingRule.AddURLToClassMapRule.AddClassFindReplaceDirectiveRule
+                  oAddClassFindReplaceDirectiveRule = oAddURLToClassMapRule.createAddClassFindReplaceDirectiveRule();
+
+               oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassReplace.PATTERN,          oAddClassFindReplaceDirectiveRule );
+               oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassReplace_Find.PATTERN,     oAddClassFindReplaceDirectiveRule.createParamFindRule() );
+               oDigester.addRule( XML.Config_ViewMapping_URLToClassMap_ClassReplace_Replace.PATTERN,  oAddClassFindReplaceDirectiveRule.createParamReplaceRule() );
+            }
          }
       }
 
@@ -136,6 +152,14 @@ public class DigesterFactory
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.PATTERN,   oAddClassToURLMapRule.createParamClassPatternRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormat.PATTERN,      oAddClassToURLMapRule.createParamURLFormatRule() );
             oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.PATTERN,   oAddClassToURLMapRule.createParamURLFormatAltRule() );
+            {
+               RedirectMappingRule.AddClassToURLMapRule.AddClassFindReplaceDirectiveRule
+                  oAddClassFindReplaceDirectiveRule = oAddClassToURLMapRule.createAddClassFindReplaceDirectiveRule();
+
+               oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassReplace.PATTERN,          oAddClassFindReplaceDirectiveRule );
+               oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassReplace_Find.PATTERN,     oAddClassFindReplaceDirectiveRule.createParamFindRule() );
+               oDigester.addRule( XML.Config_RedirectMapping_ClassToURLMap_ClassReplace_Replace.PATTERN,  oAddClassFindReplaceDirectiveRule.createParamReplaceRule() );
+            }
          }
       }
 

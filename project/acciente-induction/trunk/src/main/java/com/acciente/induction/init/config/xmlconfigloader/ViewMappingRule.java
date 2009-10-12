@@ -22,6 +22,8 @@ import org.apache.commons.digester.Rule;
 import org.xml.sax.Attributes;
 
 import java.util.regex.Pattern;
+import java.util.List;
+import java.util.ArrayList;
 
 // EOF
 
@@ -55,13 +57,15 @@ public class ViewMappingRule extends Rule
       private  Pattern  _oURLPattern;
       private  String[] _oClassPackages;
       private  Pattern  _oClassPattern;
+      private  List     _oClassFindReplaceDirectives;
 
       public void begin( String sNamespace, String sName, Attributes oAttributes )
       {
          // reset data stored in rule
-         _oURLPattern      = null;
-         _oClassPackages   = null;
-         _oClassPattern    = null;
+         _oURLPattern                  = null;
+         _oClassPackages               = null;
+         _oClassPattern                = null;
+         _oClassFindReplaceDirectives  = new ArrayList();
       }
 
       public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
@@ -81,7 +85,15 @@ public class ViewMappingRule extends Rule
             throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > class pattern is a required attribute" );
          }
 
-         _oViewMapping.addURLToClassMap( _oURLPattern, _oClassPackages, _oClassPattern  );
+         Config.ViewMapping.URLToClassMap oURLToClassMap
+            = _oViewMapping.addURLToClassMap( _oURLPattern, _oClassPackages, _oClassPattern );
+
+         for ( int i = 0; i < _oClassFindReplaceDirectives.size(); i++)
+         {
+            String[] asFindReplace = ( String[] ) _oClassFindReplaceDirectives.get( i );
+
+            oURLToClassMap.addClassFindReplaceDirective( asFindReplace[ 0 ], asFindReplace[ 1 ] );
+         }
       }
 
       public ParamURLPatternRule createParamURLPatternRule()
@@ -97,6 +109,11 @@ public class ViewMappingRule extends Rule
       public ParamClassPatternRule createParamClassPatternRule()
       {
          return new ParamClassPatternRule();
+      }
+
+      public AddClassFindReplaceDirectiveRule createAddClassFindReplaceDirectiveRule()
+      {
+         return new AddClassFindReplaceDirectiveRule();
       }
 
       private class ParamURLPatternRule extends Rule
@@ -120,6 +137,60 @@ public class ViewMappingRule extends Rule
          public void body( String sNamespace, String sName, String sText )
          {
             _oClassPattern = Pattern.compile( sText );
+         }
+      }
+
+      public class AddClassFindReplaceDirectiveRule extends Rule
+      {
+         private  String   _sFindStr;
+         private  String   _sReplaceStr;
+
+         public void begin( String sNamespace, String sName, Attributes oAttributes )
+         {
+            // reset data stored in rule
+            _sFindStr      = null;
+            _sReplaceStr   = null;
+         }
+
+         public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
+         {
+            if ( _sFindStr == null )
+            {
+               throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > class-replace > find string is a required attribute" );
+            }
+
+            if ( _sReplaceStr == null )
+            {
+               throw new XMLConfigLoaderException( "config > view-mapping > url-to-class-map > class-replace > replace string is a required attribute" );
+            }
+
+            _oClassFindReplaceDirectives.add( new String[]{ _sFindStr, _sReplaceStr } );
+         }
+
+         public ParamFindRule createParamFindRule()
+         {
+            return new ParamFindRule();
+         }
+
+         public ParamReplaceRule createParamReplaceRule()
+         {
+            return new ParamReplaceRule();
+         }
+
+         private class ParamFindRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _sFindStr = sText;
+            }
+         }
+
+         private class ParamReplaceRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _sReplaceStr = sText;
+            }
          }
       }
    }
