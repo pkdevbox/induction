@@ -21,6 +21,7 @@ import com.acciente.commons.lang.Strings;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -855,9 +856,13 @@ public class Config
       private String    _sDefaultHandlerMethodName = "handler";
       private boolean   _bIgnoreMethodNameCase     = false;
 
-      public void addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
+      public URLToClassMap addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
       {
-         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, asClassPackages, oClassPattern ) );
+         URLToClassMap oURLToClassMap = new URLToClassMap( oURLPattern, asClassPackages, oClassPattern );
+
+         _oURLToClassMapList.add( oURLToClassMap );
+
+         return oURLToClassMap;
       }
 
       public List getURLToClassMapList()
@@ -936,6 +941,7 @@ public class Config
          private String[]  _asClassPackages;
          private Pattern   _oURLPattern;
          private Pattern   _oClassPattern;
+         private List      _aoFindReplaceDirectives = new ArrayList();
 
          private URLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
          {
@@ -963,6 +969,16 @@ public class Config
             return _oClassPattern;
          }
 
+         public void addClassFindReplaceDirective( String sFindStr, String sReplaceStr )
+         {
+            _aoFindReplaceDirectives.add( new FindReplaceDirective( sFindStr, sReplaceStr ) );
+         }
+
+         public List getClassFindReplaceDirectives()
+         {
+            return _aoFindReplaceDirectives;
+         }
+
          public String toString()
          {
             return toXML();
@@ -970,12 +986,70 @@ public class Config
 
          public String toXML()
          {
-            return
-               XML.Config_ControllerMapping_URLToClassMap
-                  .toXML( XML.Config_ControllerMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
-                          + XML.Config_ControllerMapping_URLToClassMap_ClassPackages.toXML( _asClassPackages )
-                          + XML.Config_ControllerMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
-                        );
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ControllerMapping_URLToClassMap.OPEN_IND );
+
+            oBuffer.append( XML.Config_ControllerMapping_URLToClassMap_URLPattern.toXML( _oURLPattern ) );
+            oBuffer.append( XML.Config_ControllerMapping_URLToClassMap_ClassPackages.toXML( Arrays.asList( _asClassPackages ) ) );
+            oBuffer.append( XML.Config_ControllerMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern ) );
+
+            for ( Iterator oIter = _aoFindReplaceDirectives.iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( ( ( FindReplaceDirective ) oIter.next() ).toXML() );
+            }
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ControllerMapping_URLToClassMap.CLOSE_IND );
+
+            return oBuffer.toString();
+         }
+
+         public static class FindReplaceDirective
+         {
+            private  String   _sFindStr;
+            private  String   _sReplaceStr;
+
+            private FindReplaceDirective( String sFindStr, String sReplaceStr )
+            {
+               if ( sFindStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: find string cannot be null!" );
+               }
+
+               if ( sReplaceStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: replace string cannot be null!" );
+               }
+
+               _sFindStr      = sFindStr;
+               _sReplaceStr   = sReplaceStr;
+            }
+
+            public String getFindString()
+            {
+               return _sFindStr;
+            }
+
+            public String getReplaceString()
+            {
+               return _sReplaceStr;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               return
+                  XML.Config_ControllerMapping_URLToClassMap_ClassReplace
+                     .toXML( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Find.toXML( _sFindStr )
+                             + XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Replace.toXML( _sReplaceStr )
+                           );
+            }
          }
       }
    }
@@ -987,9 +1061,13 @@ public class Config
    {
       private List      _oURLToClassMapList        = new ArrayList();
 
-      public void addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
+      public URLToClassMap addURLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
       {
-         _oURLToClassMapList.add( new URLToClassMap( oURLPattern, asClassPackages, oClassPattern ) );
+         URLToClassMap oURLToClassMap = new URLToClassMap( oURLPattern, asClassPackages, oClassPattern );
+
+         _oURLToClassMapList.add( oURLToClassMap );
+
+         return oURLToClassMap;
       }
 
       public List getURLToClassMapList()
@@ -1028,6 +1106,7 @@ public class Config
          private String[]  _asClassPackages;
          private Pattern   _oURLPattern;
          private Pattern   _oClassPattern;
+         private List      _aoFindReplaceDirectives = new ArrayList();
 
          private URLToClassMap( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern )
          {
@@ -1055,6 +1134,16 @@ public class Config
             return _oClassPattern;
          }
 
+         public void addClassFindReplaceDirective( String sFindStr, String sReplaceStr )
+         {
+            _aoFindReplaceDirectives.add( new FindReplaceDirective( sFindStr, sReplaceStr ) );
+         }
+
+         public List getClassFindReplaceDirectives()
+         {
+            return _aoFindReplaceDirectives;
+         }
+
          public String toString()
          {
             return toXML();
@@ -1062,12 +1151,70 @@ public class Config
 
          public String toXML()
          {
-            return
-               XML.Config_ViewMapping_URLToClassMap
-                  .toXML( XML.Config_ViewMapping_URLToClassMap_URLPattern.toXML( _oURLPattern )
-                          + XML.Config_ViewMapping_URLToClassMap_ClassPackages.toXML( _asClassPackages )
-                          + XML.Config_ViewMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern )
-                        );
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ViewMapping_URLToClassMap.OPEN_IND );
+
+            oBuffer.append( XML.Config_ViewMapping_URLToClassMap_URLPattern.toXML( _oURLPattern ) );
+            oBuffer.append( XML.Config_ViewMapping_URLToClassMap_ClassPackages.toXML( Arrays.asList( _asClassPackages ) ) );
+            oBuffer.append( XML.Config_ViewMapping_URLToClassMap_ClassPattern.toXML( _oClassPattern ) );
+
+            for ( Iterator oIter = _aoFindReplaceDirectives.iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( ( ( FindReplaceDirective ) oIter.next() ).toXML() );
+            }
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_ViewMapping_URLToClassMap.CLOSE_IND );
+
+            return oBuffer.toString();
+         }
+
+         public static class FindReplaceDirective
+         {
+            private  String   _sFindStr;
+            private  String   _sReplaceStr;
+
+            private FindReplaceDirective( String sFindStr, String sReplaceStr )
+            {
+               if ( sFindStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: find string cannot be null!" );
+               }
+
+               if ( sReplaceStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: replace string cannot be null!" );
+               }
+
+               _sFindStr      = sFindStr;
+               _sReplaceStr   = sReplaceStr;
+            }
+
+            public String getFindString()
+            {
+               return _sFindStr;
+            }
+
+            public String getReplaceString()
+            {
+               return _sReplaceStr;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               return
+                  XML.Config_ViewMapping_URLToClassMap_ClassReplace
+                     .toXML( XML.Config_ViewMapping_URLToClassMap_ClassReplace_Find.toXML( _sFindStr )
+                             + XML.Config_ViewMapping_URLToClassMap_ClassReplace_Replace.toXML( _sReplaceStr )
+                           );
+            }
          }
       }
    }
@@ -1080,9 +1227,13 @@ public class Config
       private List   _oClassToURLMapList = new ArrayList();
       private String _sURLBase           = "";
 
-      public void addClassToURLMap( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
+      public ClassToURLMap addClassToURLMap( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
       {
-         _oClassToURLMapList.add( new ClassToURLMap( asClassPackages, oClassPattern, sURLFormat, sAlternateURLFormat ) );
+         ClassToURLMap oClassToURLMap = new ClassToURLMap( asClassPackages, oClassPattern, sURLFormat, sAlternateURLFormat );
+
+         _oClassToURLMapList.add( oClassToURLMap );
+
+         return oClassToURLMap;
       }
 
       public List getClassToURLMapList()
@@ -1148,6 +1299,7 @@ public class Config
          private Pattern      _oClassPattern;
          private String       _sURLFormat;
          private String       _sAlternateURLFormat;
+         private List         _aoFindReplaceDirectives = new ArrayList();
 
          private ClassToURLMap( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat )
          {
@@ -1198,6 +1350,16 @@ public class Config
             return _sAlternateURLFormat;
          }
 
+         public void addClassFindReplaceDirective( String sFindStr, String sReplaceStr )
+         {
+            _aoFindReplaceDirectives.add( new FindReplaceDirective( sFindStr, sReplaceStr ) );
+         }
+
+         public List getClassFindReplaceDirectives()
+         {
+            return _aoFindReplaceDirectives;
+         }
+
          public String toString()
          {
             return toXML();
@@ -1205,13 +1367,71 @@ public class Config
 
          public String toXML()
          {
-            return
-               XML.Config_RedirectMapping_ClassToURLMap
-                  .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassPackages.toXML( _asClassPackages )
-                          + XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern )
-                          + XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat )
-                          + XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.toXML( _sAlternateURLFormat )
-                        );
+            StringBuffer   oBuffer = new StringBuffer();
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap.OPEN_IND );
+
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap_ClassPackages.toXML( _asClassPackages ) );
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap_ClassPattern.toXML( _oClassPattern ) );
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap_URLFormat.toXML( _sURLFormat ) );
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap_URLFormatAlt.toXML( _sAlternateURLFormat ) );
+
+            for ( Iterator oIter = _aoFindReplaceDirectives.iterator(); oIter.hasNext(); )
+            {
+               oBuffer.append ( ( ( FindReplaceDirective ) oIter.next() ).toXML() );
+            }
+
+            oBuffer.append( "\n" );
+            oBuffer.append( XML.Config_RedirectMapping_ClassToURLMap.CLOSE_IND );
+
+            return oBuffer.toString();
+         }
+
+         public static class FindReplaceDirective
+         {
+            private  String   _sFindStr;
+            private  String   _sReplaceStr;
+
+            private FindReplaceDirective( String sFindStr, String sReplaceStr )
+            {
+               if ( sFindStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: find string cannot be null!" );
+               }
+
+               if ( sReplaceStr == null )
+               {
+                  throw new IllegalArgumentException( "config-error: replace string cannot be null!" );
+               }
+
+               _sFindStr      = sFindStr;
+               _sReplaceStr   = sReplaceStr;
+            }
+
+            public String getFindString()
+            {
+               return _sFindStr;
+            }
+
+            public String getReplaceString()
+            {
+               return _sReplaceStr;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               return
+                  XML.Config_RedirectMapping_ClassToURLMap_ClassReplace
+                     .toXML( XML.Config_RedirectMapping_ClassToURLMap_ClassReplace_Find.toXML( _sFindStr )
+                             + XML.Config_RedirectMapping_ClassToURLMap_ClassReplace_Replace.toXML( _sReplaceStr )
+                           );
+            }
          }
       }
    }
