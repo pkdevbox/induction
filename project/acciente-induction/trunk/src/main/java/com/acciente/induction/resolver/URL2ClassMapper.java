@@ -23,7 +23,11 @@ class URL2ClassMapper
    private  Pattern  _oURLPattern;
    private  Map      _oShortName2ClassNameMap;
 
-   URL2ClassMapper( Pattern oURLPattern, String[] asClassPackages, Pattern oClassPattern, ClassLoader oClassLoader ) throws IOException
+   URL2ClassMapper( Pattern                  oURLPattern,
+                    String[]                 asClassPackages,
+                    Pattern                  oClassPattern,
+                    FindReplaceDirective[]   aoClassFindReplaceDirectives,
+                    ClassLoader              oClassLoader ) throws IOException
    {
       // record the URL pattern
       _oURLPattern = oURLPattern;
@@ -43,6 +47,14 @@ class URL2ClassMapper
          if ( oClassMatcher.matches() )
          {
             String   sShortName = oClassMatcher.group( 1 );
+
+            for ( int i = 0; i < aoClassFindReplaceDirectives.length; i++ )
+            {
+               FindReplaceDirective oFindReplaceDirective = aoClassFindReplaceDirectives[ i ];
+
+               sShortName = sShortName.replaceAll( oFindReplaceDirective.getFindString(),
+                                                   oFindReplaceDirective.getReplaceString() );
+            }
 
             if ( sShortName != null )
             {
