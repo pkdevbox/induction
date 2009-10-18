@@ -85,9 +85,13 @@
 
     <view-mapping>
         <url-to-class-map>
-            <url-pattern>/(\w+)</url-pattern>
+            <url-pattern>/((?:\w|-)+)</url-pattern>
             <class-packages>demoapp</class-packages>
             <class-pattern>(?:.*\.)?(\w+)View</class-pattern>
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
         </url-to-class-map>
     </view-mapping>
 
