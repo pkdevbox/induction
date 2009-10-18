@@ -76,9 +76,27 @@ public class ShortURLControllerResolver implements ControllerResolver
          oURL2ClassMapperList.add( new URL2ClassMapper( oURLToClassMap.getURLPattern(),
                                                         oURLToClassMap.getClassPackages(),
                                                         oURLToClassMap.getClassPattern(),
+                                                        asFindReplaceDirectiveArray( oURLToClassMap.getClassFindReplaceDirectives() ),
                                                         oClassLoader ) );
       }
 
       return oURL2ClassMapperList;
+   }
+
+   private FindReplaceDirective[] asFindReplaceDirectiveArray( List oClassFindReplaceDirectives )
+   {
+      FindReplaceDirective[]  aoFindReplaceDirectives = new FindReplaceDirective[ oClassFindReplaceDirectives.size() ];
+
+      for ( int i = 0; i < oClassFindReplaceDirectives.size(); i++ )
+      {
+         Config.ControllerMapping.URLToClassMap.FindReplaceDirective
+            oFindReplaceDirective
+            = ( Config.ControllerMapping.URLToClassMap.FindReplaceDirective ) oClassFindReplaceDirectives.get( i );
+
+         aoFindReplaceDirectives[ i ] = new FindReplaceDirective( oFindReplaceDirective.getFindString(),
+                                                                  oFindReplaceDirective.getReplaceString() );
+      }
+
+      return aoFindReplaceDirectives;
    }
 }
