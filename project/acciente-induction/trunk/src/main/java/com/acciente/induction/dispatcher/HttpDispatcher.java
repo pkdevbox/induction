@@ -24,6 +24,7 @@ import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
 import com.acciente.induction.dispatcher.interceptor.RequestInterceptorExecutor;
+import com.acciente.induction.dispatcher.interceptor.RequestInterceptorParameterProviderFactory;
 import com.acciente.induction.dispatcher.model.ModelFactory;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.dispatcher.redirect.RedirectResolverFacade;
@@ -227,7 +228,12 @@ public class HttpDispatcher extends HttpServlet
                                           oClassLoader,
                                           oServletConfig );
 
-         _oRequestInterceptorExecutor = new RequestInterceptorExecutor( oRequestInterceptorArray );
+         _oRequestInterceptorExecutor
+            = new RequestInterceptorExecutor( oRequestInterceptorArray,
+                                              new RequestInterceptorParameterProviderFactory( oModelPool,
+                                                                                              oConfig.getFileUpload(),
+                                                                                              oTemplatingEngine,
+                                                                                              oClassLoader ) );
       }
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: request-interceptor-initializer", e ); }
@@ -355,7 +361,10 @@ public class HttpDispatcher extends HttpServlet
       // fire the preResolution interceptor
       try
       {
-         _oRequestInterceptorExecutor.preResolution( oRequest, oResponse );
+         if ( ! _oRequestInterceptorExecutor.preResolution( oRequest, oResponse ) )
+         {
+            return;
+         }
       }
       catch ( Exception e )
       {
@@ -373,7 +382,10 @@ public class HttpDispatcher extends HttpServlet
          // fire the postResolution interceptor
          try
          {
-            _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, oControllerResolution, null );
+            if ( ! _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, oControllerResolution, null ) )
+            {
+               return;
+            }
          }
          catch ( Exception e )
          {
@@ -395,7 +407,10 @@ public class HttpDispatcher extends HttpServlet
          // fire the preResponse interceptor
          try
          {
-            _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, oControllerResolution, null );
+            if ( ! _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, oControllerResolution, null ) )
+            {
+               return;
+            }
          }
          catch ( Exception e )
          {
@@ -453,8 +468,15 @@ public class HttpDispatcher extends HttpServlet
             // fire the postResolution and preResponse interceptors
             try
             {
-               _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, null, oViewResolution );
-               _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, null, oViewResolution );
+               if ( ! _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, null, oViewResolution ) )
+               {
+                  return;
+               }
+
+               if ( ! _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, null, oViewResolution ) )
+               {
+                  return;
+               }
             }
             catch ( Exception e )
             {
