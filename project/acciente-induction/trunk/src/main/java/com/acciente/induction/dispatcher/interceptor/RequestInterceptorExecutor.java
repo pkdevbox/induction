@@ -3,9 +3,11 @@ package com.acciente.induction.dispatcher.interceptor;
 import com.acciente.induction.interceptor.RequestInterceptor;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.ViewResolver;
+import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * RequestInterceptor
@@ -15,54 +17,85 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class RequestInterceptorExecutor
 {
-   private  RequestInterceptor[]  _aoRequestInterceptorArray;
+   private  RequestInterceptorFacade[]    _aoRequestInterceptorFacadeArray;
 
-   public RequestInterceptorExecutor( RequestInterceptor[] aoRequestInterceptorArray )
+   public RequestInterceptorExecutor( RequestInterceptor[]                       aoRequestInterceptorArray,
+                                      RequestInterceptorParameterProviderFactory oRequestInterceptorParameterProviderFactory )
    {
-      _aoRequestInterceptorArray = aoRequestInterceptorArray;
+      _aoRequestInterceptorFacadeArray = new RequestInterceptorFacade[ aoRequestInterceptorArray.length ];
+
+      for ( int i = 0; i < aoRequestInterceptorArray.length; i++ )
+      {
+         _aoRequestInterceptorFacadeArray[ i ] = new RequestInterceptorFacade( aoRequestInterceptorArray[ i ],
+                                                                               oRequestInterceptorParameterProviderFactory );
+      }
+
    }
 
-   public void preResolution( HttpServletRequest oRequest, HttpServletResponse oResponse )
+   public boolean preResolution( HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws InvocationTargetException, ParameterProviderException, IllegalAccessException
    {
-      for ( int i = 0; i < _aoRequestInterceptorArray.length; i++ )
+      for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         if ( ! _aoRequestInterceptorArray[ i ].preResolution( oRequest, oResponse ) )
+         if ( isFalse( _aoRequestInterceptorFacadeArray[ i ].preResolution( oRequest, oResponse ) ) )
          {
-            break;
+            return false;
          }
       }
+
+      return true;
    }
 
-   public void postResolution( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution )
+   public boolean postResolution( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution ) throws InvocationTargetException, ParameterProviderException, IllegalAccessException
    {
-      for ( int i = 0; i < _aoRequestInterceptorArray.length; i++ )
+      for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         if ( ! _aoRequestInterceptorArray[ i ].postResolution( oRequest, oResponse, oControllerResolution, oViewResolution ) )
+         if ( isFalse( _aoRequestInterceptorFacadeArray[ i ].postResolution( oRequest,
+                                                                            oResponse,
+                                                                            oControllerResolution,
+                                                                            oViewResolution ) ) )
          {
-            break;
+            return false;
          }
       }
+
+      return true;
    }
 
-   public void preResponse( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution )
+   public boolean preResponse( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution ) throws InvocationTargetException, ParameterProviderException, IllegalAccessException
    {
-      for ( int i = 0; i < _aoRequestInterceptorArray.length; i++ )
+      for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         if ( ! _aoRequestInterceptorArray[ i ].preResponse( oRequest, oResponse, oControllerResolution, oViewResolution ) )
+         if ( isFalse( _aoRequestInterceptorFacadeArray[ i ].preResponse( oRequest,
+                                                                         oResponse,
+                                                                         oControllerResolution,
+                                                                         oViewResolution ) ) )
          {
-            break;
+            return false;
          }
       }
+
+      return true;
    }
 
-   public void postResponse( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution )
+   public boolean postResponse( HttpServletRequest oRequest, HttpServletResponse oResponse, ControllerResolver.Resolution oControllerResolution, ViewResolver.Resolution oViewResolution ) throws InvocationTargetException, ParameterProviderException, IllegalAccessException
    {
-      for ( int i = 0; i < _aoRequestInterceptorArray.length; i++ )
+      for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         if ( ! _aoRequestInterceptorArray[ i ].postResponse( oRequest, oResponse, oControllerResolution, oViewResolution ) )
+         if ( isFalse( _aoRequestInterceptorFacadeArray[ i ].postResponse( oRequest,
+                                                                          oResponse,
+                                                                          oControllerResolution,
+                                                                          oViewResolution ) ) )
          {
-            break;
+            return false;
          }
       }
+
+      return true;
+   }
+
+   private boolean isFalse( Object oReturnValue )
+   {
+      return ( oReturnValue instanceof Boolean ) && ( ( Boolean ) oReturnValue ).booleanValue();
    }
 }
