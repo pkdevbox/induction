@@ -95,7 +95,8 @@ public class RequestInterceptorParameterProviderFactory
 
          try
          {
-            Object   oParamValue = null;
+            Object   oParamValue       = null;
+            boolean  bNullParamValid   = false;
 
             if ( oParamClass.isAssignableFrom( Request.class ) )
             {
@@ -123,10 +124,14 @@ public class RequestInterceptorParameterProviderFactory
             else if ( oParamClass.isAssignableFrom( ControllerResolver.Resolution.class ) )
             {
                oParamValue = _oControllerResolution;
+
+               bNullParamValid = true;
             }
             else if ( oParamClass.isAssignableFrom( ViewResolver.Resolution.class ) )
             {
                oParamValue = _oViewResolution;
+
+               bNullParamValid = true;
             }
             else if ( oParamClass.isAssignableFrom( TemplatingEngine.class ) )
             {
@@ -142,7 +147,7 @@ public class RequestInterceptorParameterProviderFactory
                oParamValue = _oModelPool.getModel( oParamClass.getName(), _oRequest );
             }
 
-            if ( oParamValue == null )
+            if ( oParamValue == null && ! bNullParamValid )
             {
                throw ( new ParameterProviderException( sMessagePrefix + oParamClass ) );
             }
