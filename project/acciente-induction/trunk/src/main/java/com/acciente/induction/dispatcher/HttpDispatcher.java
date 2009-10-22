@@ -358,39 +358,19 @@ public class HttpDispatcher extends HttpServlet
    public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )
       throws IOException
    {
-      // fire the preResolution interceptor
-      try
-      {
-         if ( ! _oRequestInterceptorExecutor.preResolution( oRequest, oResponse ) )
-         {
-            return;
-         }
-      }
-      catch ( Exception e )
-      {
-         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-      }
-
-      // first try to resolve the request to a controller
       ControllerResolver.Resolution    oControllerResolution   = null;
       ViewResolver.Resolution          oViewResolution         = null;
 
+      // fire the preResolution interceptor
+      if ( preResolutionIntercept( oRequest, oResponse ) ) return;
+
+      // first try to resolve the request to a controller
       oControllerResolution = _oControllerResolver.resolve( oRequest );
 
       if ( oControllerResolution != null )
       {
          // fire the postResolution interceptor
-         try
-         {
-            if ( ! _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, oControllerResolution, null ) )
-            {
-               return;
-            }
-         }
-         catch ( Exception e )
-         {
-            logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-         }
+         if ( postResolutionIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
 
          // execute the controller
          Object   oControllerReturnValue = null;
@@ -398,100 +378,43 @@ public class HttpDispatcher extends HttpServlet
          try
          {
             oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse );
+
+            // fire the preResponse interceptor
+            if ( preResponseIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
          }
          catch ( ControllerExecutorException e )
          {
-            logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-         }
+            // fire the preResponse interceptor
+            if ( preResponseIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
 
-         // fire the preResponse interceptor
-         try
-         {
-            if ( ! _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, oControllerResolution, null ) )
-            {
-               return;
-            }
-         }
-         catch ( Exception e )
-         {
-            logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
          }
 
          // process the controller's return value (if any)
          if ( oControllerReturnValue != null )
          {
             // is it a redirect?
-            if ( oControllerReturnValue instanceof Redirect )
-            {
-               String sRedirectURL = _oRedirectResolverFacade.resolve( ( Redirect ) oControllerReturnValue );
-
-               if ( sRedirectURL != null )
-               {
-                  oResponse.sendRedirect( sRedirectURL );
-               }
-               else
-               {
-                  logAndRespond( oResponse, "redirect-resolve: could not resolve redirect request: " + oControllerReturnValue, null );
-               }
-            }
-            else
+            if ( ! handleRedirect( oResponse, oControllerReturnValue ) )
             {
                // otherwise assume it is a view
-               try
-               {
-                  // check if the value returned is type..
-                  if ( oControllerReturnValue instanceof Class )
-                  {
-                     // if so process as a view type..
-                     _oViewExecutor.execute( ( Class ) oControllerReturnValue, oRequest, oResponse );
-                  }
-                  else
-                  {
-                     // ...otherwise if so process as a view object
-                     _oViewExecutor.execute( oControllerReturnValue, oResponse );
-                  }
-               }
-               catch ( ViewExecutorException e )
-               {
-                  logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-               }
+               handleView( oRequest, oResponse, oControllerReturnValue );
             }
          }
       }
-      else
+      else  // try to resolve the request to a view
       {
-         // next try to resolve the request to a view
          oViewResolution = _oViewResolver.resolve( oRequest );
+
+         // fire the postResolution interceptor
+         if ( postResolutionIntercept( oRequest, oResponse, null, oViewResolution ) ) return;
+
+         // fire the preResponse interceptor
+         if ( preResponseIntercept( oRequest, oResponse, null, oViewResolution ) ) return;
 
          if ( oViewResolution != null )
          {
-            // fire the postResolution and preResponse interceptors
-            try
-            {
-               if ( ! _oRequestInterceptorExecutor.postResolution( oRequest, oResponse, null, oViewResolution ) )
-               {
-                  return;
-               }
-
-               if ( ! _oRequestInterceptorExecutor.preResponse( oRequest, oResponse, null, oViewResolution ) )
-               {
-                  return;
-               }
-            }
-            catch ( Exception e )
-            {
-               logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-            }
-
             // now execute the view
-            try
-            {
-               _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
-            }
-            catch ( ViewExecutorException e )
-            {
-               logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-            }
+            handleView( oRequest, oResponse, oViewResolution );
          }
          else
          {
@@ -500,14 +423,177 @@ public class HttpDispatcher extends HttpServlet
       }
 
       // fire the postResponse interceptors
+      postResponseIntercept( oRequest, oResponse, oControllerResolution, oViewResolution );
+   }
+
+   private boolean preResolutionIntercept( HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws IOException
+   {
       try
       {
-         _oRequestInterceptorExecutor.postResponse( oRequest, oResponse, oControllerResolution, oViewResolution );
+         return handleInterceptorReturnValue( oRequest,
+                                              oResponse,
+                                              _oRequestInterceptorExecutor.preResolution( oRequest,
+                                                                                          oResponse ) );
+      }
+      catch ( Exception e )
+      {
+         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+
+         return true;
+      }
+   }
+
+   private boolean postResolutionIntercept( HttpServletRequest             oRequest,
+                                            HttpServletResponse            oResponse,
+                                            ControllerResolver.Resolution  oControllerResolution,
+                                            ViewResolver.Resolution        oViewResolution )
+      throws IOException
+   {
+      try
+      {
+         return handleInterceptorReturnValue( oRequest,
+                                              oResponse,
+                                              _oRequestInterceptorExecutor.postResolution( oRequest,
+                                                                                           oResponse,
+                                                                                           oControllerResolution,
+                                                                                           oViewResolution ) );
+      }
+      catch ( Exception e )
+      {
+         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+
+         return true;
+      }
+   }
+
+   private boolean preResponseIntercept( HttpServletRequest             oRequest,
+                                         HttpServletResponse            oResponse,
+                                         ControllerResolver.Resolution  oControllerResolution,
+                                         ViewResolver.Resolution        oViewResolution )
+      throws IOException
+   {
+      try
+      {
+         return handleInterceptorReturnValue( oRequest,
+                                              oResponse,
+                                              _oRequestInterceptorExecutor.preResponse( oRequest,
+                                                                                        oResponse,
+                                                                                        oControllerResolution,
+                                                                                        oViewResolution ) );
+      }
+      catch ( Exception e )
+      {
+         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+
+         return true;
+      }
+   }
+
+   private void postResponseIntercept( HttpServletRequest            oRequest,
+                                       HttpServletResponse           oResponse,
+                                       ControllerResolver.Resolution oControllerResolution,
+                                       ViewResolver.Resolution       oViewResolution )
+      throws IOException
+   {
+      try
+      {
+         handleInterceptorReturnValue( oRequest,
+                                       oResponse,
+                                       _oRequestInterceptorExecutor.postResponse( oRequest,
+                                                                                  oResponse,
+                                                                                  oControllerResolution,
+                                                                                  oViewResolution ) );
       }
       catch ( Exception e )
       {
          logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
       }
+   }
+
+   private boolean handleInterceptorReturnValue( HttpServletRequest  oRequest,
+                                                 HttpServletResponse oResponse,
+                                                 Object              oReturnValue )
+      throws IOException
+   {
+      if ( oReturnValue != null )
+      {
+         if ( oReturnValue instanceof Boolean )
+         {
+            return ( ( ( Boolean ) oReturnValue ).booleanValue() );
+         }
+         else if ( handleRedirect( oResponse, oReturnValue ) )
+         {
+            return true;
+         }
+         else
+         {
+            // assume its a view
+            handleView( oRequest, oResponse, oReturnValue );
+         }
+      }
+      
+      return false;
+   }
+   
+   private void handleView( HttpServletRequest        oRequest,
+                            HttpServletResponse       oResponse,
+                            ViewResolver.Resolution   oViewResolution )
+      throws IOException
+   {
+      try
+      {
+         _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
+      }
+      catch ( ViewExecutorException e )
+      {
+         logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+      }
+   }
+
+   private void handleView( HttpServletRequest oRequest, HttpServletResponse oResponse, Object oControllerReturnValue )
+      throws IOException
+   {
+      try
+      {
+         // check if the value returned is a type ...
+         if ( oControllerReturnValue instanceof Class )
+         {
+            // if so process as a view type ...
+            _oViewExecutor.execute( ( Class ) oControllerReturnValue, oRequest, oResponse );
+         }
+         else
+         {
+            // ... otherwise if so process as a view object
+            _oViewExecutor.execute( oControllerReturnValue, oResponse );
+         }
+      }
+      catch ( ViewExecutorException e )
+      {
+         logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+      }
+   }
+
+   private boolean handleRedirect( HttpServletResponse oResponse, Object oControllerReturnValue )
+      throws IOException
+   {
+      if ( oControllerReturnValue instanceof Redirect )
+      {
+         String sRedirectURL = _oRedirectResolverFacade.resolve( ( Redirect ) oControllerReturnValue );
+
+         if ( sRedirectURL != null )
+         {
+            oResponse.sendRedirect( sRedirectURL );
+         }
+         else
+         {
+            logAndRespond( oResponse, "redirect-resolve: could not resolve redirect request: " + oControllerReturnValue, null );
+         }
+
+         return true;
+      }
+
+      return false;
    }
 
    private void logAndRespond( HttpServletResponse oResponse, String sError, Throwable oError )
