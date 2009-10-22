@@ -57,10 +57,10 @@ public class RequestInterceptorExecutor
 
       for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         _aoRequestInterceptorFacadeArray[ i ].postResolution( oRequest,
-                                                               oResponse,
-                                                               oControllerResolution,
-                                                               oViewResolution );
+         oReturnValue = _aoRequestInterceptorFacadeArray[ i ].postResolution( oRequest,
+                                                                              oResponse,
+                                                                              oControllerResolution,
+                                                                              oViewResolution );
          if ( isStopAfterThisInterceptor( oReturnValue ) )
          {
             return oReturnValue;
@@ -76,10 +76,10 @@ public class RequestInterceptorExecutor
 
       for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         _aoRequestInterceptorFacadeArray[ i ].preResponse( oRequest,
-                                                            oResponse,
-                                                            oControllerResolution,
-                                                            oViewResolution );
+         oReturnValue = _aoRequestInterceptorFacadeArray[ i ].preResponse( oRequest,
+                                                                           oResponse,
+                                                                           oControllerResolution,
+                                                                           oViewResolution );
          if ( isStopAfterThisInterceptor( oReturnValue ) )
          {
             return oReturnValue;
@@ -95,10 +95,10 @@ public class RequestInterceptorExecutor
 
       for ( int i = 0; i < _aoRequestInterceptorFacadeArray.length; i++ )
       {
-         _aoRequestInterceptorFacadeArray[ i ].postResponse( oRequest,
-                                                             oResponse,
-                                                             oControllerResolution,
-                                                             oViewResolution );
+         oReturnValue = _aoRequestInterceptorFacadeArray[ i ].postResponse( oRequest,
+                                                                            oResponse,
+                                                                            oControllerResolution,
+                                                                            oViewResolution );
          if ( isStopAfterThisInterceptor( oReturnValue ) )
          {
             return oReturnValue;
