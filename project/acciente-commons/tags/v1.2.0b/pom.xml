@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                            http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+   <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <!-- parent pom identification -->
+      <groupId>com.acciente</groupId>
+      <artifactId>acciente-induction-pom</artifactId>
+      <version>1.0.0</version>
+   </parent>
+   
+   <!-- artifact identification -->
+   <artifactId>acciente-commons</artifactId>
+   <version>${induction-version}</version>
+   <packaging>jar</packaging>
+
+   <!-- project information -->
+   <name>Acciente Commons Library</name>
+   <description>A set of components developed as part of the Induction project</description>
+
+   <!-- dependencies -->
+   <dependencies>
+      <!-- compile time -->
+      <dependency>
+         <groupId>org.apache.bcel</groupId>
+         <artifactId>bcel</artifactId>
+         <version>5.2</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>3.2.1</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-digester</groupId>
+         <artifactId>commons-digester</artifactId>
+         <version>1.8</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-fileupload</groupId>
+         <artifactId>commons-fileupload</artifactId>
+         <version>1.2.1</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-io</groupId>
+         <artifactId>commons-io</artifactId>
+         <version>1.4</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-logging</groupId>
+         <artifactId>commons-logging</artifactId>
+         <version>1.1.1</version>
+      </dependency>
+      <dependency>
+         <groupId>org.freemarker</groupId>
+         <artifactId>freemarker</artifactId>
+         <version>2.3.12</version>
+      </dependency>
+      <!-- compile time (provided) -->
+      <dependency>
+         <groupId>servletapi</groupId>
+         <artifactId>servlet-api</artifactId>
+         <version>2.4</version>
+         <scope>provided</scope>
+      </dependency>
+      <!-- runtime -->
+   </dependencies>
+
+</project>
