@@ -1,0 +1,239 @@
+<!-- induction-complete-sample-config.xml
+
+     Copyright 2009 Acciente, LLC
+
+     Acciente, LLC licenses this file to you under the
+     Apache License, Version 2.0 (the "License"); you
+     may not use this file except in compliance with the
+     License. You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in
+     writing, software distributed under the License is
+     distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+     OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing
+     permissions and limitations under the License.
+-->
+
+<!-- The purpose of this file is to demonstrate all the possible parameters that may used to configure
+     Induction. It should be noted that typically most Induction configurations will not use all the parameters
+     shown here. -->
+<config>
+    <!-- The java-class-path section allows you to specify locations from which
+    Induction will automatically reload classes -->
+    <java-class-path>
+        <compiled-directory>
+            <directory>\a\directory\with\class\files\to\be\reloaded\dynamically</directory>
+            <!-- If the above directory points to a subfolder of the folder where the package
+            folder structure begins, then specify package represented by the subfolder -->
+            <package-prefix>a.package.name</package-prefix>
+        </compiled-directory>
+        <compiled-directory>
+            <directory>\another\directory\with\class\files\to\be\reloaded\dynamically</directory>
+            <package-prefix>a.package.name</package-prefix>
+        </compiled-directory>
+    </java-class-path>
+
+
+    <!-- This directive loads config information from the specified file. This directive must occur as a
+         direct child of <config>  -->
+    <include-config resource="induction-complete-sample-config-include.xml" />
+
+    <!-- The following section allows you define the models used your application.
+
+         A model definition must specify a <class> and a <scope>. The <class> specifies
+         the name of the model class. The value specified for the <class> must be a fully
+         qualified classname.
+
+         If a model class implements an interface and it is desired that references to
+         the model (in the controllers) be via the model interface, then the interface
+         name implemented by the model must be specified as the <class> here, instead
+         of the name of model implemention class. The scope must contain one of the
+         following values: application, session, request (case insignificant).
+
+         For most real-life applications, each model class will have a factory class
+         specified. The model's factory class will be used by Induction to instantiate
+         objects of the respective model class. If no factory class is defined Induction
+         will expect the model class to have a single public constructor, which Induction
+         will call with parameter injection semantics. -->
+    <model-defs>
+        <model-def>
+            <class>the_name_of_the_model_class_or_an_interface</class>
+            <factory-class>the_name_of_the_factory_class_for_the_model</factory-class>
+            <scope>Session</scope>
+        </model-def>
+        <model-def>
+            <class>the_name_of_another_model_class_or_an_interface</class>
+            <factory-class>the_name_of_the_factory_class_for_the_model</factory-class>
+            <scope>Application</scope>
+            <init-on-startup>true</init-on-startup>
+        </model-def>
+    </model-defs>
+
+    <!-- The following section configures the templating engine -->
+    <templating>
+
+        <!-- This section defines (in order) the locations (and strategies) that should be used
+        to find a template -->
+        <template-path>
+            <directory>a\directory\name\on\file\system\which\will\get\searched\for\a\template</directory>
+            <loader-class>
+                <class>a_class_name_on_which_getResource_will_be_called_to_locate_a_template</class>
+                <path>/a/package/path/to/the/templates</path>
+            </loader-class>
+            <web-app-path>a/path/to/a/folder/inside/your/web/app/jar/file/relative/to/the/WEB-INF/folder</web-app-path>
+        </template-path>
+
+        <!-- An application may define a locale to used to select a specific template, in an
+        environment where more than once language version of the template exists -->
+        <locale>
+            <iso-language>en</iso-language>
+            <iso-country>US</iso-country>
+        </locale>
+
+        <!-- use to control if public fields in a view should be expose to a template (default is false) -->
+        <expose-public-fields>false</expose-public-fields>
+
+        <!-- An application may define a templating engine provider which is basically an
+        adapter that plugins in a templating engine into Induction. If no provider is defined
+        Induction use the built-in adapter for the FreeMarker templating engine -->
+        <templating-engine>
+            <class>the_name_of_a_class_that_implements_the_TemplatingEngine_interface</class>
+        </templating-engine>
+    </templating>
+
+    <!-- The following section configures how URLs are mapped to controllers by the built-in
+         controller resolver. A 2 step mapping algorithm is used.
+
+         Step 1 - During startup the built-in controller resolver scans the class path for fully qualified
+                  classnames that match the regex defined in <class-pattern>. If a classname
+                  matches the regex, then the regex is expected to return exactly one matching group containing
+                  the "short name" of the class.
+
+                  Each match is stored in a map is that maps the "short name" to the fully qualified class name.
+
+         Step 2 - When the resolver receives a reequest to resolve a URL it proceeds as follow.
+
+                  The URL is matched against the regex specified in <url-pattern>,
+                  if the regex does not match processing continues on to the next <url-to-class>
+                  definition (if any).
+
+                  If the regex does match then the regex is expected to return 2 matching groups the first
+                  group returned is assumed to be the "short name" and the second group returned is assumend
+                  to be name of method to dispatch to. If the method is empty the request is sent to the method
+                  name specified in <default-handler-method>.
+
+                  The "short name" extracted from the URL is looked up in the map built in Step 1, if there
+                  is a match the controller is executed, or more specifically the extracted method name is
+                  executed for the controller. If the lookup in the map fails processing continues on to the
+                  next <url-to-class> definition (if any).
+
+                  NOTE:
+
+                  Since the regex for these settings are expected to have an exact number of matching groups
+                  you should use the (?: parenthesis instead of ( to start a group that controls the match
+                  but should NOT be returned as a matching group. -->
+    <controller-mapping>
+        <url-to-class-map>
+            <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
+        </url-to-class-map>
+        <url-to-class-map>
+            <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(another_java_regex_string)</class-pattern>
+        </url-to-class-map>
+
+        <default-handler-method>my_favorite_handler_name</default-handler-method>
+        <ignore-handler-method-case>true</ignore-handler-method-case>
+    </controller-mapping>
+
+    <view-mapping>
+        <url-to-class-map>
+            <url-pattern>(a_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
+        </url-to-class-map>
+        <url-to-class-map>
+            <url-pattern>(another_java_regex_string)</url-pattern>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(another_java_regex_string)</class-pattern>
+        </url-to-class-map>
+    </view-mapping>
+
+    <redirect-mapping>
+        <class-to-url-map>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(a_java_regex_string)</class-pattern>
+            <!--  The class-replace directive is optional. It was introduced to enable mapping
+                  hyphenated URLs to class names, but in general it can be used to map URLs 
+                  with characters not supported in Java classnames.
+                  
+                  The class-replace directives (yes there can be more than one) are applied
+                  as find/replace on the group returned by the class-pattern.
+            -->
+            <class-replace>
+               <find>__</find>
+               <replace>-</replace>
+            </class-replace>
+            <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
+            <url-format-alt>alternate_url_format_with_both_$Name_and_$Method</url-format-alt>
+        </class-to-url-map>
+        <class-to-url-map>
+            <class-packages>a.package;b.package</class-packages>
+            <class-pattern>(another_java_regex_string)</class-pattern>
+            <url-format>a_url_format_with_$Name_and_optional_$Method</url-format>
+        </class-to-url-map>
+
+        <url-base>an_optional_base_url_for_redirects</url-base>
+    </redirect-mapping>
+
+    <controller-resolver>
+        <class>the_name_of_a_class_that_implements_a_controller_resolver</class>
+    </controller-resolver>
+
+    <view-resolver>
+        <class>the_name_of_a_class_that_implements_a_view_resolver</class>
+    </view-resolver>
+
+    <redirect-resolver>
+        <class>the_name_of_a_class_that_implements_a_redirect_resolver</class>
+    </redirect-resolver>
+
+    <request-interceptors>
+       <request-interceptor>
+          <class>the_name_of_class_that_implements_an_interceptor</class>
+       </request-interceptor>
+    </request-interceptors>
+
+    <file-upload>
+        <max-upload-size>10485760</max-upload-size>
+        <store-file-on-disk-threshold>20480</store-file-on-disk-threshold>
+        <uploaded-file-storage-dir>\\localhost\sandbox_partition\fileupload</uploaded-file-storage-dir>
+    </file-upload>
+</config>
