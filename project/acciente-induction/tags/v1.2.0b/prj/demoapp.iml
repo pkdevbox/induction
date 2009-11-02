@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="false" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="demoapp-web">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/web.xml" optional="false" version="2.5" />
+          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/conf/WEB-INF/induction-demoapp.xml">
+            <option name="DEFAULT_DIR" value="WEB-INF" />
+          </deploymentDescriptor>
+          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src/demoapp/helloworld3_app/HelloWorld3.ftl">
+            <option name="DEFAULT_DIR" value="WEB-INF/templates" />
+          </deploymentDescriptor>
+        </descriptors>
+        <webroots />
+        <sourceRoots>
+          <root url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src" />
+        </sourceRoots>
+        <building>
+          <setting name="EXPLODED_URL" value="file://C:/acciente/acciente-projects/software/project/demoapp/deploy" />
+          <setting name="EXPLODED_ENABLED" value="true" />
+          <setting name="JAR_URL" value="file://" />
+          <setting name="JAR_ENABLED" value="false" />
+          <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
+          <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
+          <setting name="EXCLUDE_EXPLODED_DIRECTORY" value="true" />
+          <setting name="RUN_JASPER_VALIDATION" value="false" />
+          <setting name="BUILD_ONLY_WEB_RESOURCES" value="false" />
+        </building>
+        <packaging>
+          <containerElement type="module" name="acciente-commons">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+          <containerElement type="module" name="acciente-induction">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+          <containerElement type="module" name="demoapp">
+            <attribute name="method" value="0" />
+            <attribute name="URI" value="&lt;N/A&gt;" />
+          </containerElement>
+          <containerElement type="library" level="module">
+            <attribute name="method" value="0" />
+            <attribute name="URI" value="&lt;N/A&gt;" />
+            <url>jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/</url>
+          </containerElement>
+          <containerElement type="library" name="apache-bcel-5.2" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="apache-commons-collections-3.2.1" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="apache-commons-digester-1.8" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="apache-commons-fileupload-1.2.1" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="apache-commons-io-1.4" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="apache-commons-logging-1.1.1" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="freemarker-2.3.12" level="application">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="library" name="jdk 1.4.2 - tools" level="module">
+            <attribute name="method" value="0" />
+            <attribute name="URI" value="/WEB-INF/lib" />
+          </containerElement>
+          <containerElement type="module" name="dragonfly">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+          <containerElement type="module" name="nitrogen">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+          <containerElement type="module" name="dragonFly">
+            <attribute name="method" value="1" />
+            <attribute name="URI" value="/WEB-INF/classes" />
+          </containerElement>
+        </packaging>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
+    <output-test url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
+    <content url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src">
+      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/demoapp/subversion/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="acciente-induction" />
+    <orderEntryProperties />
+  </component>
+</module>
+
