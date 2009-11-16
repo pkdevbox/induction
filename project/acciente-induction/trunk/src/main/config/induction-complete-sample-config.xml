@@ -160,6 +160,20 @@
 
         <default-handler-method>my_favorite_handler_name</default-handler-method>
         <ignore-handler-method-case>true</ignore-handler-method-case>
+
+    
+        <!-- the following directive is used to map exceptions that occur during controller
+             or view processing to an error handler. The error handler is simply a controller
+             that get called when if an exception of the specified exception class (or one of 
+             its super types) occurs -->
+        <error-to-class-map>
+            <exception-pattern>
+               <class-name>a.fully.qualified.exception.ClassName</class-name>
+               <!-- we can optionally specify if super types should be handled too, default is true -->
+               <include-derived>true</include-derived>
+            </exception-pattern>
+            <class-name>a.fully.qualified.controller.ClassName</class-name>
+        </error-to-class-map>
     </controller-mapping>
 
     <view-mapping>

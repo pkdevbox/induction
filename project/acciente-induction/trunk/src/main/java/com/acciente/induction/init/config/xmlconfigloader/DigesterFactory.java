@@ -104,7 +104,9 @@ public class DigesterFactory
          oDigester.addRule( XML.Config_ControllerMapping_DefaultHandlerMethod.PATTERN,          oControllerMappingRule.createSetDefaultHandlerMethodRule() );
          oDigester.addRule( XML.Config_ControllerMapping_IgnoreHandlerMethodCase.PATTERN,       oControllerMappingRule.createSetIgnoreHandlerMethodCaseRule() );
          {
-            ControllerMappingRule.AddURLToClassMapRule oAddURLToClassMapRule = oControllerMappingRule.createAddURLToClassMapRule();
+            ControllerMappingRule.AddURLToClassMapRule
+               oAddURLToClassMapRule = oControllerMappingRule.createAddURLToClassMapRule();
+
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap.PATTERN,                 oAddURLToClassMapRule );
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_URLPattern.PATTERN,      oAddURLToClassMapRule.createParamURLPatternRule() );
             oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassPackages.PATTERN,   oAddURLToClassMapRule.createParamClassPackagesRule() );
@@ -116,6 +118,21 @@ public class DigesterFactory
                oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace.PATTERN,          oAddClassFindReplaceDirectiveRule );
                oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Find.PATTERN,     oAddClassFindReplaceDirectiveRule.createParamFindRule() );
                oDigester.addRule( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Replace.PATTERN,  oAddClassFindReplaceDirectiveRule.createParamReplaceRule() );
+            }
+         }
+         {
+            ControllerMappingRule.AddErrorToClassMapRule
+               oAddErrorToClassMapRule = oControllerMappingRule.createAddErrorToClassMapRule();
+
+            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap.PATTERN,            oAddErrorToClassMapRule );
+            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ClassName.PATTERN,  oAddErrorToClassMapRule.createParamClassNameRule() );
+            {
+               ControllerMappingRule.AddErrorToClassMapRule.ExceptionPatternRule
+                  oExceptionPatternRule = oAddErrorToClassMapRule.createExceptionPatternRule();
+
+               oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern.PATTERN,                oExceptionPatternRule );
+               oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_ClassName.PATTERN,      oExceptionPatternRule.createParamClassNameRule() );
+               oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_IncludeDerived.PATTERN, oExceptionPatternRule.createParamIncludeDerivedRule() );
             }
          }
       }
