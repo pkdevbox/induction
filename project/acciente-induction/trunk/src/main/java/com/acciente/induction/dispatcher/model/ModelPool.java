@@ -71,6 +71,12 @@ public class ModelPool
       }
       else if ( oModelDef.isSessionScope() )
       {
+         if ( oHttpServletRequest == null )
+         {
+            throw new IllegalArgumentException( "model-error: attempt to access session scope model class: "
+                                                + sModelClassName
+                                                + " from a context where no session is available");
+         }
          oModel = getSessionScopeModel( oModelDef, oHttpServletRequest );
       }
       else if ( oModelDef.isRequestScope() )

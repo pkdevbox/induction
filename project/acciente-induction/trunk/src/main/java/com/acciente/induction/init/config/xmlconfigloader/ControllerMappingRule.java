@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-// EOF
-
 /**
  * Internal.
  * ControllerMappingRule
@@ -64,6 +62,11 @@ public class ControllerMappingRule extends Rule
    public AddURLToClassMapRule createAddURLToClassMapRule()
    {
       return new AddURLToClassMapRule();
+   }
+
+   public AddErrorToClassMapRule createAddErrorToClassMapRule()
+   {
+      return new AddErrorToClassMapRule();
    }
 
    public void begin( String sNamespace, String sName, Attributes oAttributes )
@@ -249,6 +252,103 @@ public class ControllerMappingRule extends Rule
             {
                _sReplaceStr = sText;
             }
+         }
+      }
+   }
+
+   public class AddErrorToClassMapRule extends Rule
+   {
+      private String    _sExceptionPattern_Classname;
+      private Boolean   _bExceptionPattern_IncludeDerived;
+      private String    _sClassname;
+
+      private boolean   _bExceptionPatternProvided;
+
+      public void begin( String sNamespace, String sName, Attributes oAttributes )
+      {
+         // reset data stored in rule
+         _bExceptionPatternProvided          = false;
+         _sExceptionPattern_Classname        = null;
+         _bExceptionPattern_IncludeDerived   = null;
+         _sClassname                         = null;
+      }
+
+      public void end( String sNamespace, String sName ) throws XMLConfigLoaderException
+      {
+         if ( _sClassname == null )
+         {
+            throw new XMLConfigLoaderException( "config > controller-mapping > error-to-class-map > class name is a required attribute" );
+         }
+
+         Config.ControllerMapping.ErrorToClassMap oErrorToClassMap
+            = _oControllerMapping.addErrorToClassMap( _sClassname );
+
+         if ( _bExceptionPatternProvided )
+         {
+            if ( _sExceptionPattern_Classname == null  )
+            {
+               throw new XMLConfigLoaderException( "config > controller-mapping > error-to-class-map > exception-pattern > class name is a required attribute" );
+            }
+            // optional IncludeDerived param gets default value true if ommitted
+            oErrorToClassMap.setExceptionPattern( _sExceptionPattern_Classname,
+                                                  _bExceptionPattern_IncludeDerived != null
+                                                   ? _bExceptionPattern_IncludeDerived.booleanValue()
+                                                   : true );
+         }
+      }
+
+      public ExceptionPatternRule createExceptionPatternRule()
+      {
+         return new ExceptionPatternRule();
+      }
+
+      public ParamClassNameRule createParamClassNameRule()
+      {
+         return new ParamClassNameRule();
+      }
+
+      public class ExceptionPatternRule extends Rule
+      {
+         public void begin( String sNamespace, String sName, Attributes oAttributes )
+         {
+            // reset data stored in rule
+            _sExceptionPattern_Classname        = null;
+            _bExceptionPattern_IncludeDerived   = null;
+            _bExceptionPatternProvided          = true;
+         }
+
+         public ParamClassNameRule createParamClassNameRule()
+         {
+            return new ParamClassNameRule();
+         }
+
+         public ParamIncludeDerivedRule createParamIncludeDerivedRule()
+         {
+            return new ParamIncludeDerivedRule();
+         }
+
+         private class ParamClassNameRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _sExceptionPattern_Classname = sText;
+            }
+         }
+
+         private class ParamIncludeDerivedRule extends Rule
+         {
+            public void body( String sNamespace, String sName, String sText )
+            {
+               _bExceptionPattern_IncludeDerived = Boolean.valueOf( sText );
+            }
+         }
+      }
+
+      private class ParamClassNameRule extends Rule
+      {
+         public void body( String sNamespace, String sName, String sText )
+         {
+            _sClassname = sText;
          }
       }
    }

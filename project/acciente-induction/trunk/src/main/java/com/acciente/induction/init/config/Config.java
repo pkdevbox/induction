@@ -853,6 +853,7 @@ public class Config
    public static class ControllerMapping
    {
       private List      _oURLToClassMapList        = new ArrayList();
+      private List      _oErrorToClassMapList      = new ArrayList();
       private String    _sDefaultHandlerMethodName = "handler";
       private boolean   _bIgnoreMethodNameCase     = false;
 
@@ -868,6 +869,20 @@ public class Config
       public List getURLToClassMapList()
       {
          return _oURLToClassMapList;
+      }
+
+      public ErrorToClassMap addErrorToClassMap( String sClassname )
+      {
+         ErrorToClassMap oErrorToClassMap = new ErrorToClassMap( sClassname );
+
+         _oErrorToClassMapList.add( oErrorToClassMap );
+
+         return oErrorToClassMap;
+      }
+
+      public List getErrorToClassMapList()
+      {
+         return _oErrorToClassMapList;
       }
 
       public String getDefaultHandlerMethodName()
@@ -922,6 +937,11 @@ public class Config
          for ( Iterator oIter = _oURLToClassMapList.iterator(); oIter.hasNext(); )
          {
             oBuffer.append ( ( ( URLToClassMap ) oIter.next() ).toXML() );
+         }
+
+         for ( Iterator oIter = _oErrorToClassMapList.iterator(); oIter.hasNext(); )
+         {
+            oBuffer.append ( ( ( ErrorToClassMap ) oIter.next() ).toXML() );
          }
 
          oBuffer.append( XML.Config_ControllerMapping_DefaultHandlerMethod.toXML( _sDefaultHandlerMethodName ) );
@@ -1048,6 +1068,90 @@ public class Config
                   XML.Config_ControllerMapping_URLToClassMap_ClassReplace
                      .toXML( XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Find.toXML( _sFindStr )
                              + XML.Config_ControllerMapping_URLToClassMap_ClassReplace_Replace.toXML( _sReplaceStr )
+                           );
+            }
+         }
+      }
+
+      /**
+       * Modular configuration container
+       */
+      public static class ErrorToClassMap
+      {
+         private ExceptionPattern   _oExceptionPattern = new ExceptionPattern( "java.lang.Throwable", true );
+         private String             _sClassname;
+
+         public ErrorToClassMap( String sClassname )
+         {
+            _sClassname = sClassname;
+         }
+
+         public void setExceptionPattern( String sClassname, boolean bIncludeDerived )
+         {
+            if ( sClassname == null )
+            {
+               throw new IllegalArgumentException( "config-error: exception pattern class name cannot be empty" );
+            }
+
+            _oExceptionPattern = new ExceptionPattern( sClassname, bIncludeDerived );
+         }
+
+         public ExceptionPattern getExceptionPattern()
+         {
+            return _oExceptionPattern;
+         }
+
+         public String getClassname()
+         {
+            return _sClassname;
+         }
+
+         public String toString()
+         {
+            return toXML();
+         }
+
+         public String toXML()
+         {
+            return
+               XML.Config_ControllerMapping_ErrorToClassMap
+                  .toXML( _oExceptionPattern.toXML()
+                          + XML.Config_ControllerMapping_ErrorToClassMap_ClassName.toXML( _sClassname )
+                        );
+         }
+
+         public static class ExceptionPattern
+         {
+            private String    _sClassname;
+            private boolean   _bIncludeDerived;
+
+            public ExceptionPattern( String sClassname, boolean bIncludeDerived )
+            {
+               _sClassname       = sClassname;
+               _bIncludeDerived  = bIncludeDerived;
+            }
+
+            public String getClassname()
+            {
+               return _sClassname;
+            }
+
+            public boolean isIncludeDerived()
+            {
+               return _bIncludeDerived;
+            }
+
+            public String toString()
+            {
+               return toXML();
+            }
+
+            public String toXML()
+            {
+               return
+                  XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern
+                     .toXML( XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_ClassName.toXML( _sClassname )
+                             + XML.Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_IncludeDerived.toXML( _bIncludeDerived )
                            );
             }
          }

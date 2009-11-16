@@ -56,16 +56,21 @@ public class XML
    public static final XML Config_Templating_TemplatingEngine                    = new XML( "templating-engine",     Config_Templating );
    public static final XML Config_Templating_TemplatingEngine_Class              = new XML( "class",                 Config_Templating_TemplatingEngine );
 
-   public static final XML Config_ControllerMapping                                    = new XML( "controller-mapping",          Config );
-   public static final XML Config_ControllerMapping_URLToClassMap                      = new XML( "url-to-class-map",            Config_ControllerMapping );
-   public static final XML Config_ControllerMapping_URLToClassMap_URLPattern           = new XML( "url-pattern",                 Config_ControllerMapping_URLToClassMap );
-   public static final XML Config_ControllerMapping_URLToClassMap_ClassPackages        = new XML( "class-packages",              Config_ControllerMapping_URLToClassMap );
-   public static final XML Config_ControllerMapping_URLToClassMap_ClassPattern         = new XML( "class-pattern",               Config_ControllerMapping_URLToClassMap );
-   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace         = new XML( "class-replace",               Config_ControllerMapping_URLToClassMap );
-   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace_Find    = new XML( "find",                        Config_ControllerMapping_URLToClassMap_ClassReplace );
-   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace_Replace = new XML( "replace",                     Config_ControllerMapping_URLToClassMap_ClassReplace );
-   public static final XML Config_ControllerMapping_DefaultHandlerMethod               = new XML( "default-handler-method",      Config_ControllerMapping );
-   public static final XML Config_ControllerMapping_IgnoreHandlerMethodCase            = new XML( "ignore-handler-method-case",  Config_ControllerMapping );
+   public static final XML Config_ControllerMapping                                             = new XML( "controller-mapping",          Config );
+   public static final XML Config_ControllerMapping_URLToClassMap                               = new XML( "url-to-class-map",            Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_URLToClassMap_URLPattern                    = new XML( "url-pattern",                 Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassPackages                 = new XML( "class-packages",              Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassPattern                  = new XML( "class-pattern",               Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace                  = new XML( "class-replace",               Config_ControllerMapping_URLToClassMap );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace_Find             = new XML( "find",                        Config_ControllerMapping_URLToClassMap_ClassReplace );
+   public static final XML Config_ControllerMapping_URLToClassMap_ClassReplace_Replace          = new XML( "replace",                     Config_ControllerMapping_URLToClassMap_ClassReplace );
+   public static final XML Config_ControllerMapping_DefaultHandlerMethod                        = new XML( "default-handler-method",      Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_IgnoreHandlerMethodCase                     = new XML( "ignore-handler-method-case",  Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_ErrorToClassMap                                   = new XML( "error-to-class-map",          Config_ControllerMapping );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern                  = new XML( "exception-pattern",           Config_ControllerMapping_ErrorToClassMap );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_ClassName        = new XML( "class-name",                        Config_ControllerMapping_ErrorToClassMap_ExceptionPattern );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_IncludeDerived   = new XML( "include-derived",             Config_ControllerMapping_ErrorToClassMap_ExceptionPattern );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ClassName                         = new XML( "class-name",                  Config_ControllerMapping_ErrorToClassMap );
 
    public static final XML Config_ViewMapping                                    = new XML( "view-mapping",                Config );
    public static final XML Config_ViewMapping_URLToClassMap                      = new XML( "url-to-class-map",            Config_ViewMapping );
