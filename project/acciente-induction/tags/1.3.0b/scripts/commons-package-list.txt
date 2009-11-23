@@ -1,5 +1,0 @@
-com.acciente.commons.htmlform
-com.acciente.commons.io
-com.acciente.commons.lang
-com.acciente.commons.loader
-com.acciente.commons.reflect
