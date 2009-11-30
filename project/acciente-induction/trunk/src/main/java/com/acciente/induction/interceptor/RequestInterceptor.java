@@ -36,8 +36,8 @@ package com.acciente.induction.interceptor;
  *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
  *
  *    Meaning of return value:<p>
- *       If false is returned then no further processing is done on this request, this means no further
- *       interceptors are executed and no view or controller will be executed. If a value other than false is
+ *       If true is returned then no further processing is done on this request, this means no further
+ *       interceptors are executed and no view or controller will be executed. If a value other than true is
  *       returned or no value is returned the execution continues to the next interceptor in the chain (if any).<p>
  *
  * <code>Object postResolution()</code><p>
@@ -48,8 +48,8 @@ package com.acciente.induction.interceptor;
  *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
  *
  *    Meaning of return value:<p>
- *       If false is returned then no further processing is done on this request, this means no further
- *       interceptors are executed and no view or controller will be executed. If a value other than false is
+ *       If true is returned then no further processing is done on this request, this means no further
+ *       interceptors are executed and no view or controller will be executed. If a value other than true is
  *       returned or no value is returned the execution continues to the next interceptor in the chain (if any).<p>
  *
  * <code>Object preResponse()</code><p>
@@ -70,9 +70,9 @@ package com.acciente.induction.interceptor;
  *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
  *
  *    Meaning of return value:<p>
- *       If false is returned then no further processing is done on this request, this means no further
+ *       If true is returned then no further processing is done on this request, this means no further
  *       interceptors are executed and the view or controller response value will not be processed. If a value
- *       other than false is returned or no value is returned the execution continues to the next interceptor
+ *       other than true is returned or no value is returned the execution continues to the next interceptor
  *       in the chain (if any).<p>
  *
  * <code>Object postResponse()</code><p>
@@ -82,7 +82,7 @@ package com.acciente.induction.interceptor;
  *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
  *
  *    Meaning of return value:<p>
- *       If false is returned then no further processing is done on this request, this means no further
+ *       If true is returned then no further processing is done on this request, this means no further
  *       interceptors are executed. If a value other than fasle is returned or no value is returned the execution
  *       continues to the next interceptor in the chain (if any).<p>
  *

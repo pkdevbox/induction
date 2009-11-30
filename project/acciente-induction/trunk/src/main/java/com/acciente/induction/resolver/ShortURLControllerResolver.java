@@ -36,12 +36,15 @@ public class ShortURLControllerResolver implements ControllerResolver
 {
    private  Config.ControllerMapping   _oControllerMapping;
    private  List                       _oURL2ClassMapperList;
+   private  List                       _oError2ClassMapperList;
 
    public ShortURLControllerResolver( Config.ControllerMapping    oControllerMapping,
-                                      ClassLoader                 oClassLoader ) throws IOException
+                                      ClassLoader                 oClassLoader )
+      throws IOException, ClassNotFoundException
    {
-      _oControllerMapping   = oControllerMapping;
-      _oURL2ClassMapperList = createURL2ClassMapperList( oControllerMapping, oClassLoader );
+      _oControllerMapping     = oControllerMapping;
+      _oURL2ClassMapperList   = createURL2ClassMapperList( oControllerMapping, oClassLoader );
+      _oError2ClassMapperList = createError2ClassMapperList( oControllerMapping, oClassLoader );
    }
 
    public Resolution resolve( HttpServletRequest oRequest )
@@ -52,7 +55,7 @@ public class ShortURLControllerResolver implements ControllerResolver
       {
          for ( Iterator oIter = _oURL2ClassMapperList.iterator(); oIter.hasNext(); )
          {
-            URL2ClassMapper.ClassAndMethod oClassAndMethod;
+            ClassAndMethod oClassAndMethod;
 
             oClassAndMethod = ( ( URL2ClassMapper ) oIter.next() ).mapURL2Class( sURLPath );
 
@@ -77,7 +80,62 @@ public class ShortURLControllerResolver implements ControllerResolver
       return null;
    }
 
-   private List createURL2ClassMapperList( Config.ControllerMapping oControllerMapping, ClassLoader oClassLoader ) throws IOException
+   public Resolution resolve( Throwable oThrowable )
+   {
+      if ( oThrowable != null )
+      {
+         for ( Iterator oIter = _oError2ClassMapperList.iterator(); oIter.hasNext(); )
+         {
+            ClassAndMethod oClassAndMethod;
+
+            oClassAndMethod = ( ( Error2ClassMapper ) oIter.next() ).mapError2Class( oThrowable );
+
+            if ( oClassAndMethod != null )
+            {
+               if ( Strings.isEmpty( oClassAndMethod.getMethodName() ) )
+               {
+                  return new Resolution( oClassAndMethod.getClassName(),
+                                         _oControllerMapping.getDefaultHandlerMethodName(),
+                                         _oControllerMapping.isIgnoreMethodNameCase() );
+               }
+               else
+               {
+                  return new Resolution( oClassAndMethod.getClassName(),
+                                         oClassAndMethod.getMethodName(),
+                                         _oControllerMapping.isIgnoreMethodNameCase() );
+               }
+            }
+         }
+      }
+
+      return null;
+   }
+
+   private List createError2ClassMapperList( Config.ControllerMapping oControllerMapping, ClassLoader oClassLoader )
+      throws ClassNotFoundException
+   {
+      List oError2ClassMapperList;
+
+      oError2ClassMapperList = new ArrayList( oControllerMapping.getErrorToClassMapList().size() );
+
+      for ( Iterator oError2ClassMapIter = oControllerMapping.getErrorToClassMapList().iterator(); oError2ClassMapIter.hasNext(); )
+      {
+         Config.ControllerMapping.ErrorToClassMap  oErrorToClassMap;
+
+         oErrorToClassMap = ( Config.ControllerMapping.ErrorToClassMap ) oError2ClassMapIter.next();
+
+         oError2ClassMapperList.add( new Error2ClassMapper( oErrorToClassMap.getExceptionPattern().getClassName(),
+                                                            oErrorToClassMap.getExceptionPattern().isIncludeDerived(),
+                                                            oErrorToClassMap.getClassName(),
+                                                            oErrorToClassMap.getClassMethodName(),
+                                                            oClassLoader ) );
+      }
+
+      return oError2ClassMapperList;
+   }
+
+   private List createURL2ClassMapperList( Config.ControllerMapping oControllerMapping, ClassLoader oClassLoader )
+      throws IOException
    {
       List oURL2ClassMapperList;
 

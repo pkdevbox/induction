@@ -160,7 +160,7 @@ public class HttpDispatcher extends HttpServlet
                                                         oServletConfig,
                                                         oTemplatingEngine,
                                                         oConfig.getFileUpload() );
-      ModelPool      oModelPool     = null;
+      ModelPool      oModelPool;
 
       try
       {
@@ -350,19 +350,171 @@ public class HttpDispatcher extends HttpServlet
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
-      throws ServletException, IOException
-   {
-      dispatch( oRequest, oResponse );
-   }
-
-   public void dispatch( HttpServletRequest oRequest, HttpServletResponse oResponse )
       throws IOException
    {
-      ControllerResolver.Resolution    oControllerResolution   = null;
-      ViewResolver.Resolution          oViewResolution         = null;
+      dispatchRequest( oRequest, oResponse );
+   }
 
-      // fire the preResolution interceptor
-      if ( preResolutionIntercept( oRequest, oResponse ) ) return;
+   public void dispatchRequest( HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws IOException
+   {
+      try
+      {
+         // fire the preResolution interceptor
+         dispatchInterceptors_preResolution( oRequest, oResponse );
+
+         // first try to resolve the request to a controller
+         if ( ! dispatchControllerRequest( oRequest, oResponse ) )
+         {
+            // try to dispatch the request to a view
+            if ( ! dispatchViewRequest( oRequest, oResponse ) )
+            {
+               // even if we did not resolve to a contoller or view since we attempted resolution,
+               // we fire the postResolution interceptor
+               dispatchInterceptors_postResolution( oRequest, oResponse, null, null );
+
+               throw new StopRequestProcessingSignal( "dispatch-request >",
+                                                      "Request did not resolve to a controller or view, path > "
+                                                         + oRequest.getPathInfo() );
+            }
+         }
+      }
+      catch ( StopRequestProcessingSignal oSignal )
+      {
+         if ( oSignal.isError() )
+         {
+            logAndRespond( oResponse, oSignal );
+         }
+      }
+   }
+
+   private void dispatchInterceptors_preResolution( HttpServletRequest  oRequest,
+                                                    HttpServletResponse oResponse )
+      throws StopRequestProcessingSignal
+   {
+      try
+      {
+         Object oInterceptorReturnValue = _oRequestInterceptorExecutor.preResolution( oRequest, oResponse );
+
+         dispatchLastInterceptorReturnValue( oRequest, oResponse, null, null,
+                                             oInterceptorReturnValue );
+      }
+      catch ( Exception e )
+      {
+         throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-resolution >", e );
+      }
+   }
+
+   private void dispatchInterceptors_postResolution( HttpServletRequest             oRequest,
+                                                     HttpServletResponse            oResponse,
+                                                     ControllerResolver.Resolution  oControllerResolution,
+                                                     ViewResolver.Resolution        oViewResolution )
+      throws StopRequestProcessingSignal
+   {
+      try
+      {
+         Object oInterceptorReturnValue = _oRequestInterceptorExecutor.postResolution( oRequest,
+                                                                                       oResponse,
+                                                                                       oControllerResolution,
+                                                                                       oViewResolution );
+
+         dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
+                                             oInterceptorReturnValue );
+      }
+      catch ( Exception e )
+      {
+         throw new StopRequestProcessingSignal( "dispatch-interceptors > post-resolution >", e );
+      }
+   }
+
+   private void dispatchInterceptors_preResponse( HttpServletRequest             oRequest,
+                                                  HttpServletResponse            oResponse,
+                                                  ControllerResolver.Resolution  oControllerResolution,
+                                                  ViewResolver.Resolution        oViewResolution )
+      throws StopRequestProcessingSignal
+   {
+      try
+      {
+         Object oInterceptorReturnValue = _oRequestInterceptorExecutor.preResponse( oRequest,
+                                                                                    oResponse,
+                                                                                    oControllerResolution,
+                                                                                    oViewResolution );
+
+         dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
+                                             oInterceptorReturnValue );
+      }
+      catch ( Exception e )
+      {
+         throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-response >", e );
+      }
+   }
+
+   private void dispatchInterceptors_postResponse( HttpServletRequest            oRequest,
+                                                   HttpServletResponse           oResponse,
+                                                   ControllerResolver.Resolution oControllerResolution,
+                                                   ViewResolver.Resolution       oViewResolution )
+      throws StopRequestProcessingSignal
+   {
+      try
+      {
+         Object oInterceptorReturnValue = _oRequestInterceptorExecutor.postResponse( oRequest,
+                                                                                     oResponse,
+                                                                                     oControllerResolution,
+                                                                                     oViewResolution );
+
+         dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
+                                             oInterceptorReturnValue );
+      }
+      catch ( Exception e )
+      {
+         throw new StopRequestProcessingSignal( "dispatch-interceptors > post-response >", e );
+      }
+   }
+
+   private void dispatchLastInterceptorReturnValue( HttpServletRequest              oRequest,
+                                                    HttpServletResponse             oResponse,
+                                                    ControllerResolver.Resolution   oControllerResolution,
+                                                    ViewResolver.Resolution         oViewResolution,
+                                                    Object                          oInterceptorReturnValue )
+      throws StopRequestProcessingSignal
+   {
+      if ( oInterceptorReturnValue != null )
+      {
+         if ( oInterceptorReturnValue instanceof Boolean )
+         {
+            if ( ( ( Boolean ) oInterceptorReturnValue ).booleanValue() )
+            {
+               // if the last interceptor returns true, then stop further processing of the request, per our spec
+               throw new StopRequestProcessingSignal();
+            }
+         }
+         else
+         {
+            if ( oInterceptorReturnValue instanceof Redirect )
+            {
+               dispatchRedirect( oResponse, ( Redirect ) oInterceptorReturnValue );
+            }
+            else
+            {
+               // assume its a view
+               try
+               {
+                  dispatchViewClassOrInstance( oRequest, oResponse, oInterceptorReturnValue );
+               }
+               catch ( ViewExecutorException e1 )
+               {
+                  // note that the error handler controller below always issues a stop signal
+                  dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, true, e1.getCause() );
+               }
+            }
+         }
+      }
+   }
+
+   private boolean dispatchControllerRequest( HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws StopRequestProcessingSignal
+   {
+      ControllerResolver.Resolution    oControllerResolution;
 
       // first try to resolve the request to a controller
       oControllerResolution = _oControllerResolver.resolve( oRequest );
@@ -370,245 +522,284 @@ public class HttpDispatcher extends HttpServlet
       if ( oControllerResolution != null )
       {
          // fire the postResolution interceptor
-         if ( postResolutionIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
+         dispatchInterceptors_postResolution( oRequest, oResponse, oControllerResolution, null );
 
-         // execute the controller
-         Object   oControllerReturnValue = null;
+         // now execute the controller, this try/catch is to handle any exceptions thrown during controller execution
+         Object   oControllerReturnValue;
 
          try
          {
             oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse );
-
-            // fire the preResponse interceptor
-            if ( preResponseIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
          }
-         catch ( ControllerExecutorException e )
+         catch ( ControllerExecutorException e1 )
          {
-            // fire the preResponse interceptor
-            if ( preResponseIntercept( oRequest, oResponse, oControllerResolution, null ) ) return;
+            // note that the error handler controller below always issues a stop signal
+            dispatchErrorController( oRequest, oResponse, oControllerResolution, null, false, e1.getCause() );
 
-            logAndRespond( oResponse, "controller-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+            // the redundant stop signal below is to inform the compiler of the above fact to prevent it
+            // from giving an error that oControllerReturnValue below may be uninitialized
+            throw new StopRequestProcessingSignal();
          }
 
          // process the controller's return value (if any)
          if ( oControllerReturnValue != null )
          {
+            // fire the preResponse interceptor
+            dispatchInterceptors_preResponse( oRequest, oResponse, oControllerResolution, null );
+
             // is it a redirect?
-            if ( ! handleRedirect( oResponse, oControllerReturnValue ) )
+            if ( oControllerReturnValue instanceof Redirect )
+            {
+               dispatchRedirect( oResponse, ( Redirect ) oControllerReturnValue );
+            }
+            else
             {
                // otherwise assume it is a view
-               handleView( oRequest, oResponse, oControllerReturnValue );
+               try
+               {
+                  dispatchViewClassOrInstance( oRequest, oResponse, oControllerReturnValue );
+               }
+               catch ( ViewExecutorException e1 )
+               {
+                  // note that the error handler controller below always issues a stop signal
+                  dispatchErrorController( oRequest, oResponse, oControllerResolution, null, true, e1.getCause() );
+               }
             }
+
+            // fire the postResponse interceptors
+            dispatchInterceptors_postResponse( oRequest, oResponse, oControllerResolution, null );
          }
-      }
-      else  // try to resolve the request to a view
-      {
-         oViewResolution = _oViewResolver.resolve( oRequest );
-
-         // fire the postResolution interceptor
-         if ( postResolutionIntercept( oRequest, oResponse, null, oViewResolution ) ) return;
-
-         // fire the preResponse interceptor
-         if ( preResponseIntercept( oRequest, oResponse, null, oViewResolution ) ) return;
-
-         if ( oViewResolution != null )
-         {
-            // now execute the view
-            handleView( oRequest, oResponse, oViewResolution );
-         }
-         else
-         {
-            logAndRespond( oResponse, "dispatch-resolve: request did not resolve to a controller or view: " + oRequest.getPathInfo(), null );
-         }
-      }
-
-      // fire the postResponse interceptors
-      postResponseIntercept( oRequest, oResponse, oControllerResolution, oViewResolution );
-   }
-
-   private boolean preResolutionIntercept( HttpServletRequest oRequest, HttpServletResponse oResponse )
-      throws IOException
-   {
-      try
-      {
-         return handleInterceptorReturnValue( oRequest,
-                                              oResponse,
-                                              _oRequestInterceptorExecutor.preResolution( oRequest,
-                                                                                          oResponse ) );
-      }
-      catch ( Exception e )
-      {
-         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
 
          return true;
       }
+
+      return false;
    }
 
-   private boolean postResolutionIntercept( HttpServletRequest             oRequest,
-                                            HttpServletResponse            oResponse,
-                                            ControllerResolver.Resolution  oControllerResolution,
-                                            ViewResolver.Resolution        oViewResolution )
-      throws IOException
-   {
-      try
-      {
-         return handleInterceptorReturnValue( oRequest,
-                                              oResponse,
-                                              _oRequestInterceptorExecutor.postResolution( oRequest,
-                                                                                           oResponse,
-                                                                                           oControllerResolution,
-                                                                                           oViewResolution ) );
-      }
-      catch ( Exception e )
-      {
-         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-
-         return true;
-      }
-   }
-
-   private boolean preResponseIntercept( HttpServletRequest             oRequest,
+   private void dispatchErrorController( HttpServletRequest             oRequest,
                                          HttpServletResponse            oResponse,
                                          ControllerResolver.Resolution  oControllerResolution,
-                                         ViewResolver.Resolution        oViewResolution )
-      throws IOException
+                                         ViewResolver.Resolution        oViewResolution,
+                                         boolean                        bPreResponseInterceptorCalled,
+                                         Throwable oError )
+      throws StopRequestProcessingSignal
    {
-      try
-      {
-         return handleInterceptorReturnValue( oRequest,
-                                              oResponse,
-                                              _oRequestInterceptorExecutor.preResponse( oRequest,
-                                                                                        oResponse,
-                                                                                        oControllerResolution,
-                                                                                        oViewResolution ) );
-      }
-      catch ( Exception e )
-      {
-         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
+      // there was an exception, first try to invoke the error handler controller (if any)
+      ControllerResolver.Resolution    oErrorControllerResolution;
 
-         return true;
-      }
-   }
+      oErrorControllerResolution = _oControllerResolver.resolve( oError );
 
-   private void postResponseIntercept( HttpServletRequest            oRequest,
-                                       HttpServletResponse           oResponse,
-                                       ControllerResolver.Resolution oControllerResolution,
-                                       ViewResolver.Resolution       oViewResolution )
-      throws IOException
-   {
-      try
+      if ( oErrorControllerResolution != null )
       {
-         handleInterceptorReturnValue( oRequest,
-                                       oResponse,
-                                       _oRequestInterceptorExecutor.postResponse( oRequest,
-                                                                                  oResponse,
-                                                                                  oControllerResolution,
-                                                                                  oViewResolution ) );
-      }
-      catch ( Exception e )
-      {
-         logAndRespond( oResponse, "interceptor-exec-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-      }
-   }
+         Object   oErrorControllerReturnValue;
 
-   private boolean handleInterceptorReturnValue( HttpServletRequest  oRequest,
-                                                 HttpServletResponse oResponse,
-                                                 Object              oReturnValue )
-      throws IOException
-   {
-      if ( oReturnValue != null )
-      {
-         if ( oReturnValue instanceof Boolean )
+         try
          {
-            return ( ( ( Boolean ) oReturnValue ).booleanValue() );
+            oErrorControllerReturnValue = _oControllerExecutor.execute( oErrorControllerResolution, oRequest, oResponse );
          }
-         else if ( handleRedirect( oResponse, oReturnValue ) )
+         catch ( ControllerExecutorException e2 )
          {
-            return true;
-         }
-         else
-         {
-            // assume its a view
-            handleView( oRequest, oResponse, oReturnValue );
-         }
-      }
-      
-      return false;
-   }
-   
-   private void handleView( HttpServletRequest        oRequest,
-                            HttpServletResponse       oResponse,
-                            ViewResolver.Resolution   oViewResolution )
-      throws IOException
-   {
-      try
-      {
-         _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
-      }
-      catch ( ViewExecutorException e )
-      {
-         logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-      }
-   }
-
-   private void handleView( HttpServletRequest oRequest, HttpServletResponse oResponse, Object oControllerReturnValue )
-      throws IOException
-   {
-      try
-      {
-         // check if the value returned is a type ...
-         if ( oControllerReturnValue instanceof Class )
-         {
-            // if so process as a view type ...
-            _oViewExecutor.execute( ( Class ) oControllerReturnValue, oRequest, oResponse );
-         }
-         else
-         {
-            // ... otherwise if so process as a view object
-            _oViewExecutor.execute( oControllerReturnValue, oResponse );
-         }
-      }
-      catch ( ViewExecutorException e )
-      {
-         logAndRespond( oResponse, "view-executor-" + e.getMessage(), e.getCause() == null ? e : e.getCause() );
-      }
-   }
-
-   private boolean handleRedirect( HttpServletResponse oResponse, Object oControllerReturnValue )
-      throws IOException
-   {
-      if ( oControllerReturnValue instanceof Redirect )
-      {
-         String sRedirectURL = _oRedirectResolverFacade.resolve( ( Redirect ) oControllerReturnValue );
-
-         if ( sRedirectURL != null )
-         {
-            oResponse.sendRedirect( sRedirectURL );
-         }
-         else
-         {
-            logAndRespond( oResponse, "redirect-resolve: could not resolve redirect request: " + oControllerReturnValue, null );
+            // there was an error executing the error handler!! so we abort
+            throw new StopRequestProcessingSignal( "dispatch-error-controller > During execution of error-handler-controller >", e2 );
          }
 
-         return true;
-      }
+         // process the controller's return value (if any)
+         if ( oErrorControllerReturnValue != null )
+         {
+            // fire the preResponse interceptor
+            if ( ! bPreResponseInterceptorCalled )
+            {
+               dispatchInterceptors_preResponse( oRequest, oResponse, oControllerResolution, oViewResolution );
+            }
 
-      return false;
-   }
+            // now process the return value of the error controller
+            if ( oErrorControllerReturnValue instanceof Redirect )  // is it a redirect?
+            {
+               dispatchRedirect( oResponse, ( Redirect ) oErrorControllerReturnValue );
+            }
+            else
+            {
+               // otherwise assume it is a view
+               try
+               {
+                  dispatchViewClassOrInstance( oRequest, oResponse, oErrorControllerReturnValue );
+               }
+               catch ( ViewExecutorException e1 )
+               {
+                  // there was an error executing the error handler!! so we abort
+                  throw new StopRequestProcessingSignal( "dispatch-error-controller > During execution of view returned by error-handler-controller >", e1 );
+               }
+            }
 
-   private void logAndRespond( HttpServletResponse oResponse, String sError, Throwable oError )
-      throws IOException
-   {
-      if ( oError == null )
-      {
-         _oLog.error( "dispatch-error: " + sError );
-         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError );
+            // fire the postResponse interceptors
+            dispatchInterceptors_postResponse( oRequest, oResponse, oControllerResolution, oViewResolution );
+
+            // we sucessfully ran the error handler controller, so we are done with this request
+            throw new StopRequestProcessingSignal();
+         }
       }
       else
       {
-         _oLog.error( "dispatch-error: " + sError, oError );
-         //oError.printStackTrace();
-         oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError + " (more details in dispatcher log)" );
+         // there is no error handler!! so we abort
+         throw new StopRequestProcessingSignal( "dispatch-error-controller >",
+                                                "Could not resolve error-handler-controller for error: " + oError.getClass() );
+      }
+   }
+
+   private boolean dispatchViewRequest( HttpServletRequest oRequest, HttpServletResponse oResponse )
+      throws StopRequestProcessingSignal
+   {
+      ViewResolver.Resolution    oViewResolution;
+
+      // try to resolve the request to a view
+      oViewResolution = _oViewResolver.resolve( oRequest );
+
+      if ( oViewResolution != null )
+      {
+         // fire the postResolution interceptor
+         dispatchInterceptors_postResolution( oRequest, oResponse, null, oViewResolution );
+
+         // fire the preResponse interceptor
+         dispatchInterceptors_preResponse( oRequest, oResponse, null, oViewResolution );
+
+         // now execute the view
+         try
+         {
+            _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
+         }
+         catch ( ViewExecutorException e1 )
+         {
+            // note that the error handler controller below always issues a stop signal
+            dispatchErrorController( oRequest, oResponse, null, oViewResolution, true, e1.getCause() );
+         }
+
+         // fire the postResponse interceptors
+         dispatchInterceptors_postResponse( oRequest, oResponse, null, oViewResolution );
+
+         return true;
+      }
+
+      return false;
+   }
+
+   private void dispatchViewClassOrInstance( HttpServletRequest   oRequest,
+                                             HttpServletResponse  oResponse,
+                                             Object               oControllerReturnValue )
+      throws ViewExecutorException
+   {
+      // check if the value returned is a type ...
+      if ( oControllerReturnValue instanceof Class )
+      {
+         // if so process as a view type ...
+         _oViewExecutor.execute( ( Class ) oControllerReturnValue, oRequest, oResponse );
+      }
+      else
+      {
+         // ... otherwise process as a view object
+         _oViewExecutor.execute( oControllerReturnValue, oResponse );
+      }
+   }
+
+   private void dispatchRedirect( HttpServletResponse oResponse, Redirect oRedirect )
+      throws StopRequestProcessingSignal
+   {
+      String sRedirectURL = _oRedirectResolverFacade.resolve( oRedirect );
+
+      if ( sRedirectURL != null )
+      {
+         try
+         {
+            oResponse.sendRedirect( sRedirectURL );
+         }
+         catch ( IOException e )
+         {
+            throw new StopRequestProcessingSignal( "dispatch-redirect > Error during sendRedirect( ... ) >", e );
+         }
+      }
+      else
+      {
+         // note that we are choosing to not call the error-handler controller here, wondering if
+         // this is the right decision
+         throw new StopRequestProcessingSignal( "dispatch-redirect >",
+                                                "Could not resolve redirect request: " + oRedirect );
+      }
+
+      throw new StopRequestProcessingSignal();
+   }
+
+   private void logAndRespond( HttpServletResponse oResponse, StopRequestProcessingSignal oSRPSignal )
+      throws IOException
+   {
+      String sError;
+
+      if ( oSRPSignal.getErrorDescription() == null )
+      {
+         if ( oSRPSignal.getErrorCause() == null )
+         {
+            sError = oSRPSignal.getErrorLocation();
+         }
+         else
+         {
+            sError = oSRPSignal.getErrorLocation() + " " + oSRPSignal.getErrorCause().getMessage();
+         }
+      }
+      else
+      {
+         sError = oSRPSignal.getErrorLocation() + " " + oSRPSignal.getErrorDescription();
+      }
+
+      if ( oSRPSignal.getErrorCause() != null )
+      {
+         _oLog.error( sError, oSRPSignal.getErrorCause() );
+      }
+      else
+      {
+         _oLog.error( sError );
+      }
+
+      oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError );
+   }
+
+   public static class StopRequestProcessingSignal extends Exception
+   {
+      private  String      _bErrorLocation;
+      private  String      _bErrorDescription;
+      private  Throwable   _oErrorCause;
+
+      public StopRequestProcessingSignal()
+      {
+      }
+
+      public StopRequestProcessingSignal( String bErrorLocation, Throwable oErrorCause )
+      {
+         _bErrorLocation   = bErrorLocation;
+         _oErrorCause      = oErrorCause;
+      }
+
+      public StopRequestProcessingSignal( String bErrorLocation, String bErrorDescription )
+      {
+         _bErrorLocation      = bErrorLocation;
+         _bErrorDescription   = bErrorDescription;
+      }
+
+      public boolean isError()
+      {
+         return _bErrorLocation != null;
+      }
+
+      public String getErrorLocation()
+      {
+         return _bErrorLocation;
+      }
+
+      public String getErrorDescription()
+      {
+         return _bErrorDescription;
+      }
+
+      public Throwable getErrorCause()
+      {
+         return _oErrorCause;
       }
    }
 }

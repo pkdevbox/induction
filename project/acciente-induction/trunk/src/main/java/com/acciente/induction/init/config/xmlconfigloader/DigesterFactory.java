@@ -124,8 +124,9 @@ public class DigesterFactory
             ControllerMappingRule.AddErrorToClassMapRule
                oAddErrorToClassMapRule = oControllerMappingRule.createAddErrorToClassMapRule();
 
-            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap.PATTERN,            oAddErrorToClassMapRule );
-            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ClassName.PATTERN,  oAddErrorToClassMapRule.createParamClassNameRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap.PATTERN,                  oAddErrorToClassMapRule );
+            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ClassName.PATTERN,        oAddErrorToClassMapRule.createParamClassNameRule() );
+            oDigester.addRule( XML.Config_ControllerMapping_ErrorToClassMap_ClassMethodName.PATTERN,  oAddErrorToClassMapRule.createParamClassMethodNameRule() );
             {
                ControllerMappingRule.AddErrorToClassMapRule.ExceptionPatternRule
                   oExceptionPatternRule = oAddErrorToClassMapRule.createExceptionPatternRule();
