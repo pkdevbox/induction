@@ -871,9 +871,9 @@ public class Config
          return _oURLToClassMapList;
       }
 
-      public ErrorToClassMap addErrorToClassMap( String sClassname )
+      public ErrorToClassMap addErrorToClassMap( String sClassName, String sClassMethodName )
       {
-         ErrorToClassMap oErrorToClassMap = new ErrorToClassMap( sClassname );
+         ErrorToClassMap oErrorToClassMap = new ErrorToClassMap( sClassName, sClassMethodName );
 
          _oErrorToClassMapList.add( oErrorToClassMap );
 
@@ -1079,21 +1079,28 @@ public class Config
       public static class ErrorToClassMap
       {
          private ExceptionPattern   _oExceptionPattern = new ExceptionPattern( "java.lang.Throwable", true );
-         private String             _sClassname;
+         private String             _sClassName;
+         private String             _sClassMethodName;
 
-         public ErrorToClassMap( String sClassname )
+         public ErrorToClassMap( String sClassName, String sClassMethodName )
          {
-            _sClassname = sClassname;
+            if ( sClassName == null )
+            {
+               throw new IllegalArgumentException( "config-error: controller class name cannot be empty" );
+            }
+
+            _sClassName       = sClassName;
+            _sClassMethodName = sClassMethodName;
          }
 
-         public void setExceptionPattern( String sClassname, boolean bIncludeDerived )
+         public void setExceptionPattern( String sClassName, boolean bIncludeDerived )
          {
-            if ( sClassname == null )
+            if ( sClassName == null )
             {
                throw new IllegalArgumentException( "config-error: exception pattern class name cannot be empty" );
             }
 
-            _oExceptionPattern = new ExceptionPattern( sClassname, bIncludeDerived );
+            _oExceptionPattern = new ExceptionPattern( sClassName, bIncludeDerived );
          }
 
          public ExceptionPattern getExceptionPattern()
@@ -1101,9 +1108,14 @@ public class Config
             return _oExceptionPattern;
          }
 
-         public String getClassname()
+         public String getClassName()
          {
-            return _sClassname;
+            return _sClassName;
+         }
+
+         public String getClassMethodName()
+         {
+            return _sClassMethodName;
          }
 
          public String toString()
@@ -1116,7 +1128,7 @@ public class Config
             return
                XML.Config_ControllerMapping_ErrorToClassMap
                   .toXML( _oExceptionPattern.toXML()
-                          + XML.Config_ControllerMapping_ErrorToClassMap_ClassName.toXML( _sClassname )
+                          + XML.Config_ControllerMapping_ErrorToClassMap_ClassName.toXML( _sClassName )
                         );
          }
 
@@ -1131,7 +1143,7 @@ public class Config
                _bIncludeDerived  = bIncludeDerived;
             }
 
-            public String getClassname()
+            public String getClassName()
             {
                return _sClassname;
             }

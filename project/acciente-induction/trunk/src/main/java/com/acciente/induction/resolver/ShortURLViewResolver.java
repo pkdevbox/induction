@@ -49,7 +49,7 @@ public class ShortURLViewResolver implements ViewResolver
       {
          for ( Iterator oIter = _oURL2ClassMapperList.iterator(); oIter.hasNext(); )
          {
-            URL2ClassMapper.ClassAndMethod oClassAndMethod;
+            ClassAndMethod oClassAndMethod;
 
             oClassAndMethod = ( ( URL2ClassMapper ) oIter.next() ).mapURL2Class( sURLPath );
 

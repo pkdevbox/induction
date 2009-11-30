@@ -41,14 +41,25 @@ import java.util.Map;
 public interface ControllerResolver
 {
    /**
-    * This method should resolve the class name of the controller and method name within same
-    * to be invoked in response to the specified HTTP request
+    * This method should resolve the the specified HTTP request to the class name of
+    * a controller and method name (within the same class) to be invoked
     *
     * @param oRequest the HTTP request context in which the resolution is requested
     * @return  an object containing the class name of the controller to be invoked and
     *          the method name within same
     */
    Resolution resolve( HttpServletRequest oRequest );
+
+   /**
+    * This method is called if an exception occurs during controller or view execution.
+    * This method is expected to resolve the specified exception to the class name of
+    * a controller and method name (within the same class) to handle the error
+    *
+    * @param oThrowable the exception context in which the resolution is requested
+    * @return  an object containing the class name of the controller to be invoked and
+    *          the method name within same
+    */
+   Resolution resolve( Throwable oThrowable );
 
    /**
     * A container object for the resolution information.

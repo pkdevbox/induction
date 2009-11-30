@@ -173,6 +173,7 @@
                <include-derived>true</include-derived>
             </exception-pattern>
             <class-name>a.fully.qualified.controller.ClassName</class-name>
+            <class-method-name>a.fully.qualified.controller.ClassName</class-method-name>
         </error-to-class-map>
     </controller-mapping>
 

@@ -68,9 +68,10 @@ public class XML
    public static final XML Config_ControllerMapping_IgnoreHandlerMethodCase                     = new XML( "ignore-handler-method-case",  Config_ControllerMapping );
    public static final XML Config_ControllerMapping_ErrorToClassMap                                   = new XML( "error-to-class-map",          Config_ControllerMapping );
    public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern                  = new XML( "exception-pattern",           Config_ControllerMapping_ErrorToClassMap );
-   public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_ClassName        = new XML( "class-name",                        Config_ControllerMapping_ErrorToClassMap_ExceptionPattern );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_ClassName        = new XML( "class-name",                  Config_ControllerMapping_ErrorToClassMap_ExceptionPattern );
    public static final XML Config_ControllerMapping_ErrorToClassMap_ExceptionPattern_IncludeDerived   = new XML( "include-derived",             Config_ControllerMapping_ErrorToClassMap_ExceptionPattern );
    public static final XML Config_ControllerMapping_ErrorToClassMap_ClassName                         = new XML( "class-name",                  Config_ControllerMapping_ErrorToClassMap );
+   public static final XML Config_ControllerMapping_ErrorToClassMap_ClassMethodName                   = new XML( "class-method-name",           Config_ControllerMapping_ErrorToClassMap );
 
    public static final XML Config_ViewMapping                                    = new XML( "view-mapping",                Config );
    public static final XML Config_ViewMapping_URLToClassMap                      = new XML( "url-to-class-map",            Config_ViewMapping );

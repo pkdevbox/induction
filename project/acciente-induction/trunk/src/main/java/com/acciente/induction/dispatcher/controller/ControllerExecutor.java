@@ -20,7 +20,6 @@ package com.acciente.induction.dispatcher.controller;
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.controller.Controller;
-import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
@@ -65,10 +64,13 @@ public class ControllerExecutor
     * or post post processing, the exception's cause will always contain the actual underlying cause of the error
     * @return the value returned by the controller
     */
-   public Object execute( ControllerResolver.Resolution oResolution, HttpServletRequest oRequest, HttpServletResponse oResponse )
+   public Object execute( ControllerResolver.Resolution  oResolution,
+                          HttpServletRequest             oRequest,
+                          HttpServletResponse            oResponse )
       throws ControllerExecutorException
    {
-      Controller oController;
+      Controller  oController;
+
       try
       {
          oController = _oControllerPool.getController( oResolution.getClassName() );

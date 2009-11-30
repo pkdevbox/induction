@@ -46,11 +46,15 @@
 
 @rem -- package Acciente POM
 @cd ..\acciente-induction-pom
+@pause "install svn before running this"
+@call svn update
 @call mvn clean
 @call mvn install
 
 @rem -- package Acciente Commons
 @cd ..\acciente-commons
+@pause "install svn before running this"
+@call svn update
 @call mvn clean
 @call mvn install -P jdk1_4 -D induction-version=%release_version%
 @call mvn install -P jdk1_6 -D induction-version=%release_version%
@@ -60,6 +64,8 @@
 
 @rem -- package Acciente Induction
 @cd ..\acciente-induction
+@pause "install svn before running this"
+@call svn update
 @call mvn clean
 @call mvn install -P jdk1_4 -D induction-version=%release_version%
 @call mvn install -P jdk1_6 -D induction-version=%release_version%
