@@ -60,13 +60,17 @@ public class ControllerExecutor
     * @param oResolution specifies the controller to execute
     * @param oRequest passed thru to the controller if the controller so requests
     * @param oResponse passed thru to the controller if the controller so requests
+    * @param oError used when calling the error handler controller, to pass the exception
+    * in response to which the controller is called, this will be available for injection
+    * in the error controller
     * @throws ControllerExecutorException if an error was encountered during controller loading, executing,
     * or post post processing, the exception's cause will always contain the actual underlying cause of the error
     * @return the value returned by the controller
     */
    public Object execute( ControllerResolver.Resolution  oResolution,
                           HttpServletRequest             oRequest,
-                          HttpServletResponse            oResponse )
+                          HttpServletResponse            oResponse,
+                          Throwable                      oError )
       throws ControllerExecutorException
    {
       Controller  oController;
@@ -117,15 +121,29 @@ public class ControllerExecutor
 
       // finally call the controller method!
       Object   oControllerReturnValue;
+
       try
       {
-         oControllerReturnValue = Invoker.invoke( oControllerMethod,
-                                                  oController,
-                                                  null,
-                                                  _oControllerParameterProviderFactory
-                                                     .getParameterProvider( oRequest,
-                                                                            oResponse,
-                                                                            oResolution ) );
+         if ( oError == null )
+         {
+            oControllerReturnValue = Invoker.invoke( oControllerMethod,
+                                                     oController,
+                                                     null,
+                                                     _oControllerParameterProviderFactory
+                                                        .getParameterProvider( oRequest,
+                                                                               oResponse,
+                                                                               oResolution ) );
+         }
+         else
+         {
+            oControllerReturnValue = Invoker.invoke( oControllerMethod,
+                                                     oController,
+                                                     new Object[]{ oError },
+                                                     _oControllerParameterProviderFactory
+                                                        .getParameterProvider( oRequest,
+                                                                               oResponse,
+                                                                               oResolution ) );
+         }
       }
       catch ( IllegalAccessException e )
       {
