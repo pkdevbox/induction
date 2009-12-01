@@ -13,8 +13,18 @@ import java.io.IOException;
  */
 public class ErrorHandlerController implements Controller
 {
-   public void handler( Response oResponse ) throws IOException
+   public void handler( Response oResponse, Exception oError ) throws IOException
    {
       oResponse.out().println( "Oops..you encountered an error in the demoapp, this is the error handler controller: " + getClass().getName() );
+
+      if ( oError != null )
+      {
+         oResponse.out().println( "Error: " + oError );
+
+         if ( oError.getCause() != null )
+         {
+            oResponse.out().println( "Cause: " + oError.getCause() );
+         }
+      }
    }
 }
