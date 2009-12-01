@@ -17,21 +17,22 @@
  */
 package com.acciente.induction.dispatcher.view;
 
+import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.template.TemplatingEngineException;
+import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.view.Image;
 import com.acciente.induction.view.ImageStream;
 import com.acciente.induction.view.Template;
 import com.acciente.induction.view.Text;
-import com.acciente.induction.util.ConstructorNotFoundException;
-import com.acciente.commons.reflect.ParameterProviderException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -45,11 +46,14 @@ public class ViewExecutor
 {
    private  ViewFactory          _oViewFactory;
    private  TemplatingEngine     _oTemplatingEngine;
+   private  StringWriterPool     _oStringWriterPool;
 
    public ViewExecutor( ViewFactory oViewFactory, TemplatingEngine oTemplatingEngine )
    {
       _oViewFactory      = oViewFactory;
       _oTemplatingEngine = oTemplatingEngine;
+
+      _oStringWriterPool = new StringWriterPool( 32 * 1024 );
    }
 
    public void execute( ViewResolver.Resolution    oViewResolution,
@@ -63,7 +67,7 @@ public class ViewExecutor
     * This method is used to execute a view specified in terms of a type (Class object), this method
     * is used to support processing view types (i.e. class objects) returned from a controller, this is in
     * addition to the current support for processing a view object returned from a controller.
-    * 
+    *
     * @param oViewClass a class object representing a type that implements a view class
     * @param oRequest the servlet request object
     * @param oResponse the servlet response object
@@ -218,7 +222,7 @@ public class ViewExecutor
          throw new ViewExecutorException( "View " + oImageStream.getClass().getName() + ", ImageStream must specify a mime type" );
       }
 
-      oResponse.setContentType( oImageStream.getMimeType() );      
+      oResponse.setContentType( oImageStream.getMimeType() );
       oResponse.setHeader( "Content-Type", oImageStream.getMimeType() );
 
       oImageStream.writeImage( oResponse );
@@ -233,17 +237,38 @@ public class ViewExecutor
             throw new ViewExecutorException( "View: " + oTemplate.getClass().getName() + ", returned null for template name" );
          }
 
-         oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
-
-         BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
+         StringWriter oContentStringWriter   = _oStringWriterPool.acquire();
 
          try
          {
-            _oTemplatingEngine.process( oTemplate, oWriter );
+            BufferedWriter oResponseWriter;
+            int            iBufferContentSize;
+            StringBuffer   oContentStringBuffer;
+
+            // send the template output to the StringWriter
+            _oTemplatingEngine.process( oTemplate, oContentStringWriter );
+
+            // write a content type to the response
+            oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
+
+            // write the contents of the string buffer to the response, we use charAt()
+            // to access the string buffer since this seems to be the only way to get at
+            // the buffer without duplication or copying, unfortunately the getValue() method
+            // is not available to use
+            oResponseWriter      = new BufferedWriter( oResponse.getWriter() );
+            oContentStringBuffer = oContentStringWriter.getBuffer();
+            iBufferContentSize   = oContentStringBuffer.length();
+
+            for ( int i = 0; i < iBufferContentSize; i++ )
+            {
+               oResponseWriter.write( oContentStringBuffer.charAt( i ) );
+            }
+
+            oResponseWriter.flush();
          }
          finally
          {
-            oWriter.flush();
+            _oStringWriterPool.release( oContentStringWriter );
          }
       }
       catch ( IOException e )

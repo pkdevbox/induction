@@ -494,7 +494,7 @@ public class HttpDispatcher extends HttpServlet
          {
             try
             {
-               // is it a redirect?               
+               // is it a redirect?
                if ( ! dispatchRedirect( oResponse, oInterceptorReturnValue ) )
                {
                   // assume its a view
@@ -510,7 +510,7 @@ public class HttpDispatcher extends HttpServlet
                   throw new StopRequestProcessingSignal( "dispatch-interceptor-return-value > during view execution", e1 );
                }
             }
-            catch ( RedirectExecutorException e1 )              // exception thrown by dispatchRedirect() 
+            catch ( RedirectExecutorException e1 )              // exception thrown by dispatchRedirect()
             {
                // note that the dispatcher below raises a stop signal if it handled the error
                if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, true, e1 ) )
@@ -541,7 +541,7 @@ public class HttpDispatcher extends HttpServlet
 
          try
          {
-            oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse );
+            oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse, null );
          }
          catch ( ControllerExecutorException e1 )
          {
@@ -661,7 +661,7 @@ public class HttpDispatcher extends HttpServlet
 
          try
          {
-            oErrorControllerReturnValue = _oControllerExecutor.execute( oErrorControllerResolution, oRequest, oResponse );
+            oErrorControllerReturnValue = _oControllerExecutor.execute( oErrorControllerResolution, oRequest, oResponse, oError );
          }
          catch ( ControllerExecutorException e2 )
          {
@@ -707,6 +707,8 @@ public class HttpDispatcher extends HttpServlet
             // we sucessfully ran the error handler controller, so we are done with this request
             throw new StopRequestProcessingSignal();
          }
+
+         return true;
       }
 
       return false;
