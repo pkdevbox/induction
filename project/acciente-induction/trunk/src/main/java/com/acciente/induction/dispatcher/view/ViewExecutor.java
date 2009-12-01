@@ -33,6 +33,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -47,6 +48,7 @@ public class ViewExecutor
    private  ViewFactory          _oViewFactory;
    private  TemplatingEngine     _oTemplatingEngine;
    private  StringWriterPool     _oStringWriterPool;
+   private  CharArrayPool        _oCharArrayPool;
 
    public ViewExecutor( ViewFactory oViewFactory, TemplatingEngine oTemplatingEngine )
    {
@@ -54,6 +56,7 @@ public class ViewExecutor
       _oTemplatingEngine = oTemplatingEngine;
 
       _oStringWriterPool = new StringWriterPool( 32 * 1024 );
+      _oCharArrayPool    = new CharArrayPool( 32 * 1024 );
    }
 
    public void execute( ViewResolver.Resolution    oViewResolution,
@@ -237,38 +240,67 @@ public class ViewExecutor
             throw new ViewExecutorException( "View: " + oTemplate.getClass().getName() + ", returned null for template name" );
          }
 
-         StringWriter oContentStringWriter   = _oStringWriterPool.acquire();
+         StringWriter oTemplateContentWriter = _oStringWriterPool.acquire();
+         char[]       oResponseWriteBuffer   = _oCharArrayPool.acquire();
 
          try
          {
-            BufferedWriter oResponseWriter;
-            int            iBufferContentSize;
-            StringBuffer   oContentStringBuffer;
+            PrintWriter       oResponseWriter;
+            int               iTemplateContentSize;
+            StringBuffer      oTemplateContentBuffer;
 
             // send the template output to the StringWriter
-            _oTemplatingEngine.process( oTemplate, oContentStringWriter );
+            _oTemplatingEngine.process( oTemplate, oTemplateContentWriter );
 
             // write a content type to the response
             oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
 
             // write the contents of the string buffer to the response, we use charAt()
             // to access the string buffer since this seems to be the only way to get at
-            // the buffer without duplication or copying, unfortunately the getValue() method
-            // is not available to use
-            oResponseWriter      = new BufferedWriter( oResponse.getWriter() );
-            oContentStringBuffer = oContentStringWriter.getBuffer();
-            iBufferContentSize   = oContentStringBuffer.length();
+            // the buffer without triggering a duplication or data copy in the StringBuffer
+            // backing the StringWriter, unfortunately direct access to the internal char[]
+            // buffer (via the getValue() method) is not available to us
+            oTemplateContentBuffer  = oTemplateContentWriter.getBuffer();
+            iTemplateContentSize    = oTemplateContentBuffer.length();
 
-            for ( int i = 0; i < iBufferContentSize; i++ )
+            // in the code below we implement our own buffering, which is equivalent to using a
+            // BufferedWriter. We avoid the BufferedWriter since the BufferedWriter implementation
+            // does not lend itself to reuse. Allocating a new BufferedWriter for every template is
+            // memory inefficient
+            oResponseWriter         = oResponse.getWriter();
+
+            for ( int iTemplateContentRemaining = iTemplateContentSize, iTemplateContentStart = 0;
+                  iTemplateContentRemaining > 0;
+                  iTemplateContentRemaining -= oResponseWriteBuffer.length, iTemplateContentStart += oResponseWriteBuffer.length )
             {
-               oResponseWriter.write( oContentStringBuffer.charAt( i ) );
+               if ( iTemplateContentRemaining < oResponseWriteBuffer.length )
+               {
+                  // here we write out last buffer to the output, there are no more chars in the input after this
+                  for ( int i = 0, j = iTemplateContentStart; i < iTemplateContentRemaining; i++, j++ )
+                  {
+                     oResponseWriteBuffer[ i ] = oTemplateContentBuffer.charAt( j );
+                  }
+
+                  oResponseWriter.write( oResponseWriteBuffer, 0, iTemplateContentRemaining );
+               }
+               else
+               {
+                  // here we write a full buffer, they may be more in the input after this
+                  for ( int i = 0, j = iTemplateContentStart; i < oResponseWriteBuffer.length; i++, j++ )
+                  {
+                     oResponseWriteBuffer[ i ] = oTemplateContentBuffer.charAt( j );
+                  }
+
+                  oResponseWriter.write( oResponseWriteBuffer, 0, oResponseWriteBuffer.length );
+               }
             }
 
             oResponseWriter.flush();
          }
          finally
          {
-            _oStringWriterPool.release( oContentStringWriter );
+            _oStringWriterPool.release( oTemplateContentWriter );
+            _oCharArrayPool.release( oResponseWriteBuffer );
          }
       }
       catch ( IOException e )
