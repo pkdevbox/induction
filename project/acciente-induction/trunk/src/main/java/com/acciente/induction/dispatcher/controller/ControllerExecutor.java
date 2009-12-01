@@ -77,27 +77,27 @@ public class ControllerExecutor
       }
       catch ( ClassNotFoundException e )
       {
-         throw new ControllerExecutorException( "load: unable to load class definition", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", unable to load class definition", e );
       }
       catch ( ConstructorNotFoundException e )
       {
-         throw new ControllerExecutorException( "load: unable to find constructor", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", unable to find constructor", e );
       }
       catch ( InstantiationException e )
       {
-         throw new ControllerExecutorException( "load: instantiate error", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", instantiate error", e );
       }
       catch ( InvocationTargetException e )
       {
-         throw new ControllerExecutorException( "load: target exception", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", target exception", e );
       }
       catch ( IllegalAccessException e )
       {
-         throw new ControllerExecutorException( "load: access exception", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", access exception", e );
       }
       catch ( ParameterProviderException e )
       {
-         throw new ControllerExecutorException( "load: parameter exception", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName() + ", parameter exception", e );
       }
 
       // use performance enhanced reflection to determine the methods in the controller with the specified name
@@ -110,7 +110,9 @@ public class ControllerExecutor
       }
       catch ( MethodNotFoundException e )
       {
-         throw new ControllerExecutorException( "load: method not found", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName()
+                                                + ", method " + oResolution.getMethodName()
+                                                + ", method not found", e );
       }
 
       // finally call the controller method!
@@ -127,15 +129,21 @@ public class ControllerExecutor
       }
       catch ( IllegalAccessException e )
       {
-         throw new ControllerExecutorException( "invoke: method access error", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName()
+                                                + ", method " + oResolution.getMethodName()
+                                                + ", method access error", e );
       }
       catch ( InvocationTargetException e )
       {
-         throw new ControllerExecutorException( "invoke: method threw exception", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName()
+                                                + ", method " + oResolution.getMethodName()
+                                                + ", method threw exception", e );
       }
       catch ( ParameterProviderException e )
       {
-         throw new ControllerExecutorException( "invoke: parameter error", e );
+         throw new ControllerExecutorException( "Controller " + oResolution.getClassName()
+                                                + ", method " + oResolution.getMethodName()
+                                                + ", parameter error", e );
       }
 
       return oControllerReturnValue;

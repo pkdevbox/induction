@@ -138,11 +138,6 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
 
    public void process( Template oTemplate, Writer oWriter ) throws TemplatingEngineException, IOException
    {
-      if ( oTemplate.getTemplateName() == null )
-      {
-         throw new IllegalArgumentException( "Templating must specify a template name" );
-      }
-
       try
       {
          _oConfiguration
@@ -151,7 +146,7 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       }
       catch ( TemplateException e )
       {
-         throw new TemplatingEngineException( "Freemaker threw exception during template processing: ", e );
+         throw new TemplatingEngineException( "View " + oTemplate.getClass().getName() + ", freemaker error: ", e );
       }
    }
 
