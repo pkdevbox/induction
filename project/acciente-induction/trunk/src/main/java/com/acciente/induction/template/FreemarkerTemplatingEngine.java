@@ -141,7 +141,7 @@ public class FreemarkerTemplatingEngine implements TemplatingEngine
       try
       {
          _oConfiguration
-         .getTemplate( oTemplate.getTemplateName() )
+            .getTemplate( oTemplate.getTemplateName() )
                .process( oTemplate, oWriter );
       }
       catch ( TemplateException e )

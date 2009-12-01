@@ -45,7 +45,10 @@ public class StringWriterPool
 
    public synchronized void release( StringWriter oStringWriter )
    {
+      // reset the StringBuffer for reuse
       oStringWriter.getBuffer().setLength( 0 );
+
+      // return the buffer back to the pool
       _oStringWriterPool.add( oStringWriter );
    }
 }
