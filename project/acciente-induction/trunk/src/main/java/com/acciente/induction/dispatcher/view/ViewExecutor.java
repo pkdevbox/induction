@@ -129,27 +129,27 @@ public class ViewExecutor
       }
       catch ( ClassNotFoundException e )
       {
-         throw new ViewExecutorException( "load: unable to load class definition", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", unable to load class definition", e );
       }
       catch ( ConstructorNotFoundException e )
       {
-         throw new ViewExecutorException( "load: unable to find constructor", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", unable to find constructor", e );
       }
       catch ( InstantiationException e )
       {
-         throw new ViewExecutorException( "load: instantiate error", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", instantiate error", e );
       }
       catch ( InvocationTargetException e )
       {
-         throw new ViewExecutorException( "load: target exception", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", target exception", e );
       }
       catch ( IllegalAccessException e )
       {
-         throw new ViewExecutorException( "load: access exception", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", access exception", e );
       }
       catch ( ParameterProviderException e )
       {
-         throw new ViewExecutorException( "load: parameter error", e );
+         throw new ViewExecutorException( "View " + sViewClassName + ", parameter error", e );
       }
 
       return oViewObject;
@@ -173,7 +173,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "exec: text view: IO error", e );
+         throw new ViewExecutorException( "View " + oText.getClass().getName() + ", text view I/O error", e );
       }
    }
 
@@ -207,7 +207,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "exec: image view: IO error", e );
+         throw new ViewExecutorException( "View " + oImage.getClass().getName() + ", image view I/O error", e );
       }
    }
 
@@ -215,7 +215,7 @@ public class ViewExecutor
    {
       if ( oImageStream.getMimeType() == null )
       {
-         throw new IllegalArgumentException( "ImageStream must specify a mime type" );
+         throw new ViewExecutorException( "View " + oImageStream.getClass().getName() + ", ImageStream must specify a mime type" );
       }
 
       oResponse.setContentType( oImageStream.getMimeType() );      
@@ -228,6 +228,11 @@ public class ViewExecutor
    {
       try
       {
+         if ( oTemplate.getTemplateName() == null )
+         {
+            throw new ViewExecutorException( "View: " + oTemplate.getClass().getName() + ", returned null for template name" );
+         }
+
          oResponse.setContentType( oTemplate.getMimeType() == null ? "text/plain": oTemplate.getMimeType() );
 
          BufferedWriter oWriter = new BufferedWriter( oResponse.getWriter() );
@@ -243,11 +248,15 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "exec: template view: IO error", e );
+         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: I/O error", e );
       }
       catch ( TemplatingEngineException e )
       {
-         throw new ViewExecutorException( "exec: template view: templating engine error", e.getCause() );
+         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: templating engine error", e.getCause() );
+      }
+      catch ( Exception e )
+      {
+         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: general error", e );
       }
    }
 
@@ -260,7 +269,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "exec: generic object view: IO error", e );
+         throw new ViewExecutorException( "View " + oViewObject.getClass().getName() + ", generic object view I/O error", e );
       }
    }
 }
