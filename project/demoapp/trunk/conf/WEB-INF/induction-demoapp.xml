@@ -67,6 +67,7 @@
     <templating>
         <template-path>
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/helloworld3_app</directory>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/errorhandler_app</directory>
             <!-- <web-app-path>/WEB-INF/templates</web-app-path> -->
         </template-path>
         <expose-public-fields>true</expose-public-fields>
@@ -81,6 +82,18 @@
 
         <default-handler-method>handler</default-handler-method>
         <ignore-handler-method-case>true</ignore-handler-method-case>
+
+        <error-to-class-map>
+            <exception-pattern>
+               <class-name>java.lang.Throwable</class-name>
+               <!-- we can optionally specify if super types should be handled too, default is true -->
+               <include-derived>true</include-derived>
+            </exception-pattern>
+            <class-name>demoapp.errorhandler_app.ErrorHandlerController</class-name>
+            <!-- 
+            <class-method-name>a.fully.qualified.controller.ClassName</class-method-name> 
+            -->
+        </error-to-class-map>
     </controller-mapping>
 
     <view-mapping>
