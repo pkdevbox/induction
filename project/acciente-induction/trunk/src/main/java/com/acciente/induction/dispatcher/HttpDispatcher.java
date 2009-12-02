@@ -401,7 +401,7 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, null, null,
                                              oInterceptorReturnValue );
       }
-      catch ( Exception e )
+      catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-resolution", e );
       }
@@ -423,7 +423,7 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
       }
-      catch ( Exception e )
+      catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > post-resolution", e );
       }
@@ -445,7 +445,7 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
       }
-      catch ( Exception e )
+      catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-response", e );
       }
@@ -467,7 +467,7 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
       }
-      catch ( Exception e )
+      catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > post-response", e );
       }
@@ -519,6 +519,15 @@ public class HttpDispatcher extends HttpServlet
                   throw new StopRequestProcessingSignal( "dispatch-interceptor-return-value > during redirect execution", e1 );
                }
             }
+            catch ( Throwable e1 )                             // other exception
+            {
+               // note that the dispatcher below raises a stop signal if it handled the error
+               if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, true, e1 ) )
+               {
+                  // there is no error handler!! so we resort to a stop signal with cause
+                  throw new StopRequestProcessingSignal( "dispatch-interceptor-return-value", e1 );
+               }
+            }
          }
       }
    }
@@ -543,7 +552,7 @@ public class HttpDispatcher extends HttpServlet
          {
             oControllerReturnValue = _oControllerExecutor.execute( oControllerResolution, oRequest, oResponse, null );
          }
-         catch ( ControllerExecutorException e1 )
+         catch ( Throwable e1 )
          {
             // note that the dispatcher below raises a stop signal if it handled the error
             if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, null, false, e1 ) )
@@ -591,6 +600,15 @@ public class HttpDispatcher extends HttpServlet
                   throw new StopRequestProcessingSignal( "dispatch-controller-request > during redirect execution", e1 );
                }
             }
+            catch ( Throwable e1 )                             // other exception thrown
+            {
+               // note that the dispatcher below raises a stop signal if it handled the error
+               if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, null, true, e1 ) )
+               {
+                  // there is no error handler!! so we resort to a stop signal with cause
+                  throw new StopRequestProcessingSignal( "dispatch-controller-request", e1 );
+               }
+            }
 
             // fire the postResponse interceptors
             dispatchInterceptors_postResponse( oRequest, oResponse, oControllerResolution, null );
@@ -623,7 +641,7 @@ public class HttpDispatcher extends HttpServlet
          {
             _oViewExecutor.execute( oViewResolution, oRequest, oResponse );
          }
-         catch ( ViewExecutorException e1 )
+         catch ( Throwable e1 )
          {
             // note that the dispatcher below raises a stop signal if it handled the error
             if ( ! dispatchErrorController( oRequest, oResponse, null, oViewResolution, true, e1 ) )
@@ -663,10 +681,10 @@ public class HttpDispatcher extends HttpServlet
          {
             oErrorControllerReturnValue = _oControllerExecutor.execute( oErrorControllerResolution, oRequest, oResponse, oError );
          }
-         catch ( ControllerExecutorException e2 )
+         catch ( Throwable e1 )
          {
             // there was an error executing the error handler!! so we abort
-            throw new StopRequestProcessingSignal( "dispatch-error-controller > during error-handler-controller execution", e2 );
+            throw new StopRequestProcessingSignal( "dispatch-error-controller > during error-handler-controller execution", e1 );
          }
 
          // process the controller's return value (if any)
@@ -699,6 +717,11 @@ public class HttpDispatcher extends HttpServlet
             {
                // there was an error executing the error handler!! so we abort
                throw new StopRequestProcessingSignal( "dispatch-error-controller > during execution of redirect returned by error-handler-controller", e1 );
+            }
+            catch ( Throwable e1 )
+            {
+               // there was an error executing the error handler!! so we abort
+               throw new StopRequestProcessingSignal( "dispatch-error-controller > during processing of value returned by error-handler-controller", e1 );
             }
 
             // fire the postResponse interceptors
