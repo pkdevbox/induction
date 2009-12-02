@@ -20,7 +20,6 @@ package com.acciente.induction.dispatcher;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.controller.Redirect;
 import com.acciente.induction.dispatcher.controller.ControllerExecutor;
-import com.acciente.induction.dispatcher.controller.ControllerExecutorException;
 import com.acciente.induction.dispatcher.controller.ControllerParameterProviderFactory;
 import com.acciente.induction.dispatcher.controller.ControllerPool;
 import com.acciente.induction.dispatcher.interceptor.RequestInterceptorExecutor;
@@ -401,6 +400,10 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, null, null,
                                              oInterceptorReturnValue );
       }
+      catch ( StopRequestProcessingSignal e )
+      {
+         throw e;
+      }
       catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-resolution", e );
@@ -422,6 +425,10 @@ public class HttpDispatcher extends HttpServlet
 
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
+      }
+      catch ( StopRequestProcessingSignal e )
+      {
+         throw e;
       }
       catch ( Throwable e )
       {
@@ -445,6 +452,10 @@ public class HttpDispatcher extends HttpServlet
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
       }
+      catch ( StopRequestProcessingSignal e )
+      {
+         throw e;
+      }
       catch ( Throwable e )
       {
          throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-response", e );
@@ -466,6 +477,10 @@ public class HttpDispatcher extends HttpServlet
 
          dispatchLastInterceptorReturnValue( oRequest, oResponse, oControllerResolution, oViewResolution,
                                              oInterceptorReturnValue );
+      }
+      catch ( StopRequestProcessingSignal e )
+      {
+         throw e;
       }
       catch ( Throwable e )
       {
@@ -500,6 +515,10 @@ public class HttpDispatcher extends HttpServlet
                   // assume its a view
                   dispatchViewClassOrInstance( oRequest, oResponse, oInterceptorReturnValue );
                }
+            }
+            catch ( StopRequestProcessingSignal e1 )
+            {
+               throw e1;
             }
             catch ( ViewExecutorException e1 )  // exception thrown by dispatchViewClassOrInstance()
             {
@@ -581,6 +600,10 @@ public class HttpDispatcher extends HttpServlet
                   // otherwise assume it is a view
                   dispatchViewClassOrInstance( oRequest, oResponse, oControllerReturnValue );
                }
+            }
+            catch ( StopRequestProcessingSignal e1 )
+            {
+               throw e1;
             }
             catch ( ViewExecutorException e1 )  // exception thrown by dispatchViewClassOrInstance()
             {
@@ -708,6 +731,10 @@ public class HttpDispatcher extends HttpServlet
                   dispatchViewClassOrInstance( oRequest, oResponse, oErrorControllerReturnValue );
                }
             }
+            catch ( StopRequestProcessingSignal e1 )
+            {
+               throw e1;
+            }
             catch ( ViewExecutorException e1 )
             {
                // there was an error executing the error handler!! so we abort
@@ -791,7 +818,7 @@ public class HttpDispatcher extends HttpServlet
       {
          oErrorRootCause = oSignal.getErrorCause();
 
-         while ( oErrorRootCause.getCause() != null )
+         while ( oErrorRootCause.getCause() != null && oErrorRootCause.getCause() != oErrorRootCause )
          {
             oErrorRootCause = oErrorRootCause.getCause();
          }
