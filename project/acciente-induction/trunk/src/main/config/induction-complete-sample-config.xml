@@ -83,7 +83,7 @@
                 <class>a_class_name_on_which_getResource_will_be_called_to_locate_a_template</class>
                 <path>/a/package/path/to/the/templates</path>
             </loader-class>
-            <web-app-path>a/path/to/a/folder/inside/your/web/app/jar/file/relative/to/the/WEB-INF/folder</web-app-path>
+            <web-app-path>a/path/to/a/folder/inside/your/web/app/jar/file/relative/to/the/parent/of/the/WEB-INF/folder</web-app-path>
         </template-path>
 
         <!-- An application may define a locale to used to select a specific template, in an
