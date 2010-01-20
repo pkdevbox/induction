@@ -183,12 +183,45 @@ public class ModelPool
       return oModel;
    }
 
-   private Object getRequestScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oRequest )
+   private Object getRequestScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
       throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
    {
-      // a request scope object essentially only lasts for the duration of the method invocation so
-      // there is no need to pool a copy of the model instance for reuse
-      return _oModelFactory.createModel( oModelDef, oRequest );
+      Object      oModel;
+
+      oModel = oHttpServletRequest.getAttribute( oModelDef.getModelClassName() );
+
+      if ( oModel == null )
+      {
+         synchronized ( oHttpServletRequest )
+         {
+            oModel = oHttpServletRequest.getAttribute( oModelDef.getModelClassName() );
+
+            if ( oModel == null )
+            {
+               oModel = _oModelFactory.createModel( oModelDef, oHttpServletRequest );
+
+               oHttpServletRequest.setAttribute( oModelDef.getModelClassName(), oModel );
+            }
+         }
+      }
+      else
+      {
+         synchronized ( oModel )
+         {
+            if ( _oModelFactory.isModelStale( oModelDef, oModel ) )
+            {
+               Object oPreviousModel = oModel;
+
+               oModel = _oModelFactory.createModel( oModelDef, oHttpServletRequest );
+
+               oHttpServletRequest.setAttribute( oModelDef.getModelClassName(), oModel );
+
+               ObjectFactory.destroyObject( oPreviousModel );
+            }
+         }
+      }
+
+      return oModel;
    }
 }
 
