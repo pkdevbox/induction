@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module relativePaths="false" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://C:/acciente/acciente-projects/software/project/induction-test/class" />
+    <output url="file://$MODULE_DIR$/../../induction-test/class" />
+    <output-test url="file://$MODULE_DIR$/../../induction-test/class" />
     <exclude-output />
-    <output-test url="file://C:/acciente/acciente-projects/software/project/induction-test/class" />
-    <content url="file://C:/acciente/acciente-projects/software/project/induction-test/src">
-      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/induction-test/src" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../induction-test/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../induction-test/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -14,13 +14,12 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://C:/acciente/acciente-projects/software/project/acciente-induction/src/main/config" />
+          <root url="file://$MODULE_DIR$/../src/main/config" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntryProperties />
   </component>
 </module>
 
