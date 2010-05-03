@@ -33,7 +33,9 @@ public class HelloWorld1Controller implements Controller
    public void handler( Response oReponse ) throws IOException
    {
       oReponse.setContentType( "text/plain" );
+
       oReponse.out().println( "Hello World, using a simple println()" );
+      oReponse.out().println( "PHXJUG 2009" );
    }
 }
 
