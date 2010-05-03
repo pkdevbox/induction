@@ -5,7 +5,7 @@
 
 <BODY>
 
-Hello ${firstName}, foo bar, using a Freemarker template
+Hello ${firstName}, using a Freemarker template
 
 </BODY>
 
