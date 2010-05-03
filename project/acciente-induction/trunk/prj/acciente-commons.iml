@@ -7,7 +7,7 @@
     <content url="file://$MODULE_DIR$/../../acciente-commons/src">
       <sourceFolder url="file://$MODULE_DIR$/../../acciente-commons/src/main/java" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.4" jdkType="JavaSDK" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="apache-bcel-5.2" level="application" />
     <orderEntry type="library" exported="" name="apache-commons-collections-3.2.1" level="application" />
@@ -18,7 +18,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/j2ee.jar!/" />
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/servlet-api.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
