@@ -3,6 +3,30 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
+  <component name="ArtifactManager">
+    <artifact type="exploded-war" name="demoapp:demoapp-web exploded">
+      <output-path>$PROJECT_DIR$/../../demoapp/deploy</output-path>
+      <root id="root">
+        <element id="javaee-facet-resources" facet="demoapp/web/demoapp-web" />
+        <element id="directory" name="WEB-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/../../demoapp/conf/WEB-INF/induction-demoapp.xml" />
+          <element id="directory" name="classes">
+            <element id="module-output" name="acciente-commons" />
+            <element id="module-output" name="acciente-induction" />
+          </element>
+          <element id="directory" name="lib">
+            <element id="library" level="application" name="apache-bcel-5.2" />
+            <element id="library" level="application" name="apache-commons-collections-3.2.1" />
+            <element id="library" level="application" name="apache-commons-digester-1.8" />
+            <element id="library" level="application" name="apache-commons-fileupload-1.2.1" />
+            <element id="library" level="application" name="apache-commons-io-1.4" />
+            <element id="library" level="application" name="apache-commons-logging-1.1.1" />
+            <element id="library" level="application" name="freemarker-2.3.12" />
+          </element>
+        </element>
+      </root>
+    </artifact>
+  </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
   </component>
@@ -48,11 +72,8 @@
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="EclipseCompilerSettings">
-    <option name="DEBUGGING_INFO" value="true" />
     <option name="GENERATE_NO_WARNINGS" value="true" />
     <option name="DEPRECATION" value="false" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-    <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="EclipseEmbeddedCompilerSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -79,23 +100,11 @@
               <file url="file://$PROJECT_DIR$/web/WEB-INF/web.xml" />
             </files>
           </module>
-          <module name="induction">
-            <files>
-              <file url="file://$PROJECT_DIR$/web/WEB-INF/web.xml" />
-            </files>
-          </module>
         </modules>
       </facet-type>
     </autodetection-disabled>
   </component>
   <component name="IdProvider" IDEtalkID="ABDED83F72E792CE489BCF382B26F305" />
-  <component name="JavacSettings">
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="DEPRECATION" value="true" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-    <option name="MAXIMUM_HEAP_SIZE" value="128" />
-  </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="T:/acciente-projects/software/project/induction/javadoc" />
     <option name="OPTION_SCOPE" value="public" />
@@ -112,14 +121,6 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
-  </component>
-  <component name="JikesSettings">
-    <option name="JIKES_PATH" value="" />
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="DEPRECATION" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="IS_EMACS_ERRORS_MODE" value="true" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -261,13 +262,6 @@
         <list size="0" />
       </value>
     </option>
-  </component>
-  <component name="RmicSettings">
-    <option name="IS_EANABLED" value="false" />
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="GENERATE_IIOP_STUBS" value="false" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
