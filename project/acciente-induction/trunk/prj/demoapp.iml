@@ -4,15 +4,15 @@
     <facet type="web" name="demoapp-web">
       <configuration>
         <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://C:/acciente/acciente-projects/software/project/demoapp/conf/WEB-INF/web.xml" optional="false" version="2.5" />
-          <deploymentDescriptor url="file://C:/acciente/acciente-projects/software/project/demoapp/conf/WEB-INF/induction-demoapp.xml">
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/../../demoapp/conf/WEB-INF/web.xml" optional="false" version="2.5" />
+          <deploymentDescriptor url="file://$MODULE_DIR$/../../demoapp/conf/WEB-INF/induction-demoapp.xml">
             <option name="DEFAULT_DIR" value="WEB-INF" />
           </deploymentDescriptor>
         </descriptors>
         <webroots />
         <sourceRoots />
         <building>
-          <setting name="EXPLODED_URL" value="file://C:/acciente/acciente-projects/software/project/demoapp/deploy" />
+          <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/../../demoapp/deploy" />
           <setting name="EXPLODED_ENABLED" value="true" />
           <setting name="JAR_URL" value="file://" />
           <setting name="JAR_ENABLED" value="false" />
@@ -89,15 +89,14 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
-    <output-test url="file://C:/acciente/acciente-projects/software/project/demoapp/class" />
-    <content url="file://C:/acciente/acciente-projects/software/project/demoapp/src">
-      <sourceFolder url="file://C:/acciente/acciente-projects/software/project/demoapp/src" isTestSource="false" />
+    <output url="file://$MODULE_DIR$/../../demoapp/class" />
+    <output-test url="file://$MODULE_DIR$/../../demoapp/class" />
+    <content url="file://$MODULE_DIR$/../../demoapp/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../demoapp/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="acciente-induction" />
-    <orderEntryProperties />
   </component>
 </module>
 
