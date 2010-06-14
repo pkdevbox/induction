@@ -302,10 +302,9 @@ public class HttpDispatcher extends HttpServlet
       {  throw new ServletException( "init-error: view-resolver-initializer", e ); }
 
       // setup a resolver that maps a redirect to a URL
+      RedirectResolver oRedirectResolver;
       try
       {
-         RedirectResolver oRedirectResolver;
-
          oRedirectResolver
             =  RedirectResolverInitializer
                   .getRedirectResolver( oConfig.getRedirectResolver(),
@@ -339,6 +338,7 @@ public class HttpDispatcher extends HttpServlet
                                                      new ControllerParameterProviderFactory( oModelPool,
                                                                                              oConfig.getFileUpload(),
                                                                                              oTemplatingEngine,
+                                                                                             oRedirectResolver,
                                                                                              oClassLoader ) );
 
       // the ViewExecutor manages the loading (when needed) and processing of views
@@ -346,6 +346,7 @@ public class HttpDispatcher extends HttpServlet
                                                           new ViewParameterProviderFactory( oModelPool,
                                                                                             oConfig.getFileUpload(),
                                                                                             oTemplatingEngine,
+                                                                                            oRedirectResolver, 
                                                                                             oClassLoader ) ),
                                          oTemplatingEngine );
    }

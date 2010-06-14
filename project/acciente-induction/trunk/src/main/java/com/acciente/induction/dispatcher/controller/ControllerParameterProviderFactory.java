@@ -28,6 +28,7 @@ import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ControllerResolver;
+import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
@@ -49,17 +50,20 @@ public class ControllerParameterProviderFactory
    private  ModelPool            _oModelPool;
    private  Config.FileUpload    _oFileUploadConfig;
    private  TemplatingEngine     _oTemplatingEngine;
+   private RedirectResolver _oRedirectResolver;
    private  ClassLoader          _oClassLoader;
 
    public ControllerParameterProviderFactory( ModelPool           oModelPool,
                                               Config.FileUpload   oFileUploadConfig,
                                               TemplatingEngine    oTemplatingEngine,
+                                              RedirectResolver    oRedirectResolver,      
                                               ClassLoader         oClassLoader )
    {
-      _oModelPool          = oModelPool;
-      _oFileUploadConfig   = oFileUploadConfig;
-      _oTemplatingEngine   = oTemplatingEngine;
-      _oClassLoader        = oClassLoader;
+      _oModelPool        = oModelPool;
+      _oFileUploadConfig = oFileUploadConfig;
+      _oTemplatingEngine = oTemplatingEngine;
+      _oRedirectResolver = oRedirectResolver;
+      _oClassLoader      = oClassLoader;
    }
 
    public ControllerParameterProvider getParameterProvider( HttpServletRequest             oRequest,
@@ -122,6 +126,10 @@ public class ControllerParameterProviderFactory
             else if ( oParamClass.isAssignableFrom( TemplatingEngine.class ) )
             {
                oParamValue = _oTemplatingEngine;
+            }
+            else if ( oParamClass.isAssignableFrom( RedirectResolver.class ) )
+            {
+               oParamValue = _oRedirectResolver;
             }
             else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
             {
