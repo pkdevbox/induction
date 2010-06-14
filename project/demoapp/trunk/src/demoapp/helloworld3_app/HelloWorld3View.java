@@ -30,7 +30,7 @@ public class HelloWorld3View implements Template
    // bean attributes
    public String getFirstName()
    {
-      return "John Doe";
+      return "Jane Doe";
    }
 
    // Template methods

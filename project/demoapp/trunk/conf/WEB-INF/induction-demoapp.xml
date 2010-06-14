@@ -67,6 +67,7 @@
     <templating>
         <template-path>
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/helloworld3_app</directory>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/redirectresolver_app</directory>
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/errorhandler_app</directory>
             <!-- <web-app-path>/WEB-INF/templates</web-app-path> -->
         </template-path>
@@ -120,6 +121,8 @@
             <class-pattern>(?:.*\.)?(\w+)View</class-pattern>
             <url-format>/$Name</url-format>
         </class-to-url-map>
+
+        <url-base>http://localhost:8080</url-base>
     </redirect-mapping>
 
 </config> 
