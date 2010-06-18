@@ -21,6 +21,7 @@ import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.init.config.Config;
+import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
@@ -49,6 +50,7 @@ public class ModelFactory
    private  ServletConfig                 _oServletConfig;
    private  TemplatingEngine              _oTemplatingEngine;
    private  Config.FileUpload             _oFileUploadConfig;
+   private  RedirectResolver              _oRedirectResolver;
 
    private  ConfiguredModelFactoryPool    _oConfiguredModelFactoryPool;
    private  ModelPool                     _oModelPool;
@@ -79,6 +81,16 @@ public class ModelFactory
       _oModelPool = oModelPool;
    }
 
+   /**
+    * This method exists to set the redirect resolver after construction of the model factory since there is
+    * a cyclic dependency between the redirect resolver and the model factory
+    * @param oRedirectResolver the redirect resolver
+    */
+   public void setRedirectResolver( RedirectResolver oRedirectResolver )
+   {
+      _oRedirectResolver = oRedirectResolver;
+   }
+
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
       throws InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException, MethodNotFoundException, ClassNotFoundException
    {
@@ -101,7 +113,7 @@ public class ModelFactory
       try
       {
          Object[]                oParameterValues        = new Object[]{ _oServletConfig, oModelDef, oHttpServletRequest, _oTemplatingEngine, _oClassLoader };
-         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, _oFileUploadConfig, oHttpServletRequest );
+         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, _oFileUploadConfig, oHttpServletRequest, _oRedirectResolver );
 
          // does this model class have a factory class defined?
          if ( ! oModelDef.hasModelFactoryClassName() )
@@ -163,12 +175,14 @@ public class ModelFactory
       private ModelPool          _oModelPool;
       private HttpServletRequest _oHttpServletRequest;
       private Config.FileUpload  _oFileUploadConfig;
+      private RedirectResolver   _oRedirectResolver;
 
-      public ModelParameterProvider( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, HttpServletRequest oHttpServletRequest )
+      public ModelParameterProvider( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, HttpServletRequest oHttpServletRequest, RedirectResolver oRedirectResolver )
       {
          _oModelPool          = oModelPool;
          _oHttpServletRequest = oHttpServletRequest;
          _oFileUploadConfig   = oFileUploadConfig;
+         _oRedirectResolver   = oRedirectResolver;
       }
 
       public Object getParameter( Class oParamClass ) throws ParameterProviderException
@@ -179,16 +193,37 @@ public class ModelFactory
 
          try
          {
-            if ( oParamClass.isAssignableFrom( Form.class ) && _oHttpServletRequest != null )
+            if ( oParamClass.isAssignableFrom( Form.class ) )
             {
+               if ( _oHttpServletRequest == null )
+               {
+                  throw new ParameterProviderException( oParamClass + " not available in this context" );
+               }
+
                // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
                // are resolved before controller invocation, and become local variables in the
                // controller for the duration of the request
                oParamValue = new HTMLForm( _oHttpServletRequest, _oFileUploadConfig );
+
+               _oHttpServletRequest.setAttribute( oParamClass.getName(), oParamValue );
             }
-            else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) && _oHttpServletRequest != null )
+            else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
             {
+               if ( _oHttpServletRequest == null )
+               {
+                  throw new ParameterProviderException( oParamClass + " not available in this context" );
+               }
+
                oParamValue = _oHttpServletRequest;
+            }
+            else if ( oParamClass.isAssignableFrom( RedirectResolver.class ) )
+            {
+               if ( _oRedirectResolver == null )
+               {
+                  throw new ParameterProviderException( oParamClass + " not available in this context" );
+               }
+
+               oParamValue = _oRedirectResolver;
             }
             else
             {

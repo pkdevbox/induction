@@ -330,6 +330,9 @@ public class HttpDispatcher extends HttpServlet
       catch ( IOException e )
       {  throw new ServletException( "init-error: redirect-resolver-initializer", e ); }
 
+      // tell the model pool of the redirect resolver, so that models can now request it
+      oModelFactory.setRedirectResolver( oRedirectResolver );
+
       // the ControllerPool manages a pool of controllers, reloading if the underlying controller def changes
       ControllerPool oControllerPool = new ControllerPool( oClassLoader, oServletConfig );
 
