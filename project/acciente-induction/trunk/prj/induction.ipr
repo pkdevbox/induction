@@ -279,6 +279,14 @@
   <component name="ProjectDetails">
     <option name="projectName" value="induction" />
   </component>
+  <component name="ProjectDictionaryState">
+    <dictionary name="adinath">
+      <words>
+        <w>acciente</w>
+        <w>junit</w>
+      </words>
+    </dictionary>
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/acciente-commons.iml" filepath="$PROJECT_DIR$/acciente-commons.iml" />
