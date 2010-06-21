@@ -265,16 +265,27 @@ public class ReloadingClassLoader extends SecureClassLoader
                for ( int i = 0; i < aoReferencedClasses.length; i++ )
                {
                   // the findClass() method leaves nulls in aoReferencedClasses for "ignored" classes
-                  if ( aoReferencedClasses[ i ] != null )
+                  if ( aoReferencedClasses[ i ] == null )
                   {
-                     Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
-
-                     if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
-                     {
-                        aoReferencedClasses[ i ] = oCurrentReferencedClass;
-                        bReload = true;
-                     }
+                     // if this is an ignored class, just go to the next referenced class
+                     break;
                   }
+
+                  if ( ( ( Set ) _oLoadInProgressClassNameSet.get() ).contains( aoReferencedClasses[ i ] ) )
+                  {
+                     // if the referenced class is currently being loaded, do not proceed since this would
+                     // cause an infinite recursion!
+                     break;
+                  }
+
+                  Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
+
+                  if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
+                  {
+                     aoReferencedClasses[ i ] = oCurrentReferencedClass;
+                     bReload = true;
+                  }
+
                }
             }
 
