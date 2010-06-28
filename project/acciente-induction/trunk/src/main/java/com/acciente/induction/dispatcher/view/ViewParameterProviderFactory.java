@@ -15,6 +15,10 @@ import com.acciente.induction.resolver.ViewResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
+import com.acciente.induction.view.Image;
+import com.acciente.induction.view.ImageStream;
+import com.acciente.induction.view.Template;
+import com.acciente.induction.view.Text;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +38,7 @@ public class ViewParameterProviderFactory
    private Config.FileUpload _oFileUploadConfig;
    private TemplatingEngine  _oTemplatingEngine;
    private RedirectResolver  _oRedirectResolver;
+   private ViewFactory       _oViewFactory;
    private ClassLoader       _oClassLoader;
 
    public ViewParameterProviderFactory( ModelPool           oModelPool,
@@ -47,6 +52,11 @@ public class ViewParameterProviderFactory
       _oTemplatingEngine = oTemplatingEngine;
       _oRedirectResolver = oRedirectResolver;
       _oClassLoader      = oClassLoader;
+   }
+
+   public void setViewFactory( ViewFactory oViewFactory )
+   {
+      _oViewFactory = oViewFactory;
    }
 
    public ViewParameterProvider getParameterProvider( HttpServletRequest      oRequest,
@@ -117,6 +127,13 @@ public class ViewParameterProviderFactory
             else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
             {
                oParamValue = _oClassLoader;
+            }
+            else if ( Template.class.isAssignableFrom( oParamClass )
+                        || Text.class.isAssignableFrom( oParamClass )
+                        || Image.class.isAssignableFrom( oParamClass )
+                        || ImageStream.class.isAssignableFrom( oParamClass ) )
+            {
+               oParamValue = _oViewFactory.getView( oParamClass.getName(), _oRequest, _oResponse, null );
             }
             else
             {
