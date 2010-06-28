@@ -345,13 +345,21 @@ public class HttpDispatcher extends HttpServlet
                                                                                              oClassLoader ) );
 
       // the ViewExecutor manages the loading (when needed) and processing of views
-      _oViewExecutor = new ViewExecutor( new ViewFactory( oClassLoader,
-                                                          new ViewParameterProviderFactory( oModelPool,
-                                                                                            oConfig.getFileUpload(),
-                                                                                            oTemplatingEngine,
-                                                                                            oRedirectResolver, 
-                                                                                            oClassLoader ) ),
-                                         oTemplatingEngine );
+      ViewParameterProviderFactory
+         oViewParameterProviderFactory = new ViewParameterProviderFactory( oModelPool,
+                                                                           oConfig.getFileUpload(),
+                                                                           oTemplatingEngine,
+                                                                           oRedirectResolver,
+                                                                           oClassLoader );
+      ViewFactory
+         oViewFactory = new ViewFactory( oClassLoader, oViewParameterProviderFactory );
+
+      // we have to delay setting this until here, since ViewParameterProviderFactory and
+      // ViewFactory have a cyclical relationship
+      oViewParameterProviderFactory.setViewFactory( oViewFactory );
+
+      // finally create the view executor
+      _oViewExecutor = new ViewExecutor( oViewFactory, oTemplatingEngine );
    }
 
    public void service( HttpServletRequest oRequest, HttpServletResponse oResponse )
