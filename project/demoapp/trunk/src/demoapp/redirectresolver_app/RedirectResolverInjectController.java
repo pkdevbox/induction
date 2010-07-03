@@ -26,7 +26,7 @@ import java.io.IOException;
  */
 public class RedirectResolverInjectController implements Controller
 {
-   public void handler(RedirectResolver oRedirectResolver, Response oResponse) throws IOException
+   public void handler( RedirectResolver oRedirectResolver, Response oResponse ) throws IOException
    {
       oResponse.out().println( "injected redirect resolver: "              + oRedirectResolver                                        );
 
@@ -34,5 +34,13 @@ public class RedirectResolverInjectController implements Controller
       oResponse.out().println( "HelloWorld1Controller.class resolved to: " + oRedirectResolver.resolve( HelloWorld1Controller.class ) );
       oResponse.out().println( "HelloWorld2Controller.class resolved to: " + oRedirectResolver.resolve( HelloWorld2Controller.class ) );
       oResponse.out().println( "HelloWorld2View.class resolved to: "       + oRedirectResolver.resolve( HelloWorld2View.class       ) );
+   }
+
+   public void modelDemo( RedirectResolverInjectModel oRedirectResolverInjectModel, Response oResponse ) throws IOException
+   {
+      oResponse.out().println( "model: " + oRedirectResolverInjectModel );
+
+      oResponse.out().println();
+      oResponse.out().println( "redirectResolverInjectModel.getRedirectResolver(): " + oRedirectResolverInjectModel.getRedirectResolver() );
    }
 }
