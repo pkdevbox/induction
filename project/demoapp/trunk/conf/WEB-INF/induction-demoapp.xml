@@ -61,6 +61,10 @@
             <class>demoapp.models_app.TarModel</class>
             <scope>application</scope>
         </model-def>
+        <model-def>
+            <class>demoapp.redirectresolver_app.RedirectResolverInjectModel</class>
+            <scope>session</scope>
+        </model-def>
     </model-defs>
 
     <!-- The following section configures the templating engine -->
