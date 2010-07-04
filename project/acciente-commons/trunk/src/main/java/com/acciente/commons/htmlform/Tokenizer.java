@@ -20,6 +20,9 @@ package com.acciente.commons.htmlform;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
+import java.net.URLDecoder;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * This class tokenizes a URL encoded character stream, with additional considerations due
@@ -33,11 +36,17 @@ public class Tokenizer
 {
    public Tokenizer( Reader oInput )
    {
-      _oStreamTokenizer = new StreamTokenizer( oInput );
+      _oStreamTokenizer       = new StreamTokenizer ( oInput );
+      _oVariableTokenQueue    = new LinkedList();
 
       // every stream has at least one token (i.e. the the null string)
-      _bHasMoreTokens   = true;
-      _sCurrentToken    = null;
+      _bHasMoreTokens         = true;
+      _sCurrentToken          = null;
+      _sVariableSplitterRegex = "["
+                                 + Symbols.TOKEN_COLON
+                                 + "\\" + Symbols.TOKEN_OPEN_BRACKET
+                                 + "\\" + Symbols.TOKEN_CLOSE_BRACKET
+                                 + "]";
 
       updateTokenizerTable( MODE_EXPECTING_VARIABLE );
    }
@@ -49,6 +58,13 @@ public class Tokenizer
 
    public boolean nextToken() throws IOException
    {
+      if ( ! _oVariableTokenQueue.isEmpty() )
+      {
+         _sCurrentToken = ( String ) _oVariableTokenQueue.remove();
+
+         return true;
+      }
+
       if ( _bHasMoreTokens )
       {
          int iTokenType = _oStreamTokenizer.nextToken();
@@ -59,7 +75,52 @@ public class Tokenizer
          }
          else if ( iTokenType == StreamTokenizer.TT_WORD )
          {
-            _sCurrentToken = _oStreamTokenizer.sval;
+            if ( _iCurrentMode == MODE_EXPECTING_DATA )
+            {
+               _sCurrentToken = _oStreamTokenizer.sval;
+            }
+            else
+            {
+               // we find that the variable may be URL encoded in both POST and GET contexts
+
+               String sDecodedToken = URLDecoder.decode ( _oStreamTokenizer.sval, "UTF-8" );
+
+               // only do complex decoding if needed, otherwise we take a performance hit for naught
+               if ( sDecodedToken.contains( Symbols.TOKEN_COLON )
+                     || sDecodedToken.contains( Symbols.TOKEN_OPEN_BRACKET )
+                     || sDecodedToken.contains( Symbols.TOKEN_CLOSE_BRACKET ) )
+               {
+                  StringBuffer sToken = new StringBuffer();
+
+                  // if the split cause the token to yield several tokens, the we consume only the first token
+                  for ( int i = 0; i < sDecodedToken.length(); i++  )
+                  {
+                     char cChar = sDecodedToken.charAt( i );
+
+                     if ( cChar == Symbols.CHAR_COLON
+                           || cChar == Symbols.CHAR_OPEN_BRACKET
+                           || cChar == Symbols.CHAR_CLOSE_BRACKET )
+                     {
+                        if ( sToken.length() > 0 )
+                        {
+                           _oVariableTokenQueue.add( new String( sToken ) );
+                           sToken.setLength( 0 );
+                        }
+                        _oVariableTokenQueue.add( "" + cChar );
+                     }
+                     else
+                     {
+                        sToken.append( cChar );
+                     }
+                  }
+
+                  _sCurrentToken = ( String ) _oVariableTokenQueue.remove();
+               }
+               else
+               {
+                  _sCurrentToken = sDecodedToken;
+               }
+            }
          }
          else if ( iTokenType == Symbols.CHAR_COLON
                      || iTokenType == Symbols.CHAR_OPEN_BRACKET
@@ -109,14 +170,19 @@ public class Tokenizer
 
          _oStreamTokenizer.ordinaryChar( Symbols.CHAR_AMPERSAND );
       }
+
+      _iCurrentMode = iMode;
    }
 
-   private StreamTokenizer       _oStreamTokenizer;
-   private boolean               _bHasMoreTokens;
-   private String                _sCurrentToken;
+   private        StreamTokenizer _oStreamTokenizer;
+   private        int             _iCurrentMode;
+   private        String          _sVariableSplitterRegex;
+   private        Queue           _oVariableTokenQueue;
+   private        boolean         _bHasMoreTokens;
+   private        String          _sCurrentToken;
 
-   private static int MODE_EXPECTING_VARIABLE   = 1;
-   private static int MODE_EXPECTING_DATA       = 2;
+   private static int             MODE_EXPECTING_VARIABLE = 1;
+   private static int             MODE_EXPECTING_DATA     = 2;
 }
 
 // EOF
