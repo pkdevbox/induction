@@ -371,7 +371,7 @@ public class Parser
             {
                // the leaf of this parameter is a list, not that oMapKeys may be null if
                // this is encountered on the first loop iteration, and this is a valid case
-               oParameterSpec = new ParameterSpec( sIdentifier, sType, true, oMapKeys );
+               oParameterSpec = new ParameterSpec( sIdentifier, sType, true );
 
                // consume TOKEN_CLOSE_BRACKET
                oTokenizer.nextToken();
