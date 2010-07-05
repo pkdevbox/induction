@@ -1,9 +1,8 @@
-package demoapp.redirectresolver_app;
+package demoapp.urlresolver_app;
 
 import com.acciente.induction.controller.Controller;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.resolver.URLResolver;
-import com.acciente.induction.resolver.RedirectResolver;
 import demoapp.helloworld1_app.HelloWorld1Controller;
 import demoapp.helloworld2_app.HelloWorld2Controller;
 import demoapp.helloworld2_app.HelloWorld2View;
