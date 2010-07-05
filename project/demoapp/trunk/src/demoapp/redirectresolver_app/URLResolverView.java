@@ -1,6 +1,6 @@
 package demoapp.redirectresolver_app;
 
-import com.acciente.induction.resolver.RedirectResolver;
+import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.view.Template;
 import demoapp.helloworld1_app.HelloWorld1Controller;
 
@@ -11,18 +11,18 @@ import demoapp.helloworld1_app.HelloWorld1Controller;
  * Time: 9:36:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RedirectResolverInjectView implements Template
+public class URLResolverView implements Template
 {
-   private RedirectResolver _oRedirectResolver;
+   private URLResolver _oURLResolver;
 
-   public RedirectResolverInjectView( RedirectResolver oRedirectResolver )
+   public URLResolverView( URLResolver oURLResolver )
    {
-      _oRedirectResolver = oRedirectResolver;
+      _oURLResolver = oURLResolver;
    }
 
    public String getTemplateName()
    {
-      return "RedirectResolverInjectView.ftl";
+      return "URLResolverView.ftl";
    }
 
    public String getMimeType()
@@ -32,6 +32,6 @@ public class RedirectResolverInjectView implements Template
 
    public String getHelloWorld1URL()
    {
-      return _oRedirectResolver.resolve( HelloWorld1Controller.class ); 
+      return _oURLResolver.resolve( HelloWorld1Controller.class ); 
    }
 }
