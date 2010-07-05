@@ -62,7 +62,7 @@
             <scope>application</scope>
         </model-def>
         <model-def>
-            <class>demoapp.redirectresolver_app.RedirectResolverInjectModel</class>
+            <class>demoapp.redirectresolver_app.URLResolverModel</class>
             <scope>session</scope>
         </model-def>
     </model-defs>
