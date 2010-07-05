@@ -41,7 +41,7 @@ public class ShortURLViewResolver implements ViewResolver
       _oURL2ClassMapperList = createURL2ClassMapperList( oViewMapping, oClassLoader );
    }
 
-   public ViewResolver.Resolution resolve( HttpServletRequest oRequest )
+   public ViewResolver.Resolution resolveRequest( HttpServletRequest oRequest )
    {
       String   sURLPath = oRequest.getPathInfo();
 

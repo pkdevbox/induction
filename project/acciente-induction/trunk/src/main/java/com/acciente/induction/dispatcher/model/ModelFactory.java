@@ -20,6 +20,8 @@ package com.acciente.induction.dispatcher.model;
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.dispatcher.resolver.RedirectResolverExecutor;
+import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.template.TemplatingEngine;
@@ -50,7 +52,7 @@ public class ModelFactory
    private  ServletConfig                 _oServletConfig;
    private  TemplatingEngine              _oTemplatingEngine;
    private  Config.FileUpload             _oFileUploadConfig;
-   private  RedirectResolver              _oRedirectResolver;
+   private  RedirectResolverExecutor      _oRedirectResolverExecutor;
 
    private  ConfiguredModelFactoryPool    _oConfiguredModelFactoryPool;
    private  ModelPool                     _oModelPool;
@@ -84,11 +86,11 @@ public class ModelFactory
    /**
     * This method exists to set the redirect resolver after construction of the model factory since there is
     * a cyclic dependency between the redirect resolver and the model factory
-    * @param oRedirectResolver the redirect resolver
+    * @param oRedirectResolverExecutor the redirect resolver
     */
-   public void setRedirectResolver( RedirectResolver oRedirectResolver )
+   public void setRedirectResolver( RedirectResolverExecutor oRedirectResolverExecutor )
    {
-      _oRedirectResolver = oRedirectResolver;
+      _oRedirectResolverExecutor = oRedirectResolverExecutor;
    }
 
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
@@ -113,7 +115,7 @@ public class ModelFactory
       try
       {
          Object[]                oParameterValues        = new Object[]{ _oServletConfig, oModelDef, oHttpServletRequest, _oTemplatingEngine, _oClassLoader };
-         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, _oFileUploadConfig, oHttpServletRequest, _oRedirectResolver );
+         ModelParameterProvider  oModelParameterProvider = new ModelParameterProvider( _oModelPool, _oFileUploadConfig, oHttpServletRequest, _oRedirectResolverExecutor );
 
          // does this model class have a factory class defined?
          if ( ! oModelDef.hasModelFactoryClassName() )
@@ -172,17 +174,20 @@ public class ModelFactory
     */
    private static class ModelParameterProvider implements ParameterProvider
    {
-      private ModelPool          _oModelPool;
-      private HttpServletRequest _oHttpServletRequest;
-      private Config.FileUpload  _oFileUploadConfig;
-      private RedirectResolver   _oRedirectResolver;
+      private ModelPool                _oModelPool;
+      private HttpServletRequest       _oHttpServletRequest;
+      private Config.FileUpload        _oFileUploadConfig;
+      private RedirectResolverExecutor _oRedirectResolverExecutor;
 
-      public ModelParameterProvider( ModelPool oModelPool, Config.FileUpload oFileUploadConfig, HttpServletRequest oHttpServletRequest, RedirectResolver oRedirectResolver )
+      public ModelParameterProvider( ModelPool                oModelPool,
+                                     Config.FileUpload        oFileUploadConfig,
+                                     HttpServletRequest       oHttpServletRequest,
+                                     RedirectResolverExecutor oRedirectResolverExecutor )
       {
-         _oModelPool          = oModelPool;
-         _oHttpServletRequest = oHttpServletRequest;
-         _oFileUploadConfig   = oFileUploadConfig;
-         _oRedirectResolver   = oRedirectResolver;
+         _oModelPool                = oModelPool;
+         _oHttpServletRequest       = oHttpServletRequest;
+         _oFileUploadConfig         = oFileUploadConfig;
+         _oRedirectResolverExecutor = oRedirectResolverExecutor;
       }
 
       public Object getParameter( Class oParamClass ) throws ParameterProviderException
@@ -216,14 +221,14 @@ public class ModelFactory
 
                oParamValue = _oHttpServletRequest;
             }
-            else if ( oParamClass.isAssignableFrom( RedirectResolver.class ) )
+            else if ( oParamClass.isAssignableFrom( URLResolver.class ) )
             {
-               if ( _oRedirectResolver == null )
+               if ( _oRedirectResolverExecutor == null )
                {
                   throw new ParameterProviderException( oParamClass + " not available in this context" );
                }
 
-               oParamValue = _oRedirectResolver;
+               oParamValue = new URLResolver( _oRedirectResolverExecutor, _oHttpServletRequest );
             }
             else
             {

@@ -47,7 +47,7 @@ public class ShortURLControllerResolver implements ControllerResolver
       _oError2ClassMapperList = createError2ClassMapperList( oControllerMapping, oClassLoader );
    }
 
-   public Resolution resolve( HttpServletRequest oRequest )
+   public Resolution resolveRequest( HttpServletRequest oRequest )
    {
       String   sURLPath = oRequest.getPathInfo();
 
@@ -80,7 +80,7 @@ public class ShortURLControllerResolver implements ControllerResolver
       return null;
    }
 
-   public Resolution resolve( Throwable oThrowable )
+   public Resolution resolveThrowable( Throwable oThrowable )
    {
       if ( oThrowable != null )
       {

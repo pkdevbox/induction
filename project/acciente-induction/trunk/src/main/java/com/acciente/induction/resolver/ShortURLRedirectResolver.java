@@ -18,6 +18,7 @@
 package com.acciente.induction.resolver;
 
 import com.acciente.commons.htmlform.Symbols;
+import com.acciente.induction.controller.Redirect;
 import com.acciente.induction.init.config.Config;
 
 import java.net.URLEncoder;
@@ -46,22 +47,67 @@ public class ShortURLRedirectResolver implements RedirectResolver
       _oClass2URLMapperList   = createClass2URLMapperList( oRedirectMapping, oClassLoader );
    }
 
-   public String resolve( Class oClass )
+   public String resolveRedirect( Redirect oRedirect )
+   {
+      if ( oRedirect.getTargetClass() != null )
+      {
+         if ( oRedirect.getTargetMethodName() != null )
+         {
+            if ( oRedirect.getTargetURLQueryParameters() != null )
+            {
+               return resolve( oRedirect.getTargetClass(),
+                               oRedirect.getTargetMethodName(),
+                               oRedirect.getTargetURLQueryParameters() );
+            }
+            else
+            {
+               return resolve( oRedirect.getTargetClass(),
+                               oRedirect.getTargetMethodName() );
+            }
+         }
+         else
+         {
+            if ( oRedirect.getTargetURLQueryParameters() != null )
+            {
+               return resolve( oRedirect.getTargetClass(), oRedirect.getTargetURLQueryParameters() );
+            }
+            else
+            {
+               return resolve( oRedirect.getTargetClass() );
+            }
+         }
+      }
+      else if ( oRedirect.getTargetURL() != null )
+      {
+         if ( oRedirect.getTargetURLQueryParameters() != null )
+         {
+            return resolve( oRedirect.getTargetURL(), oRedirect.getTargetURLQueryParameters() );
+         }
+         else
+         {
+            return resolve( oRedirect.getTargetURL() );
+         }
+      }
+
+      return null;
+   }
+
+   private String resolve( Class oClass )
    {
       return resolve( oClass, null, null );
    }
 
-   public String resolve( Class oClass, Map oURLQueryParameters )
+   private String resolve( Class oClass, Map oURLQueryParameters )
    {
       return resolve( oClass, null, oURLQueryParameters );
    }
 
-   public String resolve( Class oClass, String sMethodName )
+   private String resolve( Class oClass, String sMethodName )
    {
       return resolve( oClass, sMethodName, null );
    }
 
-   public String resolve( Class oClass, String sMethodName, Map oURLQueryParameters )
+   private String resolve( Class oClass, String sMethodName, Map oURLQueryParameters )
    {
       for ( Iterator oIter = _oClass2URLMapperList.iterator(); oIter.hasNext(); )
       {
@@ -76,12 +122,12 @@ public class ShortURLRedirectResolver implements RedirectResolver
       return null;
    }
 
-   public String resolve( String sURLPart )
+   private String resolve( String sURLPart )
    {
       return createCompleteURL( _oRedirectMapping.getURLBase(), sURLPart, null );
    }
 
-   public String resolve( String sURLPart, Map oURLQueryParameters )
+   private String resolve( String sURLPart, Map oURLQueryParameters )
    {
       return createCompleteURL( _oRedirectMapping.getURLBase(), sURLPart, oURLQueryParameters );
    }

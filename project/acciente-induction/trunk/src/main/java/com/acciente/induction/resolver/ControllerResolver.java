@@ -21,46 +21,59 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * This interface is used to abstract the algorithm used to map a HTTP request to a specific
- * controller invocation.<p>
+ * This interface is used to abstract the algorithm used to:
+ *
+ * <ol>
+ * <li>map a HTTP request to a controller and </li>
+ * <li>map a an unhandled exception to a an error handler controller</li>
+ * </ol>
  * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:<p>
- *   - the single constructor should accepts no arguments or<p>
- *   - the single constructor should declare formal parameters using only the
- *     following types:<p>
- *     - javax.servlet.ServletConfig<p>
- *     - com.acciente.induction.init.config.Config.ControllerResolver<p>
- *     - java.lang.ClassLoader (to get the Induction reloading classloader)
- *     - any user defined model class (to get the respective model object)
- *
- * @created Mar 14, 2008
+ * adhering to the following convention:
+ * <ol>
+ *   <li>the single constructor should accepts no arguments or</li>
+ *   <li>the single constructor should declare formal parameters using only the
+ *     following types documented at the URL below:</li>
+ * </ol>
+ *    http://www.inductionframework.org/param-injection-2-reference.html#ControllerresolverCONSTRUCTOR
+ * <p>
+ * <p>This interface no longer enforces any methods at compile time (Induction 1.4.0b was the last version
+ * to enforce compile time resolve() methods), instead this interface now simply serves as a marker now.<p>
+ * <p>
+ * Induction looks for two methods at runtime for implementations of this interface, the details of
+ * the two methods are given below:<p>
+ * <p>
+ * Resolution resolveRequest( ... )<p>
+ * <p>
+ * This method will be called by Induction when it needs to resolve an incoming HTTP request to a controller.
+ * The method is expected to return a Resolution object describing the controller to be invoked, or null if the request
+ * did not resolve to a controller.
+ * This method may request the injection of any value available to a controller (including of course an instance
+ * of javax.servlet.http.HttpServletRequest), the full list of values available for injection are detailed
+ * at the URL below: <p>
+ * <p>
+ * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * <p>
+ * <p>
+  * Resolution resolveThrowable( ... )<p>
+  * <p>
+ * This method will be called by Induction when it needs to resolve an unhandled error or exceptions that is
+ * thrown during controller or view execution.
+ * The method is expected to return a Resolution object describing the controller to be invoked, or null if the
+ * exception/error did not resolve to a controller.
+ * This method may request the injection of a java.lang.Throwable and additionally any value available to a
+ * controller, the full list of additional values available for injection are detailed
+ * at the URL below: <p>
+ * <p>
+ * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * <p>
+  * @created Mar 14, 2008
+ * @updated Jul 04, 2010
  *
  * @author Adinath Raveendra Raj
  */
 public interface ControllerResolver
 {
-   /**
-    * This method should resolve the the specified HTTP request to the class name of
-    * a controller and method name (within the same class) to be invoked
-    *
-    * @param oRequest the HTTP request context in which the resolution is requested
-    * @return  an object containing the class name of the controller to be invoked and
-    *          the method name within same
-    */
-   Resolution resolve( HttpServletRequest oRequest );
-
-   /**
-    * This method is called if an exception occurs during controller or view execution.
-    * This method is expected to resolve the specified exception to the class name of
-    * a controller and method name (within the same class) to handle the error
-    *
-    * @param oThrowable the exception context in which the resolution is requested
-    * @return  an object containing the class name of the controller to be invoked and
-    *          the method name within same
-    */
-   Resolution resolve( Throwable oThrowable );
-
    /**
     * A container object for the resolution information.
     *

@@ -20,83 +20,41 @@ package com.acciente.induction.resolver;
 import java.util.Map;
 
 /**
- * This interface is used to abstract the algorithm used to map a redirect request to an actual URL
+ * This interface is used to abstract the algorithm used to map a redirect specified in terms of a class type to a URL.
  * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:<p>
- *   - the single constructor should accepts no arguments or<p>
- *   - the single constructor should declare formal parameters using only the
- *     following types:<p>
- *     - javax.servlet.ServletContext<p>
+ * adhering to the following convention:
+ * <ol>
+ *   <li>the single constructor should accepts no arguments or</li>
+ *   <li>the single constructor should declare formal parameters using only the
+ *     following types documented at the URL below:</li>
+ * </ol>
+ *    http://www.inductionframework.org/param-injection-2-reference.html#RedirectresolverCONSTRUCTOR
+ * <p>
+ * <p>This interface no longer enforces any methods at compile time (Induction 1.4.0b was the last version
+ * to enforce compile time resolve() methods), instead this interface now simply serves as a marker now.<p>
+ * <p>
+ * Induction looks for a method at runtime for implementations of this interface, the details of
+ * the the method is given below:<p>
+ * <p>
+ * Resolution resolveRedirect( ... )<p>
+ * <p>
+ * This method will be called by Induction when it needs to resolve an Induction redirect object (typically this object
+ * contains the Java class type of the controller or view which is the target of the redirect) to a fully qualified URL.
+ * The method is expected to return a fully qualified URL string.
+ * This method may request the injection of the Induction Redirect object and additionally any value available to a
+ * controller, the full list of additional values available for injection are detailed at the URL below:<p>
+ * <p>
+ * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * <p>
  *
  * @created Jun 21, 2008
+ * @updated Jul 04, 2010
  *
  * @author Adinath Raveendra Raj
  */
 public interface RedirectResolver
 {
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target controller or view.
-    *
-    * @param oTargetClass  a class object representing a class that implements the Controller or interface or a view
-    * @return a string represting a complete URL
-    */
-   public String resolve( Class oTargetClass );
-
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target controller or view and map
-    * of query parameters.
-    *
-    * @param oTargetClass  a class object representing a class that implements the Controller or interface or a view
-    * @param oURLQueryParameters a map to be converted to URL query parameters
-    * @return a string represting a complete URL
-    */
-   public String resolve( Class oTargetClass, Map oURLQueryParameters );
-
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target controller
-    * and a specific target method in the controller.
-    *
-    * @param oControllerClass  a class object representing a class that implements the Controller interface
-    * @param sControllerMethodName a specific method name in the controller that the client
-    * should redirect to
-    * @return a string represting a complete URL
-    */
-   public String resolve( Class oControllerClass, String sControllerMethodName );
-
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target controller
-    * and a specific target method in the controller and has URL query parameters.
-    *
-    * @param oControllerClass  a class object representing a class that implements the Controller interface
-    * @param sControllerMethodName a specific method name in the controller that the client
-    * should redirect to
-    * @param oURLQueryParameters a map to be converted to URL query parameters
-    * @return a string represting a complete URL
-    */
-   public String resolve( Class oControllerClass, String sControllerMethodName, Map oURLQueryParameters );
-
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target URL,
-    * the URL may be a partial URL that this method is expected to complete. The URL may even
-    * simply be a mnemonic reference that is mapped to a complete URL by this method.
-    *
-    * @param sURLPart a string representing a complete or partial URL
-    * @return a string represting a complete URL
-    */
-   public String resolve( String sURLPart );
-
-   /**
-    * Called by Induction to resolve a redirect request defined on in terms of a target URL
-    * and URL query parameters. The URL may be a partial URL that this method is expected to
-    * complete. The URL may even simply be a mnemonic reference that is mapped to a complete
-    * URL by this method.
-    *
-    * @param sURLPart a string representing a complete or partial URL
-    * @param oURLQueryParameters a map to be converted to URL query parameters
-    * @return a string represting a complete URL
-    */
-   public String resolve( String sURLPart, Map oURLQueryParameters );
 }
 
 // EOF

@@ -66,7 +66,7 @@ public class Redirect
    /**
     * A redirect object defined in terms of the controller and method to which the client should redirect,
     * Induction uses the redirect resolver to map the controller or view name to a URL. This method should
-    * not be used to redirect to a view since a methid name does not make sense for a view.
+    * not be used to redirect to a view since a method name does not make sense for a view.
     *
     * @param oTargetClass a class representing that implements the Controller interface
     * @param sTargetMethodName a specific method name in the controller that the client
@@ -88,7 +88,7 @@ public class Redirect
    /**
     * A redirect object defined in terms of the controller and method to which the client should redirect,
     * Induction uses the redirect resolver to map the controller or view name to a URL. This method should
-    * not be used to redirect to a view since a methid name does not make sense for a view.
+    * not be used to redirect to a view since a method name does not make sense for a view.
     *
     * @param oTargetClass a class representing that implements the Controller interface
     * @param sTargetMethodName a specific method name in the controller that the client
@@ -114,7 +114,7 @@ public class Redirect
    /**
     * A redirect object defined directly in terms of the URL to which the client should
     * redirect to. The URL is still passed thru the redirect resolver which may choose
-    * to complete partial URLs or provide other services. The defualt resolver prefixes
+    * to complete partial URLs or provide other services. The default resolver prefixes
     * the URL the URL base parameter defined in the induction config.
     *
     * @param sURL a string representing a complete or partial URL
@@ -127,7 +127,7 @@ public class Redirect
    /**
     * A redirect object defined directly in terms of the URL to which the client should
     * redirect to. The URL is still passed thru the redirect resolver which may choose
-    * to complete partial URLs or provide other services. The defualt resolver prefixes
+    * to complete partial URLs or provide other services. The default resolver prefixes
     * the URL the URL base parameter defined in the induction config.
     *
     * @param sURL a string representing a complete or partial URL

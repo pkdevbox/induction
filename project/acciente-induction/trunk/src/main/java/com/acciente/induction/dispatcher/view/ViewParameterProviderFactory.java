@@ -9,6 +9,8 @@ import com.acciente.induction.controller.HttpResponse;
 import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
+import com.acciente.induction.dispatcher.resolver.RedirectResolverExecutor;
+import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.resolver.ViewResolver;
@@ -34,24 +36,24 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ViewParameterProviderFactory
 {
-   private ModelPool         _oModelPool;
-   private Config.FileUpload _oFileUploadConfig;
-   private TemplatingEngine  _oTemplatingEngine;
-   private RedirectResolver  _oRedirectResolver;
-   private ViewFactory       _oViewFactory;
-   private ClassLoader       _oClassLoader;
+   private ModelPool                _oModelPool;
+   private Config.FileUpload        _oFileUploadConfig;
+   private TemplatingEngine         _oTemplatingEngine;
+   private RedirectResolverExecutor _oRedirectResolverExecutor;
+   private ViewFactory              _oViewFactory;
+   private ClassLoader              _oClassLoader;
 
-   public ViewParameterProviderFactory( ModelPool           oModelPool,
-                                        Config.FileUpload   oFileUploadConfig,
-                                        TemplatingEngine    oTemplatingEngine,
-                                        RedirectResolver    oRedirectResolver,
-                                        ClassLoader         oClassLoader  )
+   public ViewParameterProviderFactory( ModelPool                oModelPool,
+                                        Config.FileUpload        oFileUploadConfig,
+                                        TemplatingEngine         oTemplatingEngine,
+                                        RedirectResolverExecutor oRedirectResolverExecutor,
+                                        ClassLoader              oClassLoader )
    {
-      _oModelPool        = oModelPool;
-      _oFileUploadConfig = oFileUploadConfig;
-      _oTemplatingEngine = oTemplatingEngine;
-      _oRedirectResolver = oRedirectResolver;
-      _oClassLoader      = oClassLoader;
+      _oModelPool                = oModelPool;
+      _oFileUploadConfig         = oFileUploadConfig;
+      _oTemplatingEngine         = oTemplatingEngine;
+      _oRedirectResolverExecutor = oRedirectResolverExecutor;
+      _oClassLoader              = oClassLoader;
    }
 
    public void setViewFactory( ViewFactory oViewFactory )
@@ -120,9 +122,9 @@ public class ViewParameterProviderFactory
             {
                oParamValue = _oTemplatingEngine;
             }
-            else if ( oParamClass.isAssignableFrom( RedirectResolver.class ) )
+            else if ( oParamClass.isAssignableFrom( URLResolver.class ) )
             {
-               oParamValue = _oRedirectResolver;
+               oParamValue = new URLResolver( _oRedirectResolverExecutor, _oRequest );
             }
             else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
             {
