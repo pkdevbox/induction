@@ -21,37 +21,49 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * This interface is used to abstract the algorithm used to map a HTTP request to a specific
- * view invocation.<p>
+ * This interface is used to abstract the algorithm used to:
+ *
+ * <ol>
+ * <li>map a HTTP request to a view and </li>
+ * <li>map a an unhandled exception to a an error handler view</li>
+ * </ol>
  * <p>
  * A class implementing this interface is expected to have a single public contructor
- * adhering to the following convention:<p>
- *   - the single constructor should accepts no arguments or<p>
- *   - the single constructor should declare formal parameters using only the
- *     following types:<p>
- *     - javax.servlet.ServletConfig<p>
- *     - com.acciente.induction.init.config.Config.ViewResolver<p>
- *     - java.lang.ClassLoader (to get the Induction reloading classloader)
- *     - any user defined model class (to get the respective model object)
+ * adhering to the following convention:
+ * <ol>
+ *   <li>the single constructor should accepts no arguments or</li>
+ *   <li>the single constructor should declare formal parameters using only the
+ *     following types documented at the URL below:</li>
+ * </ol>
+ *    http://www.inductionframework.org/param-injection-2-reference.html#ViewresolverCONSTRUCTOR
+ * <p>
+ * <p>This interface no longer enforces any methods at compile time (Induction 1.4.0b was the last version
+ * to enforce compile time resolve() methods), instead this interface now simply serves as a marker now.<p>
+ * <p>
+ * Induction looks for a method at runtime for implementations of this interface, the details of
+ * the methods is given below:<p>
+ * <p>
+ * Resolution resolveRequest( ... )<p>
+ * <p>
+ * This method will be called by Induction when it needs to resolve an incoming HTTP request to a view.
+ * The method is expected to return a Resolution object describing the view to be invoked, or null if the request
+ * did not resolve to a view.
+ * This method may request the injection of any value available to a view (including of course an instance
+ * of javax.servlet.http.HttpServletRequest), the full list of values available for injection are detailed
+ * at the URL below: <p>
+ * <p>
+ * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * <p>
  *
  * @created Mar 29, 2009
+ * @updated Jul 04, 2010
  *
  * @author Adinath Raveendra Raj
  */
 public interface ViewResolver
 {
    /**
-    * This method should resolve the class name of the view and method name within same
-    * to be invoked in response to the specified HTTP request
-    *
-    * @param oRequest the HTTP request context in which the resolution is requested
-    * @return  an object containing the class name of the view to be invoked and
-    *          the method name within same
-    */
-   Resolution resolve( HttpServletRequest oRequest );
-
-   /**
-    * A container object containg the resolution information.
+    * A container object containing the resolution information.
     *
     * @created Mar 14, 2008
     * @author Adinath Raveendra Raj

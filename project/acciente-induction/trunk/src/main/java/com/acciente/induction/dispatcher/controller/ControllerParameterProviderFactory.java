@@ -26,6 +26,8 @@ import com.acciente.induction.controller.HttpResponse;
 import com.acciente.induction.controller.Request;
 import com.acciente.induction.controller.Response;
 import com.acciente.induction.dispatcher.model.ModelPool;
+import com.acciente.induction.dispatcher.resolver.RedirectResolverExecutor;
+import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ControllerResolver;
 import com.acciente.induction.resolver.RedirectResolver;
@@ -47,23 +49,23 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class ControllerParameterProviderFactory
 {
-   private  ModelPool            _oModelPool;
-   private  Config.FileUpload    _oFileUploadConfig;
-   private  TemplatingEngine     _oTemplatingEngine;
-   private RedirectResolver _oRedirectResolver;
-   private  ClassLoader          _oClassLoader;
+   private ModelPool                _oModelPool;
+   private Config.FileUpload        _oFileUploadConfig;
+   private TemplatingEngine         _oTemplatingEngine;
+   private RedirectResolverExecutor _oRedirectResolverExecutor;
+   private ClassLoader              _oClassLoader;
 
-   public ControllerParameterProviderFactory( ModelPool           oModelPool,
-                                              Config.FileUpload   oFileUploadConfig,
-                                              TemplatingEngine    oTemplatingEngine,
-                                              RedirectResolver    oRedirectResolver,      
-                                              ClassLoader         oClassLoader )
+   public ControllerParameterProviderFactory( ModelPool                oModelPool,
+                                              Config.FileUpload        oFileUploadConfig,
+                                              TemplatingEngine         oTemplatingEngine,
+                                              RedirectResolverExecutor oRedirectResolverExecutor,
+                                              ClassLoader              oClassLoader )
    {
-      _oModelPool        = oModelPool;
-      _oFileUploadConfig = oFileUploadConfig;
-      _oTemplatingEngine = oTemplatingEngine;
-      _oRedirectResolver = oRedirectResolver;
-      _oClassLoader      = oClassLoader;
+      _oModelPool                = oModelPool;
+      _oFileUploadConfig         = oFileUploadConfig;
+      _oTemplatingEngine         = oTemplatingEngine;
+      _oRedirectResolverExecutor = oRedirectResolverExecutor;
+      _oClassLoader              = oClassLoader;
    }
 
    public ControllerParameterProvider getParameterProvider( HttpServletRequest             oRequest,
@@ -127,9 +129,9 @@ public class ControllerParameterProviderFactory
             {
                oParamValue = _oTemplatingEngine;
             }
-            else if ( oParamClass.isAssignableFrom( RedirectResolver.class ) )
+            else if ( oParamClass.isAssignableFrom( URLResolver.class ) )
             {
-               oParamValue = _oRedirectResolver;
+               oParamValue = new URLResolver( _oRedirectResolverExecutor, _oRequest );
             }
             else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
             {
