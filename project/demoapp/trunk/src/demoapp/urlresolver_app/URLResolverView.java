@@ -1,4 +1,4 @@
-package demoapp.redirectresolver_app;
+package demoapp.urlresolver_app;
 
 import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.view.Template;
