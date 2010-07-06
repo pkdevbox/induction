@@ -111,7 +111,7 @@ public class ControllerResolverExecutor
          throw new RuntimeException( e );
       }
 
-      if ( ! ( oReturnValue instanceof ControllerResolver.Resolution ) )
+      if ( oReturnValue != null && ! ( oReturnValue instanceof ControllerResolver.Resolution ) )
       {
          throw new IllegalArgumentException( "controller resolver: resolveThrowable(...) did not return a value of type ControllerResolver.Resolution, returned type was: "
                                              + oReturnValue.getClass() );
