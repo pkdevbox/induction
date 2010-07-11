@@ -198,7 +198,7 @@ public class HttpDispatcher extends HttpServlet
 
             try
             {
-               oModelPool.getModel( oModelDef.getModelClassName(), null );
+               oModelPool.initAppModel( oModelDef.getModelClassName() );
             }
             catch ( MethodNotFoundException e )
             {  throw new ServletException( "init-error: model-init-on-startup", e ); }

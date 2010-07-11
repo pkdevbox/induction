@@ -30,7 +30,7 @@ public class InitializerParameterProvider implements ParameterProvider
    {
       try
       {
-         return _oModelPool.getModel( oParamClass.getName(), null );
+         return _oModelPool.getModel( oParamClass, null );
       }
       catch ( MethodNotFoundException e )
       {  throw new ParameterProviderException( _sMessagePrefix + ": error resolving value for type: " + oParamClass, e );     }

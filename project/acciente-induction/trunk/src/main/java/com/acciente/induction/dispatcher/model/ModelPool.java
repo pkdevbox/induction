@@ -18,6 +18,9 @@
 package com.acciente.induction.dispatcher.model;
 
 import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.controller.Form;
+import com.acciente.induction.controller.HTMLForm;
+import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
@@ -51,9 +54,34 @@ public class ModelPool
       _oAppScopeModelMap   = new Hashtable();   // we use a hashtable instead of a HashMap for safe concurrent access
    }
 
-   public Object getModel( String sModelClassName, HttpServletRequest oHttpServletRequest )
+   public void initAppModel( String sModelClassName )
       throws MethodNotFoundException, InvocationTargetException, ClassNotFoundException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
+      // first find the model definition object for this model class to determine the scope of this model
+      Config.ModelDefs.ModelDef oModelDef = _oModelDefs.getModelDef( sModelClassName );
+
+      if ( oModelDef == null )
+      {
+         throw new IllegalArgumentException( "model-error: no definition for model class: " + sModelClassName );
+      }
+
+      // next see if we already have an object instance
+      Object oModel;
+
+      if ( oModelDef.isApplicationScope() )
+      {
+         throw new IllegalArgumentException( "model-error: initAppModel() can only be called on application scope models! " + sModelClassName );
+      }
+
+      // trigger initialization by fetching the model
+      getApplicationScopeModel( oModelDef, null );
+   }
+
+   public Object getModel( Class oModelClass, HttpServletRequest oHttpServletRequest )
+      throws MethodNotFoundException, InvocationTargetException, ClassNotFoundException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
+   {
+      String sModelClassName = oModelClass.getCanonicalName();
+
       // first find the model definition object for this model class to determine the scope of this model
       Config.ModelDefs.ModelDef oModelDef = _oModelDefs.getModelDef( sModelClassName );
 
@@ -217,6 +245,38 @@ public class ModelPool
                oHttpServletRequest.setAttribute( oModelDef.getModelClassName(), oModel );
 
                ObjectFactory.destroyObject( oPreviousModel );
+            }
+         }
+      }
+
+      return oModel;
+   }
+
+   public Object getSystemModel( Class oSystemModelClass, HttpServletRequest oHttpServletRequest )
+      throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
+   {
+      Object      oModel;
+
+      if ( oHttpServletRequest == null )
+      {
+         throw new IllegalArgumentException( "model-error: attempt to access a request dependent system model class: "
+                                             + oSystemModelClass.getName()
+                                             + " from a context where no request is available");
+      }
+
+      oModel = oHttpServletRequest.getAttribute( oSystemModelClass.getCanonicalName() );
+
+      if ( oModel == null )
+      {
+         synchronized ( oHttpServletRequest )
+         {
+            oModel = oHttpServletRequest.getAttribute( oSystemModelClass.getCanonicalName() );
+
+            if ( oModel == null )
+            {
+               oModel = _oModelFactory.createSystemModel( oSystemModelClass, oHttpServletRequest );
+
+               oHttpServletRequest.setAttribute( oSystemModelClass.getCanonicalName(), oModel );
             }
          }
       }

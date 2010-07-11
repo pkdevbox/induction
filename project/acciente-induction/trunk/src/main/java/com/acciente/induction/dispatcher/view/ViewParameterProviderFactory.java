@@ -104,7 +104,7 @@ public class ViewParameterProviderFactory
                // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
                // are resolved before controller invocation, and become local variables in the
                // controller for the duration of the request
-               oParamValue = new HTMLForm( _oRequest, _oFileUploadConfig );
+               oParamValue = _oModelPool.getSystemModel( oParamClass, _oRequest );
             }
             else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
             {
@@ -124,7 +124,7 @@ public class ViewParameterProviderFactory
             }
             else if ( oParamClass.isAssignableFrom( URLResolver.class ) )
             {
-               oParamValue = new URLResolver( _oRedirectResolverExecutor, _oRequest );
+               oParamValue = _oModelPool.getSystemModel( oParamClass, _oRequest );
             }
             else if ( oParamClass.isAssignableFrom( ClassLoader.class ) )
             {
@@ -140,7 +140,7 @@ public class ViewParameterProviderFactory
             else
             {
                // check to see if this is a model class
-               oParamValue = _oModelPool.getModel( oParamClass.getName(), _oRequest );
+               oParamValue = _oModelPool.getModel( oParamClass, _oRequest );
             }
 
             if ( oParamValue == null )
