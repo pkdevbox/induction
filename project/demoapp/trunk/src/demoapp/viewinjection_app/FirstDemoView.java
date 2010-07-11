@@ -1,5 +1,7 @@
 package demoapp.viewinjection_app;
 
+import com.acciente.induction.controller.Form;
+import com.acciente.induction.controller.FormException;
 import com.acciente.induction.view.Text;
 
 /**
@@ -11,9 +13,31 @@ import com.acciente.induction.view.Text;
  */
 public class FirstDemoView implements Text
 {
+   private Form _oForm;
+
+   public FirstDemoView( Form oForm )
+   {
+      _oForm = oForm;
+   }
+
    public String getText()
    {
-      return "Hello I am the FIRST (1st) demo view";
+      String sName = "Stranger";
+
+      try
+      {
+         if ( _oForm.containsParam( "name" ) )
+         {
+            sName = _oForm.getString( "name" );
+
+         }
+      }
+      catch ( FormException e )
+      {
+         throw new RuntimeException( e );
+      }
+
+      return "Hello " + sName + ", I am the FIRST (1st) demo view";
    }
 
    public String getMimeType()
