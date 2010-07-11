@@ -169,6 +169,23 @@ public class ModelFactory
       return bStale;
    }
 
+   public Object createSystemModel( Class oSystemModelClass, HttpServletRequest oHttpServletRequest )
+   {
+      Object   oSystemModel = null;
+
+      if ( oSystemModelClass.isAssignableFrom( Form.class ) )
+      {
+         oSystemModel = new HTMLForm( oHttpServletRequest, _oFileUploadConfig );
+
+      }
+      else if ( oSystemModelClass.isAssignableFrom( URLResolver.class ) )
+      {
+         oSystemModel = new URLResolver( _oRedirectResolverExecutor, oHttpServletRequest );
+      }
+
+      return oSystemModel;
+   }
+
    /**
     * Internal.
     */
@@ -205,10 +222,7 @@ public class ModelFactory
                   throw new ParameterProviderException( oParamClass + " not available in this context" );
                }
 
-               // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
-               // are resolved before controller invocation, and become local variables in the
-               // controller for the duration of the request
-               oParamValue = new HTMLForm( _oHttpServletRequest, _oFileUploadConfig );
+               oParamValue = _oModelPool.getSystemModel( Form.class, _oHttpServletRequest );
 
                _oHttpServletRequest.setAttribute( oParamClass.getName(), oParamValue );
             }
@@ -228,11 +242,11 @@ public class ModelFactory
                   throw new ParameterProviderException( oParamClass + " not available in this context" );
                }
 
-               oParamValue = new URLResolver( _oRedirectResolverExecutor, _oHttpServletRequest );
+               oParamValue = _oModelPool.getSystemModel( URLResolver.class, _oHttpServletRequest );
             }
             else
             {
-               oParamValue = _oModelPool.getModel( oParamClass.getName(), _oHttpServletRequest );
+               oParamValue = _oModelPool.getModel( oParamClass, _oHttpServletRequest );
             }
 
             if ( oParamValue == null )
