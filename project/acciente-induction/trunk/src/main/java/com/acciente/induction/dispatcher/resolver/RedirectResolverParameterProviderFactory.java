@@ -84,9 +84,6 @@ public class RedirectResolverParameterProviderFactory
             }
             else if ( oParamClass.isAssignableFrom( Form.class ) )
             {
-               // NOTE: since the HTMLForm is per-request no caching is needed, since parameters
-               // are resolved before Redirect invocation, and become local variables in the
-               // Redirect for the duration of the request
                oParamValue = _oModelPool.getSystemModel( oParamClass, _oRequest );
             }
             else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
