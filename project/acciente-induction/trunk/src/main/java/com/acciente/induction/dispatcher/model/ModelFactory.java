@@ -223,8 +223,6 @@ public class ModelFactory
                }
 
                oParamValue = _oModelPool.getSystemModel( Form.class, _oHttpServletRequest );
-
-               _oHttpServletRequest.setAttribute( oParamClass.getName(), oParamValue );
             }
             else if ( oParamClass.isAssignableFrom( HttpServletRequest.class ) )
             {
