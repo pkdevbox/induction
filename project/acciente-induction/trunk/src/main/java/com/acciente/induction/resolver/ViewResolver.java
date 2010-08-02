@@ -52,7 +52,7 @@ import java.util.Map;
  * of javax.servlet.http.HttpServletRequest), the full list of values available for injection are detailed
  * at the URL below: <p>
  * <p>
- * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * http://www.inductionframework.org/param-injection-2-reference.html#ViewresolverMETHODScommonlyusedparametertypes<p>
  * <p>
  *
  * @created Mar 29, 2009

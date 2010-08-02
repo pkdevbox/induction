@@ -43,7 +43,7 @@ import java.util.Map;
  * Induction looks for two methods at runtime for implementations of this interface, the details of
  * the two methods are given below:<p>
  * <p>
- * Resolution resolveRequest( ... )<p>
+ * Resolution resolveRequest(...)<p>
  * <p>
  * This method will be called by Induction when it needs to resolve an incoming HTTP request to a controller.
  * The method is expected to return a Resolution object describing the controller to be invoked, or null if the request
@@ -52,10 +52,10 @@ import java.util.Map;
  * of javax.servlet.http.HttpServletRequest), the full list of values available for injection are detailed
  * at the URL below: <p>
  * <p>
- * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * http://www.inductionframework.org/param-injection-2-reference.html#ControllerresolverMETHODScommonlyusedparametertypes<p>
  * <p>
  * <p>
-  * Resolution resolveThrowable( ... )<p>
+  * Resolution resolveThrowable(...)<p>
   * <p>
  * This method will be called by Induction when it needs to resolve an unhandled error or exceptions that is
  * thrown during controller or view execution.
@@ -65,7 +65,7 @@ import java.util.Map;
  * controller, the full list of additional values available for injection are detailed
  * at the URL below: <p>
  * <p>
- * http://www.inductionframework.org/param-injection-1-reference.html#ControllerMETHODScommonlyusedparametertypes<p>
+ * http://www.inductionframework.org/param-injection-2-reference.html#ControllerresolverMETHODScommonlyusedparametertypes<p>
  * <p>
   * @created Mar 14, 2008
  * @updated Jul 04, 2010
