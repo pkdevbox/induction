@@ -129,4 +129,7 @@
         <url-base>http://localhost:8080</url-base>
     </redirect-mapping>
 
+    <view-resolver>
+        <class>demoapp.resolvers_app.MyCustomViewResolver</class>
+    </view-resolver>
 </config> 
