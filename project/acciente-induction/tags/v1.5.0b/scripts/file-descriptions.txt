@@ -1,0 +1,7 @@
+This file contains the core Induction libraries, javadocs, sources and sample Induction configuration file
+
+
+This file contains the Apache and Freemarker libraries required to run Induction. If you already have these libraries you do not need to download this file. This file is intended as a convenient way to get the libraries for those who do not already have them
+
+
+This file contains the source for several simple sample Induction applications
