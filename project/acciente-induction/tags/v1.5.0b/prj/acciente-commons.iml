@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_4" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../acciente-commons/class/jdk1_6" />
+    <output-test url="file://$MODULE_DIR$/../../acciente-commons/class/jdk1_6" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../acciente-commons/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../acciente-commons/src/main/java" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="apache-bcel-5.2" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-collections-3.2.1" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-digester-1.8" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-fileupload-1.2.1" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-io-1.4" level="application" />
+    <orderEntry type="library" exported="" name="apache-commons-logging-1.1.1" level="application" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/servlet-api.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+
