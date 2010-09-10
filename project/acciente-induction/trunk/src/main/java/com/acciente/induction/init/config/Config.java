@@ -317,6 +317,7 @@ public class Config
        */
       public void addModelDef( String     sModelClassName,
                                String     sModelFactoryClassName,
+                               boolean    bIsStaticScope,
                                boolean    bIsApplicationScope,
                                boolean    bIsSessionScope,
                                boolean    bIsRequestScope,
@@ -329,14 +330,13 @@ public class Config
             throw new IllegalArgumentException( "config-error: model classname: " + sModelClassName + " already defined" );
          }
 
-         if ( bIsInitOnStartUp && ! bIsApplicationScope )
-         {
-            throw new IllegalArgumentException( "config-error: model classname: "
-                                                + sModelClassName
-                                                + " init on startup may only be turned on application scope models" );
-         }
-
-         _oModelDefMap.put( sModelClassName, new ModelDef( sModelClassName, sModelFactoryClassName, bIsApplicationScope, bIsSessionScope, bIsRequestScope, bIsInitOnStartUp ) );
+         _oModelDefMap.put( sModelClassName, new ModelDef( sModelClassName,
+                                                           sModelFactoryClassName,
+                                                           bIsStaticScope,
+                                                           bIsApplicationScope,
+                                                           bIsSessionScope,
+                                                           bIsRequestScope,
+                                                           bIsInitOnStartUp ) );
       }
 
       public ModelDef getModelDef( String sModelClassName )
@@ -386,6 +386,7 @@ public class Config
       {
          private String    _sModelClassName;
          private String    _sModelFactoryClassName;
+         private boolean   _bIsStaticScope;
          private boolean   _bIsApplicationScope;
          private boolean   _bIsSessionScope;
          private boolean   _bIsRequestScope;
@@ -393,6 +394,7 @@ public class Config
 
          private  ModelDef( String     sModelClassName,
                             String     sModelFactoryClassName,
+                            boolean    bIsStaticScope,
                             boolean    bIsApplicationScope,
                             boolean    bIsSessionScope,
                             boolean    bIsRequestScope,
@@ -410,32 +412,50 @@ public class Config
                throw new IllegalArgumentException( "config-error: model classname empty" );
             }
 
-            if ( ! ( bIsApplicationScope || bIsSessionScope || bIsRequestScope ) )
+            // check that only one of the booleans has a true value
+            int iStatedScopes = 0;
+
+            if ( bIsStaticScope )
+            {
+               iStatedScopes++;
+            }
+            if ( bIsApplicationScope )
+            {
+               iStatedScopes++;
+            }
+            if ( bIsSessionScope )
+            {
+               iStatedScopes++;
+            }
+            if ( bIsRequestScope )
+            {
+               iStatedScopes++;
+            }
+
+            if ( iStatedScopes == 0 )
             {
                throw new IllegalArgumentException( "config-error: model scope not defined" );
             }
-
-            // check that only one of the booleans has a true value
-            if ( bIsApplicationScope )
+            else if ( iStatedScopes > 1 )
             {
-               if ( bIsSessionScope || bIsRequestScope )
-               {
-                  throw new IllegalArgumentException( "config-error: model scope defined ambiguously" );
-               }
+               throw new IllegalArgumentException( "config-error: model scope defined ambiguously" );
             }
-            else if ( bIsSessionScope )
+
+            if ( bIsInitOnStartUp && ! ( bIsStaticScope || bIsApplicationScope ) )
             {
-               if ( bIsRequestScope )
-               {
-                  throw new IllegalArgumentException( "config-error: model scope defined ambiguously" );
-               }
+               throw new IllegalArgumentException( "config-error: model classname: "
+                                                   + sModelClassName
+                                                   + " init on startup may only be turned on for static and application scope models" );
             }
 
             _sModelClassName        = sModelClassName;
             _sModelFactoryClassName = sModelFactoryClassName;
+
+            _bIsStaticScope         = bIsStaticScope;
             _bIsApplicationScope    = bIsApplicationScope;
             _bIsSessionScope        = bIsSessionScope;
             _bIsRequestScope        = bIsRequestScope;
+
             _bIsInitOnStartUp       = bIsInitOnStartUp;
          }
 
@@ -452,6 +472,11 @@ public class Config
          public boolean hasModelFactoryClassName()
          {
             return _sModelFactoryClassName != null && _sModelFactoryClassName.trim().length() != 0;
+         }
+
+         public boolean isStaticScope()
+         {
+            return _bIsStaticScope;
          }
 
          public boolean isApplicationScope()
@@ -485,13 +510,16 @@ public class Config
                XML.Config_ModelDefs_ModelDef
                   .toXML( XML.Config_ModelDefs_ModelDef_Class.toXML( _sModelClassName )
                           + XML.Config_ModelDefs_ModelDef_FactoryClass.toXML( _sModelFactoryClassName )
-                          + XML.Config_ModelDefs_ModelDef_Scope.toXML( _bIsApplicationScope
-                                                                       ? "Application"
-                                                                       : ( _bIsSessionScope
-                                                                           ? "Session"
-                                                                           : ( _bIsRequestScope
-                                                                               ? "Request"
-                                                                               : "!! invalid value !!"
+                          + XML.Config_ModelDefs_ModelDef_Scope.toXML( _bIsStaticScope
+                                                                       ? "Static"
+                                                                       : ( _bIsApplicationScope
+                                                                           ? "Application"
+                                                                           : ( _bIsSessionScope
+                                                                               ? "Session"
+                                                                               : ( _bIsRequestScope
+                                                                                    ? "Request"
+                                                                                    : "!! invalid value !!"
+                                                                                 )
                                                                              )
                                                                          )
                                                                      )
