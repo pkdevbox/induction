@@ -104,17 +104,13 @@ public class HTMLForm implements Form
    {
       parseForm();
 
-      if ( _oFormParams != null )
+      if ( _oFormParams == null || ! _oFormParams.containsKey( sParamName ) )
       {
-         if ( ! _oFormParams.containsKey( sParamName ) )
-         {
-            throw ( new FormException( "Attempt to access undefined HTML form parameter: " + sParamName ) );
-         }
-
-         return _oFormParams.get( sParamName );
+         throw ( new FormException( "Attempt to access undefined HTML form parameter: " + sParamName ) );
       }
 
-      return null;
+      return _oFormParams.get( sParamName );
+
    }
 
    private void parseForm() throws FormException
