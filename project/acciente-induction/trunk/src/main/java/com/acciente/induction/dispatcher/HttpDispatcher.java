@@ -165,7 +165,7 @@ public class HttpDispatcher extends HttpServlet
 
       try
       {
-         oModelPool = new ModelPool( oConfig.getModelDefs(), oModelFactory );
+         oModelPool = new ModelPool( oConfig.getModelDefs(), oModelFactory, oServletConfig.getServletContext() );
       }
       catch ( MethodNotFoundException e )
       {  throw new ServletException( "init-error: model-pool", e ); }

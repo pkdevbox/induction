@@ -18,14 +18,12 @@
 package com.acciente.induction.dispatcher.model;
 
 import com.acciente.commons.reflect.ParameterProviderException;
-import com.acciente.induction.controller.Form;
-import com.acciente.induction.controller.HTMLForm;
-import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.InvocationTargetException;
@@ -42,16 +40,18 @@ import java.util.Map;
  */
 public class ModelPool
 {
-   private Config.ModelDefs   _oModelDefs;
-   private Map                _oAppScopeModelMap;
-   private ModelFactory       _oModelFactory;
+   private        Config.ModelDefs  _oModelDefs;
+   private        Map               _oAppScopeModelMap;
+   private        ModelFactory      _oModelFactory;
+   private        ServletContext    _oServletContext;
 
-   public ModelPool( Config.ModelDefs oModelDefs, ModelFactory oModelFactory )
+   public ModelPool( Config.ModelDefs oModelDefs, ModelFactory oModelFactory, ServletContext oServletContext )
       throws MethodNotFoundException, InvocationTargetException, ClassNotFoundException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
-      _oModelDefs          = oModelDefs;
-      _oModelFactory       = oModelFactory;
-      _oAppScopeModelMap   = new Hashtable();   // we use a hashtable instead of a HashMap for safe concurrent access
+      _oModelDefs             = oModelDefs;
+      _oModelFactory          = oModelFactory;
+      _oServletContext        = oServletContext;
+      _oAppScopeModelMap      = new Hashtable();   // we use a hashtable instead of a HashMap for safe concurrent access
    }
 
    public void initAppModel( String sModelClassName )
@@ -65,10 +65,17 @@ public class ModelPool
          throw new IllegalArgumentException( "model-error: no definition for model class: " + sModelClassName );
       }
 
-      // next see if we already have an object instance
-      Object oModel;
-
       if ( oModelDef.isApplicationScope() )
+      {
+         // trigger initialization by fetching the model
+         getApplicationScopeModel( oModelDef, null );
+      }
+      else if ( oModelDef.isStaticScope() )
+      {
+         // trigger initialization by fetching the model
+         getStaticScopeModel( oModelDef, null );
+      }
+      else
       {
          throw new IllegalArgumentException( "model-error: initAppModel() can only be called on application scope models! " + sModelClassName );
       }
@@ -93,7 +100,11 @@ public class ModelPool
       // next see if we already have an object instance
       Object oModel;
 
-      if ( oModelDef.isApplicationScope() )
+      if ( oModelDef.isStaticScope() )
+      {
+         oModel = getStaticScopeModel( oModelDef, oHttpServletRequest );
+      }
+      else if ( oModelDef.isApplicationScope() )
       {
          oModel = getApplicationScopeModel( oModelDef, oHttpServletRequest );
       }
@@ -114,6 +125,54 @@ public class ModelPool
       else
       {
          throw new IllegalArgumentException( "model-error: unknown scope for model class: " + sModelClassName );
+      }
+
+      return oModel;
+   }
+
+   private Object getStaticScopeModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
+      throws MethodNotFoundException, ClassNotFoundException, InvocationTargetException, ParameterProviderException, ConstructorNotFoundException, InstantiationException, IllegalAccessException
+   {
+      Object   oModel;
+
+      oModel = _oServletContext.getAttribute( oModelDef.getModelClassName() );
+
+      // if the model has not yet been created, we use double-checked locking to ensure that
+      // separate threads do not simultaneously instantiate multiple instances of the model
+      // I do not think this code will have the potential incorrectness introduced by the
+      // double-checked locking, since the model map only contains fully constructed objects
+      if ( oModel == null )
+      {
+         synchronized ( oModelDef )
+         {
+            // check again to see if it is still not null, we may have waited on the lock while some
+            // other thread was creating this model
+            oModel = _oServletContext.getAttribute( oModelDef.getModelClassName() );
+
+            // if it is still null then go ahead an create the model
+            if ( oModel == null )
+            {
+               oModel = _oModelFactory.createModel( oModelDef, oHttpServletRequest );
+
+               _oServletContext.setAttribute( oModelDef.getModelClassName(), oModel );
+            }
+         }
+      }
+      else
+      {
+         if ( _oModelFactory.isModelStale( oModelDef, oModel ) )
+         {
+            synchronized ( oModelDef )
+            {
+               Object oPreviousModel = oModel;
+
+               oModel = _oModelFactory.createModel( oModelDef, oHttpServletRequest );
+
+               _oServletContext.setAttribute( oModelDef.getModelClassName(), oModel );
+
+               ObjectFactory.destroyObject( oPreviousModel );
+            }
+         }
       }
 
       return oModel;

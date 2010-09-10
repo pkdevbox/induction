@@ -48,6 +48,7 @@ public class ModelDefsRule extends Rule
    {
       private String       _sModelClassName;
       private String       _sModelFactoryClassName;
+      private boolean      _bIsStaticScope;
       private boolean      _bIsApplicationScope;
       private boolean      _bIsSessionScope;
       private boolean      _bIsRequestScope;
@@ -58,6 +59,7 @@ public class ModelDefsRule extends Rule
          // reset data stored in rule
          _sModelClassName        = null;
          _sModelFactoryClassName = null;
+         _bIsStaticScope         = false;
          _bIsApplicationScope    = false;
          _bIsSessionScope        = false;
          _bIsRequestScope        = false;
@@ -70,12 +72,18 @@ public class ModelDefsRule extends Rule
          {
             throw new XMLConfigLoaderException( "config > modeldefs > model: class is a required attribute" );
          }
-         if ( ! ( _bIsApplicationScope || _bIsSessionScope || _bIsRequestScope ) )
+         if ( ! ( _bIsStaticScope || _bIsApplicationScope || _bIsSessionScope || _bIsRequestScope ) )
          {
             throw new XMLConfigLoaderException( "config > modeldefs > model: scope is a required attribute" );
          }
 
-         _oModelDefs.addModelDef( _sModelClassName, _sModelFactoryClassName, _bIsApplicationScope, _bIsSessionScope, _bIsRequestScope, _bIsInitOnStartUp );
+         _oModelDefs.addModelDef( _sModelClassName,
+                                  _sModelFactoryClassName,
+                                  _bIsStaticScope,
+                                  _bIsApplicationScope,
+                                  _bIsSessionScope,
+                                  _bIsRequestScope,
+                                  _bIsInitOnStartUp );
       }
 
       public ParamClassRule createParamClassRule()
@@ -120,7 +128,11 @@ public class ModelDefsRule extends Rule
          {
             sText = sText.trim();
 
-            if ( "application".equalsIgnoreCase( sText ) )
+            if ( "static".equalsIgnoreCase( sText ) )
+            {
+               _bIsStaticScope = true;
+            }
+            else if ( "application".equalsIgnoreCase( sText ) )
             {
                _bIsApplicationScope = true;
             }
