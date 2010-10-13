@@ -258,28 +258,27 @@ public class ReloadingClassLoader extends SecureClassLoader
             {
                // before we can determine if we need to reload this class we need to
                // check and if need to reload the classes referenced by this class
-               String[] asReferencedClassNames  = oClassControlBlock.getReferencedClassNames();
-               Class[]  aoReferencedClasses     = oClassControlBlock.getReferencedClasses();
+               Class[]  aoReferencedClasses = oClassControlBlock.getReferencedClasses();
 
                // if any of the classes referenced by this class has changed then
                // we will proceed to reload this class
-               for ( int i = 0; i < asReferencedClassNames.length; i++ )
+               for ( int i = 0; i < aoReferencedClasses.length; i++ )
                {
                   // the findClass() method leaves nulls in aoReferencedClasses for "ignored" classes
-                  if ( asReferencedClassNames[ i ] == null )
+                  if ( aoReferencedClasses[ i ] == null )
                   {
                      // if this is an ignored class, just go to the next referenced class
                      break;
                   }
 
-                  if ( ( ( Set ) _oLoadInProgressClassNameSet.get() ).contains( aoReferencedClasses[ i ] ) )
+                  if ( ( ( Set ) _oLoadInProgressClassNameSet.get() ).contains( aoReferencedClasses[ i ].getName() ) )
                   {
                      // if the referenced class is currently being loaded, do not proceed since this would
                      // cause an infinite recursion!
                      break;
                   }
 
-                  Class oCurrentReferencedClass = loadClass( asReferencedClassNames[ i ] );
+                  Class oCurrentReferencedClass = loadClass( aoReferencedClasses[ i ].getName() );
 
                   if ( aoReferencedClasses[ i ] != oCurrentReferencedClass )
                   {
@@ -354,6 +353,7 @@ public class ReloadingClassLoader extends SecureClassLoader
 
       // mark the ignored dependencies by setting them to null in the array
       String[] asReferencedClassNames = oClassDef.getReferencedClasses();
+      Class[]  aoReferencedClasses    = new Class[ asReferencedClassNames.length ];
 
       for ( int i = 0; i < asReferencedClassNames.length; i++ )
       {
@@ -361,11 +361,22 @@ public class ReloadingClassLoader extends SecureClassLoader
          {
             asReferencedClassNames[ i ] = null;
          }
+         else
+         {
+            try
+            {
+               aoReferencedClasses[ i ] = loadClass( asReferencedClassNames[ i ] );
+            }
+            catch ( ClassNotFoundException e )
+            {
+               // ok to ignore..since we are loading this for later dependency checks
+            }
+         }
       }
 
       // create a new class control block to keep track of this class
       ClassControlBlock oClassControlBlock
-         = new ClassControlBlock( sClassName, oClassDef, oClassDef.getReferencedClasses() );
+         = new ClassControlBlock( sClassName, oClassDef, aoReferencedClasses );
 
       // now load the class and update the class control block
       Class oClass = findClass( oClassControlBlock );
@@ -443,16 +454,13 @@ public class ReloadingClassLoader extends SecureClassLoader
       private  String      _sClassName;
       private  Class       _oLastLoadedClass;
       private  ClassDef    _oClassDef;
-      private  String[]    _asReferencedClassNames;
       private  Class[]     _aoReferencedClasses;
 
-      private ClassControlBlock( String sClassName, ClassDef oClassDef, String[] asReferencedClassNames )
+      private ClassControlBlock( String sClassName, ClassDef oClassDef, Class[] aoReferencedClasses )
       {
          _sClassName             = sClassName;
          _oClassDef              = oClassDef;
-         _asReferencedClassNames = asReferencedClassNames;
-
-         _aoReferencedClasses    = new Class[ asReferencedClassNames.length ];
+         _aoReferencedClasses    = aoReferencedClasses;
       }
 
       /**
@@ -494,11 +502,6 @@ public class ReloadingClassLoader extends SecureClassLoader
       private void setLastLoadedClass( Class oClass )
       {
          _oLastLoadedClass = oClass;
-      }
-
-      public String[] getReferencedClassNames()
-      {
-         return _asReferencedClassNames;
       }
 
       public Class[] getReferencedClasses()
