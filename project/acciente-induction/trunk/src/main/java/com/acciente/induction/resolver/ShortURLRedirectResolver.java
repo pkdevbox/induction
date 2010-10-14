@@ -204,11 +204,29 @@ public class ShortURLRedirectResolver implements RedirectResolver
          // store the URL pattern and the classname map in the list
          oClass2URLMapperList.add( new Class2URLMapper( oClassToURLMap.getClassPackages(),
                                                         oClassToURLMap.getClassPattern(),
+                                                        asFindReplaceDirectiveArray( oClassToURLMap.getClassFindReplaceDirectives() ),
                                                         oClassToURLMap.getURLFormat(),
                                                         oClassToURLMap.getAlternateURLFormat(),
                                                         oClassLoader ) );
       }
 
       return oClass2URLMapperList;
+   }
+
+   private FindReplaceDirective[] asFindReplaceDirectiveArray( List oClassFindReplaceDirectives )
+   {
+      FindReplaceDirective[]  aoFindReplaceDirectives = new FindReplaceDirective[ oClassFindReplaceDirectives.size() ];
+
+      for ( int i = 0; i < oClassFindReplaceDirectives.size(); i++ )
+      {
+         Config.RedirectMapping.ClassToURLMap.FindReplaceDirective
+            oFindReplaceDirective
+            = ( Config.RedirectMapping.ClassToURLMap.FindReplaceDirective ) oClassFindReplaceDirectives.get( i );
+
+         aoFindReplaceDirectives[ i ] = new FindReplaceDirective( oFindReplaceDirective.getFindString(),
+                                                                  oFindReplaceDirective.getReplaceString() );
+      }
+
+      return aoFindReplaceDirectives;
    }
 }
