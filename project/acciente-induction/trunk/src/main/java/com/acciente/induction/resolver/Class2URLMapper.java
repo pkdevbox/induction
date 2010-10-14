@@ -44,7 +44,12 @@ class Class2URLMapper
 
    private String    _sAlternateURLFormat;
 
-   Class2URLMapper( String[] asClassPackages, Pattern oClassPattern, String sURLFormat, String sAlternateURLFormat, ClassLoader oClassLoader ) throws IOException
+   Class2URLMapper( String[]                 asClassPackages, 
+                    Pattern                  oClassPattern,
+                    FindReplaceDirective[]   aoClassFindReplaceDirectives,
+                    String                   sURLFormat,
+                    String                   sAlternateURLFormat,
+                    ClassLoader              oClassLoader ) throws IOException
    {
       _sURLFormat                = sURLFormat;
       _sAlternateURLFormat       = sAlternateURLFormat;
@@ -68,6 +73,14 @@ class Class2URLMapper
 
             if ( sShortName != null )
             {
+               for ( int i = 0; i < aoClassFindReplaceDirectives.length; i++ )
+               {
+                  FindReplaceDirective oFindReplaceDirective = aoClassFindReplaceDirectives[ i ];
+
+                  sShortName = sShortName.replaceAll( oFindReplaceDirective.getFindString(),
+                                                      oFindReplaceDirective.getReplaceString() );
+               }
+
                _oClassName2ShortNameMap.put( sClassName, sShortName.toLowerCase() );
             }
          }

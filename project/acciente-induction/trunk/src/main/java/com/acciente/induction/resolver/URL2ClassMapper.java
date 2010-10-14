@@ -65,16 +65,16 @@ class URL2ClassMapper
          {
             String   sShortName = oClassMatcher.group( 1 );
 
-            for ( int i = 0; i < aoClassFindReplaceDirectives.length; i++ )
-            {
-               FindReplaceDirective oFindReplaceDirective = aoClassFindReplaceDirectives[ i ];
-
-               sShortName = sShortName.replaceAll( oFindReplaceDirective.getFindString(),
-                                                   oFindReplaceDirective.getReplaceString() );
-            }
-
             if ( sShortName != null )
             {
+               for ( int i = 0; i < aoClassFindReplaceDirectives.length; i++ )
+               {
+                  FindReplaceDirective oFindReplaceDirective = aoClassFindReplaceDirectives[ i ];
+
+                  sShortName = sShortName.replaceAll( oFindReplaceDirective.getFindString(),
+                                                      oFindReplaceDirective.getReplaceString() );
+               }
+
                _oShortName2ClassNameMap.put( sShortName.toLowerCase(), sClassName );
             }
          }
