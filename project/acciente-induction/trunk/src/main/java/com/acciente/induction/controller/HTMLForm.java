@@ -18,13 +18,14 @@
 package com.acciente.induction.controller;
 
 import com.acciente.commons.htmlform.FileHandle;
-import com.acciente.commons.htmlform.ParserException;
 import com.acciente.commons.htmlform.Parser;
+import com.acciente.commons.htmlform.ParserException;
 import com.acciente.induction.init.config.Config;
 import org.apache.commons.fileupload.FileUploadException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +54,16 @@ public class HTMLForm implements Form
    public Object getObject( String sParamName ) throws FormException
    {
       return getParamValue( sParamName );
+   }
+
+   public List getList( String sParamName ) throws FormException
+   {
+      return ( List ) getParamValue( sParamName );
+   }
+
+   public Map getMap( String sParamName ) throws FormException
+   {
+      return ( Map ) getParamValue( sParamName );
    }
 
    public String getString( String sParamName ) throws FormException
