@@ -22,6 +22,8 @@ import com.acciente.commons.htmlform.ParserException;
 import org.apache.commons.fileupload.FileUploadException;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -45,6 +47,28 @@ public interface Form
     * @throws FormException
     */
    Object      getObject( String sParamName ) throws FormException;
+
+   /**
+    * Return the value of the specified map HTML form parameter
+    * @param sParamName the name of the HTML form parameter
+    * @return a map with string keys and data or other maps in the value
+    * @throws IOException
+    * @throws FileUploadException
+    * @throws ParserException
+    * @throws FormException
+    */
+   Map         getMap( String sParamName ) throws FormException;
+
+   /**
+    * Return the value of the specified list HTML form parameter
+    * @param sParamName the name of the HTML form parameter
+    * @return a list of strings (and/or otehr types as specified on the form)
+    * @throws IOException
+    * @throws FileUploadException
+    * @throws ParserException
+    * @throws FormException
+    */
+   List        getList( String sParamName ) throws FormException;
 
    /**
     * Return the value of the specified HTML form parameter as a string value
