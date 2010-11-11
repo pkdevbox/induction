@@ -89,6 +89,8 @@ public class HttpDispatcher extends HttpServlet
    public void init( ServletConfig oServletConfig )
       throws   ServletException
    {
+      super.init( oServletConfig );
+      
       // first setup a logger
       _oLog = LogFactory.getLog( HttpDispatcher.class );
 
