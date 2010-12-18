@@ -70,15 +70,15 @@ import java.util.Iterator;
  */
 public class HttpDispatcher extends HttpServlet
 {
-   private RequestInterceptorExecutor _oRequestInterceptorExecutor;
-   private ControllerResolverExecutor _oControllerResolverExecutor;
-   private ViewResolverExecutor       _oViewResolverExecutor;
-   private RedirectResolverExecutor   _oRedirectResolverExecutor;
+   private  RequestInterceptorExecutor _oRequestInterceptorExecutor;
+   private  ControllerResolverExecutor _oControllerResolverExecutor;
+   private  ViewResolverExecutor       _oViewResolverExecutor;
+   private  RedirectResolverExecutor   _oRedirectResolverExecutor;
 
-   private ControllerExecutor         _oControllerExecutor;
-   private ViewExecutor               _oViewExecutor;
+   private  ControllerExecutor         _oControllerExecutor;
+   private  ViewExecutor               _oViewExecutor;
 
-   private Log                        _oLog;
+   private  Log                        _oLog;
 
    /**
     * This method is called by the webcontainer to initialize this servlet
