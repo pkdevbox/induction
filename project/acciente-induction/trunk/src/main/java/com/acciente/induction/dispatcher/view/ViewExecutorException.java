@@ -26,13 +26,29 @@ package com.acciente.induction.dispatcher.view;
  */
 public class ViewExecutorException extends Exception
 {
-   public ViewExecutorException( String sMessage )
+   private  String   _sViewClassName;
+
+   public ViewExecutorException( String sViewClassName, String sMessage )
    {
       super( sMessage );
+
+      _sViewClassName = sViewClassName;
    }
 
-   public ViewExecutorException( String sMessage, Throwable oCause )
+   public ViewExecutorException( String sViewClassName, String sMessage, Throwable oCause )
    {
       super( sMessage, oCause );
+
+      _sViewClassName = sViewClassName;
+   }
+
+   public String getViewClassName()
+   {
+      return _sViewClassName;
+   }
+
+   public String getMessage()
+   {
+      return "View: " + _sViewClassName + ", " + super.getMessage();
    }
 }

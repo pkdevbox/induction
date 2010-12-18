@@ -136,27 +136,27 @@ public class ViewExecutor
       }
       catch ( ClassNotFoundException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", unable to load class definition", e );
+         throw new ViewExecutorException( sViewClassName, "unable to load class definition", e );
       }
       catch ( ConstructorNotFoundException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", unable to find constructor", e );
+         throw new ViewExecutorException( sViewClassName, "unable to find constructor", e );
       }
       catch ( InstantiationException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", instantiate error", e );
+         throw new ViewExecutorException( sViewClassName, "instantiate error", e );
       }
       catch ( InvocationTargetException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", target exception", e );
+         throw new ViewExecutorException( sViewClassName, "target exception", e );
       }
       catch ( IllegalAccessException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", access exception", e );
+         throw new ViewExecutorException( sViewClassName, "access exception", e );
       }
       catch ( ParameterProviderException e )
       {
-         throw new ViewExecutorException( "View " + sViewClassName + ", parameter error", e );
+         throw new ViewExecutorException( sViewClassName, "parameter error", e );
       }
 
       return oViewObject;
@@ -180,7 +180,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "View " + oText.getClass().getName() + ", text view I/O error", e );
+         throw new ViewExecutorException( oText.getClass().getName(), "text view I/O error", e );
       }
    }
 
@@ -214,7 +214,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "View " + oImage.getClass().getName() + ", image view I/O error", e );
+         throw new ViewExecutorException( oImage.getClass().getName(), "image view I/O error", e );
       }
    }
 
@@ -222,7 +222,7 @@ public class ViewExecutor
    {
       if ( oImageStream.getMimeType() == null )
       {
-         throw new ViewExecutorException( "View " + oImageStream.getClass().getName() + ", ImageStream must specify a mime type" );
+         throw new ViewExecutorException( oImageStream.getClass().getName(), "ImageStream must specify a mime type" );
       }
 
       oResponse.setContentType( oImageStream.getMimeType() );
@@ -237,7 +237,7 @@ public class ViewExecutor
       {
          if ( oTemplate.getTemplateName() == null )
          {
-            throw new ViewExecutorException( "View: " + oTemplate.getClass().getName() + ", returned null for template name" );
+            throw new ViewExecutorException( oTemplate.getClass().getName(), "returned null for template name" );
          }
 
          StringWriter oTemplateContentWriter = _oStringWriterPool.acquire();
@@ -305,15 +305,15 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: I/O error", e );
+         throw new ViewExecutorException( oTemplate.getClass().getName(), "template view: I/O error", e );
       }
       catch ( TemplatingEngineException e )
       {
-         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: templating engine error", e.getCause() );
+         throw new ViewExecutorException( oTemplate.getClass().getName(), "template view: templating engine error", e.getCause() );
       }
       catch ( Exception e )
       {
-         throw new ViewExecutorException( "View " + oTemplate.getClass().getName() + ", template view: general error", e );
+         throw new ViewExecutorException( oTemplate.getClass().getName(), "template view: general error", e );
       }
    }
 
@@ -326,7 +326,7 @@ public class ViewExecutor
       }
       catch ( IOException e )
       {
-         throw new ViewExecutorException( "View " + oViewObject.getClass().getName() + ", generic object view I/O error", e );
+         throw new ViewExecutorException( oViewObject.getClass().getName(), "generic object view I/O error", e );
       }
    }
 }

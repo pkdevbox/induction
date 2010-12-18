@@ -26,14 +26,38 @@ package com.acciente.induction.dispatcher.controller;
  */
 public class ControllerExecutorException extends Exception
 {
-   public ControllerExecutorException( String sMessage )
+   private  String   _sControllerClassName;
+   private  String   _sControllerMethodName;
+
+   public ControllerExecutorException( String sControllerClassName, String sControllerMethodName, String sMessage )
    {
       super( sMessage );
+
+      _sControllerClassName   = sControllerClassName;
+      _sControllerMethodName  = sControllerMethodName;
    }
 
-   public ControllerExecutorException( String sMessage, Throwable oCause )
+   public ControllerExecutorException( String sControllerClassName, String sControllerMethodName, String sMessage, Throwable oCause )
    {
       super( sMessage, oCause );
+
+      _sControllerClassName   = sControllerClassName;
+      _sControllerMethodName  = sControllerMethodName;
+   }
+
+   public String getControllerClassName()
+   {
+      return _sControllerClassName;
+   }
+
+   public String getControllerMethodName()
+   {
+      return _sControllerMethodName;
+   }
+
+   public String getMessage()
+   {
+      return "Controller: " + _sControllerClassName + ", " + super.getMessage();
    }
 }
 
