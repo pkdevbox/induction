@@ -34,6 +34,31 @@ public class Redirect
    private  Map         _oURLQueryParameters;
 
    /**
+    * This is a copy constructor, very convenient when needed!
+    * @param oRedirect the redirect object to make a clone of
+    */
+   public Redirect( Redirect oRedirect )
+   {
+      _oTargetClass        = oRedirect._oTargetClass;
+      _sTargetMethodName   = oRedirect._sTargetMethodName;
+      _sTargetURL          = oRedirect._sTargetURL;
+      _oURLQueryParameters = oRedirect._oURLQueryParameters;
+   }
+
+   /**
+    * This is a copy constructor which allow changing the query params in the copy, very convenient when needed!
+    * @param oRedirect the redirect object to make a clone of
+    * @param oReplacementURLQueryParameters this maps replace the query params in the original redirect
+    */
+   public Redirect( Redirect oRedirect, Map oReplacementURLQueryParameters )
+   {
+      _oTargetClass        = oRedirect._oTargetClass;
+      _sTargetMethodName   = oRedirect._sTargetMethodName;
+      _sTargetURL          = oRedirect._sTargetURL;
+      _oURLQueryParameters = oReplacementURLQueryParameters;
+   }
+
+   /**
     * A redirect object defined in terms of the controller or view class to which the client should redirect,
     * Induction uses the redirect resolver to map the controller or view name to a URL.
     *
