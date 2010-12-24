@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="false" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../induction-test/class" />
+    <output-test url="file://$MODULE_DIR$/../../induction-test/class" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../induction-test/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../induction-test/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="acciente-induction" />
+    <orderEntry type="library" name="junit-4.4" level="application" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../src/main/config" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+
