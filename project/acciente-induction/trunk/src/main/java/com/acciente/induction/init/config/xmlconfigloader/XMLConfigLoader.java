@@ -34,7 +34,7 @@ import java.io.InputStream;
  *
  * @author Adinath Raveendra Raj
  *
- * @todo support for a DTD validator to catch simple config errors, otherwise hard to trace
+ * todo: support for a DTD validator to catch simple config errors, otherwise hard to trace
  */
 public class XMLConfigLoader implements ConfigLoader
 {
