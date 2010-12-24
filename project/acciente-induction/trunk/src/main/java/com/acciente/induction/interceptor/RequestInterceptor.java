@@ -33,7 +33,7 @@ package com.acciente.induction.interceptor;
  *    http request using the controller and view resolvers.<p>
  *
  *    For params available for injection please see:<p>
- *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
+ *       {@see <a href="Param Injection I (Reference)">/param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes</a>}<p>
  *
  *    Meaning of return value:<p>
  *       If true is returned then no further processing is done on this request, this means no further
@@ -45,7 +45,7 @@ package com.acciente.induction.interceptor;
  *    http request using the controller and view resolvers.<p>
  *
  *    For params available for injection please see:<p>
- *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
+ *       {@see <a href="Param Injection I (Reference)">/param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes</a>}<p>
  *
  *    Meaning of return value:<p>
  *       If true is returned then no further processing is done on this request, this means no further
@@ -67,7 +67,7 @@ package com.acciente.induction.interceptor;
  *       view resolver) or a redirect object (returned by a controller).<p>
  *
  *    For params available for injection please see:<p>
- *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
+ *       {@see <a href="Param Injection I (Reference)">/param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes</a>}<p>
  *
  *    Meaning of return value:<p>
  *       If true is returned then no further processing is done on this request, this means no further
@@ -79,7 +79,7 @@ package com.acciente.induction.interceptor;
  *    This interceptor method is invoked AFTER processing a view or redirect object.<p>
  *
  *    For params available for injection please see:<p>
- *       {@see /param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes}<p>
+ *       {@see <a href="Param Injection I (Reference)">/param-injection-1-reference.html#InterceptorMETHODScommonlyusedparametertypes</a>}<p>
  *
  *    Meaning of return value:<p>
  *       If true is returned then no further processing is done on this request, this means no further

@@ -62,7 +62,6 @@ public class ConfigLoaderInitializer
    /**
     * Loads the configuration parameters used to configure every module in this dispatcher servlet.
     *
-    * @param oLogger provides access to the dispatcher's primary logger
     * @param oServletConfig provides access to the dispatcher's servlet config
     *
     * @return a container with configuration values
