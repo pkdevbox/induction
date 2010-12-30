@@ -19,11 +19,14 @@ package com.acciente.induction.init;
 
 import com.acciente.commons.lang.Strings;
 import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.template.FreemarkerTemplatingEngine;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ConstructorNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
 import java.io.IOException;
@@ -40,19 +43,28 @@ import java.lang.reflect.InvocationTargetException;
 public class TemplatingEngineInitializer
 {
    public static TemplatingEngine getTemplatingEngine( Config.Templating   oTemplatingConfig,
+                                                       ModelPool           oModelPool,
                                                        ClassLoader         oClassLoader,
                                                        ServletConfig       oServletConfig )
       throws ClassNotFoundException, IOException, InvocationTargetException, ConstructorNotFoundException, ParameterProviderException, IllegalAccessException, InstantiationException
    {
       TemplatingEngine  oTemplatingEngine;
+      String            sTemplatingEngineClassName;
+      Log               oLog;
 
-      if ( Strings.isEmpty( oTemplatingConfig.getTemplatingEngine().getClassName() ) )
+      oLog = LogFactory.getLog( TemplatingEngineInitializer.class );
+
+      sTemplatingEngineClassName = oTemplatingConfig.getTemplatingEngine().getClassName();
+
+      if ( Strings.isEmpty( sTemplatingEngineClassName ) )
       {
          // if no templating engine is configured use the freemarker engine as the default
          oTemplatingEngine = new FreemarkerTemplatingEngine( oTemplatingConfig, oClassLoader, oServletConfig );
       }
       else
       {
+         oLog.info( "loading user-defined templating engine: " + sTemplatingEngineClassName );
+
          Class oTemplatingEngineClass = oClassLoader.loadClass( oTemplatingConfig.getTemplatingEngine().getClassName() );
 
          oTemplatingEngine
@@ -62,7 +74,7 @@ public class TemplatingEngineInitializer
                                                          oTemplatingConfig,
                                                          oClassLoader
                                                        },
-                                           null );
+                                           new InitializerParameterProvider( oModelPool, "templating-engine-init" ) );
       }
 
       return oTemplatingEngine;

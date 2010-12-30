@@ -20,17 +20,16 @@ package com.acciente.induction.dispatcher.model;
 import com.acciente.commons.reflect.Invoker;
 import com.acciente.commons.reflect.ParameterProvider;
 import com.acciente.commons.reflect.ParameterProviderException;
+import com.acciente.induction.controller.Form;
+import com.acciente.induction.controller.HTMLForm;
 import com.acciente.induction.dispatcher.resolver.RedirectResolverExecutor;
 import com.acciente.induction.dispatcher.resolver.URLResolver;
 import com.acciente.induction.init.config.Config;
-import com.acciente.induction.resolver.RedirectResolver;
 import com.acciente.induction.template.TemplatingEngine;
 import com.acciente.induction.util.ConstructorNotFoundException;
 import com.acciente.induction.util.MethodNotFoundException;
 import com.acciente.induction.util.ObjectFactory;
 import com.acciente.induction.util.ReflectUtils;
-import com.acciente.induction.controller.Form;
-import com.acciente.induction.controller.HTMLForm;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -60,20 +59,18 @@ public class ModelFactory
 
    public ModelFactory( ClassLoader       oClassLoader,
                         ServletConfig     oServletConfig,
-                        TemplatingEngine  oTemplatingEngine,
                         Config.FileUpload oFileUploadConfig )
    {
-      _oClassLoader      = oClassLoader;
-      _oServletConfig    = oServletConfig;
-      _oTemplatingEngine = oTemplatingEngine;
-      _oFileUploadConfig = oFileUploadConfig;
+      _oClassLoader        = oClassLoader;
+      _oServletConfig      = oServletConfig;
+      _oFileUploadConfig   = oFileUploadConfig;
 
       _oConfiguredModelFactoryPool = new ConfiguredModelFactoryPool( oClassLoader, oServletConfig );
    }
 
    /**
     * Used to set a model pool for use in model-to-model dendency injection (note the cyclic relationship
-    * between ModelFactory class and the ModelPool class, also a the same relationship between the object
+    * between ModelFactory class and the ModelPool class, also the same relationship between the object
     * instances)
     *
     * @param oModelPool a model pool instance
@@ -91,6 +88,16 @@ public class ModelFactory
    public void setRedirectResolver( RedirectResolverExecutor oRedirectResolverExecutor )
    {
       _oRedirectResolverExecutor = oRedirectResolverExecutor;
+   }
+
+   /**
+    * This method exists to set the templating engine after construction of the model factory since there is
+    * a cyclic dependency between the templating engine and the model factory
+    * @param oTemplatingEngine the redirect resolver
+    */
+   public void setTemplatingEngine( TemplatingEngine oTemplatingEngine )
+   {
+      _oTemplatingEngine = oTemplatingEngine;
    }
 
    public Object createModel( Config.ModelDefs.ModelDef oModelDef, HttpServletRequest oHttpServletRequest )
