@@ -17,6 +17,7 @@
  */
 package com.acciente.induction.init;
 
+import com.acciente.commons.lang.Strings;
 import com.acciente.commons.reflect.ParameterProviderException;
 import com.acciente.induction.dispatcher.model.ModelPool;
 import com.acciente.induction.init.config.Config;
@@ -57,7 +58,7 @@ public class ControllerResolverInitializer
 
       sControllerResolverClassName = oControllerResolverConfig.getClassName();
 
-      if ( sControllerResolverClassName == null )
+      if ( Strings.isEmpty( sControllerResolverClassName ) )
       {
          oControllerResolver = new ShortURLControllerResolver( oControllerMappingConfig, oClassLoader );
       }

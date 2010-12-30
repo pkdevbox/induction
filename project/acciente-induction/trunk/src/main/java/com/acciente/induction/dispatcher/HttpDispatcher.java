@@ -131,37 +131,11 @@ public class HttpDispatcher extends HttpServlet
       catch ( ClassNotFoundException e )
       {  throw new ServletException( "init-error: class-loader-initializer", e );    }
 
-      // we instantiate the templating engine early since we now support injecting the
-      // TemplatingEngine instance into models
-      TemplatingEngine oTemplatingEngine;
-      try
-      {
-         oTemplatingEngine
-         =  TemplatingEngineInitializer
-               .getTemplatingEngine( oConfig.getTemplating(),
-                                     oClassLoader,
-                                     oServletConfig );
-      }
-      catch ( IOException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( ClassNotFoundException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( InvocationTargetException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( IllegalAccessException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( InstantiationException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( ConstructorNotFoundException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-      catch ( ParameterProviderException e )
-      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
-
-      // we setup the model factory and pool managers early since we now support inject models into the
-      // controller and redirect resolver initializers
+      // we setup the model factory and pool managers early since we now support inject models
+      // into the initializers for the templating engine, controller resolver, view resolver and
+      // redirect resolver
       ModelFactory   oModelFactory  = new ModelFactory( oClassLoader,
                                                         oServletConfig,
-                                                        oTemplatingEngine,
                                                         oConfig.getFileUpload() );
       ModelPool      oModelPool;
 
@@ -186,6 +160,37 @@ public class HttpDispatcher extends HttpServlet
 
       // now set the pool for the model factory to use in model-to-model injection
       oModelFactory.setModelPool( oModelPool );
+
+      // we instantiate the templating engine early since we now support injecting the
+      // TemplatingEngine instance into models
+      TemplatingEngine oTemplatingEngine;
+      try
+      {
+         oTemplatingEngine
+         =  TemplatingEngineInitializer
+               .getTemplatingEngine( oConfig.getTemplating(),
+                                     oModelPool,
+                                     oClassLoader,
+                                     oServletConfig );
+      }
+      catch ( IOException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ClassNotFoundException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( InvocationTargetException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( IllegalAccessException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( InstantiationException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ConstructorNotFoundException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+      catch ( ParameterProviderException e )
+      {  throw new ServletException( "init-error: templating-engine-initializer", e ); }
+
+      // after the templating engine is setup is we set the templating engine in the model factory,
+      // to make it available to models or any of the other classes that can request it
+      oModelFactory.setTemplatingEngine( oTemplatingEngine );
 
       // pre-initialize any app scope models that requested it
       Log oLog = LogFactory.getLog( ModelPool.class );
