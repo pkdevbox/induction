@@ -42,7 +42,9 @@ public class ClassFinder
 {
    private static final String URL_PREFIX_FILE     = "file:/";
    private static final String URL_PREFIX_JARFILE  = "jar:file:/";
+
    private static final String URL_DELIM_JARFILE   = ".jar!/";
+
    private static final Log    __oLog;
 
    static
@@ -60,6 +62,11 @@ public class ClassFinder
 
          Enumeration oResources = oClassLoader.getResources( sPackageName.replace( '.', '/' ) );
 
+         if ( ! oResources.hasMoreElements() )
+         {
+            __oLog.info( "classloader scan for package: " + sPackageName + " found no resources!" );
+         }
+
          while ( oResources.hasMoreElements() )
          {
             String   sResourceURL = URLDecoder.decode( ( ( URL ) oResources.nextElement() ).toString(), "UTF-8" );
@@ -70,7 +77,7 @@ public class ClassFinder
 
                if ( iDelimPos != -1 )
                {
-                  File oJarFile = new File( sResourceURL.substring( URL_PREFIX_JARFILE.length(), iDelimPos + 4 ) );
+                  File oJarFile = new File( sResourceURL.substring( URL_PREFIX_JARFILE.length() - 1, iDelimPos + ".jar".length() ) );
 
                   __oLog.info( "scanning jar: " + oJarFile );
 
@@ -79,7 +86,7 @@ public class ClassFinder
             }
             else if ( sResourceURL.startsWith( URL_PREFIX_FILE ) )
             {
-               File oDirectory = new File( sResourceURL.substring( URL_PREFIX_FILE.length() ) );
+               File oDirectory = new File( sResourceURL.substring( URL_PREFIX_FILE.length() - 1 ) );
 
                __oLog.info( "scanning dir: " + oDirectory );
 
