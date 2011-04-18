@@ -99,7 +99,7 @@
     <copyright>
       <option name="notice" value="Copyright 2008-&amp;#36;today.year Acciente, LLC&#10;&#10;Acciente, LLC licenses this file to you under the&#10;Apache License, Version 2.0 (the &quot;License&quot;); you&#10;may not use this file except in compliance with the&#10;License. You may obtain a copy of the License at&#10;&#10;    http://www.apache.org/licenses/LICENSE-2.0&#10;&#10;Unless required by applicable law or agreed to in&#10;writing, software distributed under the License is&#10;distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES&#10;OR CONDITIONS OF ANY KIND, either express or implied.&#10;See the License for the specific language governing&#10;permissions and limitations under the License." />
       <option name="keyword" value="Copyright" />
-      <option name="allowReplaceKeyword" value="2009" />
+      <option name="allowReplaceKeyword" value="" />
       <option name="myName" value="Induction" />
       <option name="myLocal" value="true" />
     </copyright>
