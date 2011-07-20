@@ -574,7 +574,7 @@ public class Parser
          Object oDataAtKey = oNestedMap.get( sKey );
 
          // leaf contains the actual data value, or a list
-         if ( i == oMapKeys.size() )
+         if ( i + 1 == oMapKeys.size() )
          {
             if ( oParameterSpec.isList() )
             {
