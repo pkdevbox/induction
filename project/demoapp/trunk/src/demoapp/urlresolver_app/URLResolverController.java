@@ -33,6 +33,7 @@ public class URLResolverController implements Controller
       oResponse.out().println();
       oResponse.out().println( "HelloWorld1Controller.class resolved to: " + oURLResolver.resolve( HelloWorld1Controller.class ) );
       oResponse.out().println( "HelloWorld2Controller.class resolved to: " + oURLResolver.resolve( HelloWorld2Controller.class ) );
+      oResponse.out().println( "HelloWorld2Controller.class resolved to: " + oURLResolver.resolve( HelloWorld2Controller.class, "handler2" ) );
       oResponse.out().println( "HelloWorld2View.class resolved to: "       + oURLResolver.resolve( HelloWorld2View.class       ) );
    }
 
