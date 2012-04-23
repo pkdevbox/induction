@@ -65,6 +65,10 @@
             <class>demoapp.urlresolver_app.URLResolverModel</class>
             <scope>session</scope>
         </model-def>
+        <model-def>
+            <class>demoapp.errorhandler_app.BuggyModel</class>
+            <scope>session</scope>
+        </model-def>
     </model-defs>
 
     <!-- The following section configures the templating engine -->
@@ -73,6 +77,7 @@
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/helloworld3_app</directory>
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/redirectresolver_app</directory>
             <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp/errorhandler_app</directory>
+            <directory>c:/acciente/acciente-projects/software/project/demoapp/src/demoapp</directory>
             <!-- <web-app-path>/WEB-INF/templates</web-app-path> -->
         </template-path>
         <expose-public-fields>true</expose-public-fields>

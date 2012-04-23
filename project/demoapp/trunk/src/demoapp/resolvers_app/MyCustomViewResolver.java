@@ -46,7 +46,7 @@ public class MyCustomViewResolver implements ViewResolver
       // resolve to our custom home page
       if ( oRequest.getPathInfo() == null || oRequest.getPathInfo().equals( "/" ) )
       {
-         return new Resolution( "demoapp.resolvers_app.SiteHomePage" );
+         return new Resolution( "demoapp.SiteHomePage" );
       }
 
       // otherwise just delegate to the standard short url resolver

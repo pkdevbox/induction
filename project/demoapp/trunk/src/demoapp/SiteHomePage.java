@@ -15,21 +15,22 @@
  * See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package demoapp.resolvers_app;
+package demoapp;
 
+import com.acciente.induction.view.Template;
 import com.acciente.induction.view.Text;
 
 /**
- * Induction Internal class.
+ * A very simple text view
  *
  * @author Adinath Raveendra Raj
  * @created Aug 1, 2010
  */
-public class SiteHomePage implements Text
+public class SiteHomePage implements Template
 {
-   public String getText()
+   public String getTemplateName()
    {
-      return "Hello this the home page for the demo site!";
+      return "SiteHomePage.ftl";
    }
 
    public String getMimeType()
