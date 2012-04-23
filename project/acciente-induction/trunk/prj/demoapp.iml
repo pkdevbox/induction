@@ -8,7 +8,6 @@
         </descriptors>
         <webroots />
         <sourceRoots />
-        <context-artifact name="demoapp:demoapp-web exploded" />
       </configuration>
     </facet>
   </component>
