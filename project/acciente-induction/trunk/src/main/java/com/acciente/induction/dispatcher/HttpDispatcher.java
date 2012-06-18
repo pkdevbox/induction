@@ -450,7 +450,11 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( Throwable e )
       {
-         throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-resolution", e );
+         // note that the dispatcher below raises a stop signal if it handled the error
+         if ( ! dispatchErrorController( oRequest, oResponse, null, null, false, e ) )
+         {
+            throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-resolution", e );
+         }
       }
    }
 
@@ -476,7 +480,11 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( Throwable e )
       {
-         throw new StopRequestProcessingSignal( "dispatch-interceptors > post-resolution", e );
+         // note that the dispatcher below raises a stop signal if it handled the error
+         if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, false, e ) )
+         {
+            throw new StopRequestProcessingSignal( "dispatch-interceptors > post-resolution", e );
+         }
       }
    }
 
@@ -502,7 +510,12 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( Throwable e )
       {
-         throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-response", e );
+         // note that the dispatcher below raises a stop signal if it handled the error
+         if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, true, e ) )
+         {
+            // there is no error handler!! so we resort to a stop signal with cause
+            throw new StopRequestProcessingSignal( "dispatch-interceptors > pre-response", e );
+         }
       }
    }
 
@@ -528,7 +541,11 @@ public class HttpDispatcher extends HttpServlet
       }
       catch ( Throwable e )
       {
-         throw new StopRequestProcessingSignal( "dispatch-interceptors > post-response", e );
+         // note that the dispatcher below raises a stop signal if it handled the error
+         if ( ! dispatchErrorController( oRequest, oResponse, oControllerResolution, oViewResolution, true, e ) )
+         {
+            throw new StopRequestProcessingSignal( "dispatch-interceptors > post-response", e );
+         }
       }
    }
 
@@ -738,7 +755,7 @@ public class HttpDispatcher extends HttpServlet
       // there was an exception, first try to invoke the error handler controller (if any)
       ControllerResolver.Resolution    oErrorControllerResolution;
 
-      oErrorControllerResolution = _oControllerResolverExecutor.resolveThrowable( oRequest, oError );
+      oErrorControllerResolution = _oControllerResolverExecutor.resolveThrowable( oRequest, getRootCause( oError ) );
 
       if ( oErrorControllerResolution != null )
       {
@@ -802,7 +819,7 @@ public class HttpDispatcher extends HttpServlet
             throw new StopRequestProcessingSignal();
          }
 
-         return true;
+         throw new StopRequestProcessingSignal();
       }
 
       return false;
@@ -904,6 +921,16 @@ public class HttpDispatcher extends HttpServlet
       }
 
       oResponse.sendError( HttpServletResponse.SC_INTERNAL_SERVER_ERROR, sError );
+   }
+
+   private Throwable getRootCause( Throwable oError )
+   {
+      while ( oError.getCause() != null && oError.getCause() != oError )
+      {
+         oError = oError.getCause();
+      }
+
+      return oError;
    }
 
    public static class StopRequestProcessingSignal extends Exception
