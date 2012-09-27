@@ -1,0 +1,42 @@
+<!--
+  ~ Copyright 2008-2012 Acciente, LLC
+  ~
+  ~ Acciente, LLC licenses this file to you under the
+  ~ Apache License, Version 2.0 (the "License"); you
+  ~ may not use this file except in compliance with the
+  ~ License. You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in
+  ~ writing, software distributed under the License is
+  ~ distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+  ~ OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing
+  ~ permissions and limitations under the License.
+  -->
+
+<!--	A sample include file to illustrate loading of configuration from an additional file. 
+	A sample configuration file is loaded using the webapp classloader's getResourceAsStream() method,
+	note that it uses the webapp classloader not the Induction classloader, since the latter is not yet
+	initialized at this point.
+	
+	Also note that the included config file must follow the same syntax rules as the main config file, 
+	in particulat it cannot conatin part of a config file. Therefore all include included files start 
+	with <config> just like	the main config file.
+-->
+	
+<config>
+	<java-class-path>
+		<compiled-directory>
+			<directory>\a\shared\directory\with\class\files\to\be\reloaded\dynamically</directory>
+			<!-- If the above directory points to a subfolder of the folder where the package
+			folder structure begins, then specify package represented by the subfolder -->
+			<package-prefix>a.shared.package.name</package-prefix>
+		</compiled-directory>
+		<compiled-directory>
+			<directory>\another\shared\directory\with\class\files\to\be\reloaded\dynamically</directory>
+			<package-prefix>a.shared.package.name</package-prefix>
+		</compiled-directory>
+	</java-class-path>
+</config>
