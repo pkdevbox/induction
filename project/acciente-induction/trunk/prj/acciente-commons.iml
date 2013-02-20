@@ -9,12 +9,12 @@
     </content>
     <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="apache-bcel-5.2" level="application" />
-    <orderEntry type="library" exported="" name="apache-commons-collections-3.2.1" level="application" />
-    <orderEntry type="library" exported="" name="apache-commons-digester-1.8" level="application" />
-    <orderEntry type="library" exported="" name="apache-commons-fileupload-1.2.1" level="application" />
-    <orderEntry type="library" exported="" name="apache-commons-io-1.4" level="application" />
-    <orderEntry type="library" exported="" name="apache-commons-logging-1.1.1" level="application" />
+    <orderEntry type="library" exported="" name="apache-bcel-5.2" level="project" />
+    <orderEntry type="library" exported="" name="apache-commons-collections-3.2" level="project" />
+    <orderEntry type="library" exported="" name="apache-commons-digester-1.8" level="project" />
+    <orderEntry type="library" exported="" name="apache-commons-fileupload-1.2.1" level="project" />
+    <orderEntry type="library" exported="" name="apache-commons-io-1.4" level="project" />
+    <orderEntry type="library" exported="" name="apache-commons-logging-1.1.1" level="project" />
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
