@@ -96,7 +96,11 @@
       <entry name="?*.dtd" />
       <entry name="?*.tld" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+    </annotationProcessing>
   </component>
   <component name="CopyrightManager" default="Induction">
     <copyright>
@@ -291,6 +295,15 @@
       </item>
     </group>
   </component>
+  <component name="ProjectCodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
+      </value>
+    </option>
+  </component>
   <component name="ProjectDetails">
     <option name="projectName" value="induction" />
   </component>
@@ -329,15 +342,6 @@
         <entry key="$PROJECT_DIR$/../../acciente-commons">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://induction.googlecode.com/svn/project/acciente-commons/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://induction.googlecode.com/svn/project/acciente-commons/tags" />
@@ -350,15 +354,6 @@
         <entry key="$PROJECT_DIR$/..">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://induction.googlecode.com/svn/project/acciente-induction/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://induction.googlecode.com/svn/project/acciente-induction/tags" />
@@ -371,15 +366,6 @@
         <entry key="$PROJECT_DIR$/../../demoapp">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://induction.googlecode.com/svn/project/demoapp/tags">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://induction.googlecode.com/svn/project/demoapp/tags" />
@@ -415,5 +401,115 @@
     <mapping directory="$PROJECT_DIR$/../../induction-test-data" vcs="svn" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
+  <component name="libraryTable">
+    <library name="apache-bcel-5.2">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-bcel/5.2" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-bcel/5.2/docs/apidocs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-bcel/5.2/src/java" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-bcel/5.2" recursive="false" />
+    </library>
+    <library name="apache-commons-collections-3.2">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-collections/3.2.1" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-collections/3.2.1/apidocs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-collections/3.2.1" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-collections/3.2.1" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-collections/3.2.1" recursive="false" type="SOURCES" />
+    </library>
+    <library name="apache-commons-digester-1.8">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-digester/1.8" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-digester/1.8/src/java" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-digester/1.8" recursive="false" />
+    </library>
+    <library name="apache-commons-fileupload-1.2.1">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-fileupload/1.2.1" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-fileupload/1.2.1" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-fileupload/1.2.1" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-fileupload/1.2.1" recursive="false" type="SOURCES" />
+    </library>
+    <library name="apache-commons-io-1.4">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-io/1.4" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-io/1.4/docs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-io/1.4" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-io/1.4" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-io/1.4" recursive="false" type="SOURCES" />
+    </library>
+    <library name="apache-commons-lang-2.4">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-lang/2.4" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-lang/2.4/apidocs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-lang/2.4" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-lang/2.4" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-lang/2.4" recursive="false" type="SOURCES" />
+    </library>
+    <library name="apache-commons-logging-1.1.1">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-logging/1.1.1" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-logging/1.1.1/site/apidocs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/apache-commons-logging/1.1.1" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-logging/1.1.1" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/apache-commons-logging/1.1.1" recursive="false" type="SOURCES" />
+    </library>
+    <library name="freemarker-2.3.16">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/freemarker/2.3.16/lib" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://$PROJECT_DIR$/../../../lib/freemarker/2.3.16/docs/docs/api" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/freemarker/2.3.16/src" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/freemarker/2.3.16/lib" recursive="false" />
+    </library>
+    <library name="junit-4.4">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../lib/junit/4.4" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://$PROJECT_DIR$/../../../lib/junit/4.4" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/junit/4.4" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../lib/junit/4.4" recursive="false" type="SOURCES" />
+    </library>
+  </component>
 </project>
 

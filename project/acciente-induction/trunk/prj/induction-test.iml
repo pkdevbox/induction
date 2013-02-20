@@ -10,7 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="acciente-induction" />
-    <orderEntry type="library" name="junit-4.4" level="application" />
+    <orderEntry type="library" name="junit-4.4" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
