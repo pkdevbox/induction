@@ -35,47 +35,47 @@ import java.io.File;
  */
 public class FileUploadController implements Controller
 {
-   public void handler( Response oResponse, Form oForm ) throws Exception, FileUploadException, ParserException
+   public void handler( Response response, Form form ) throws Exception, FileUploadException, ParserException
    {
-      oResponse.setContentType( "text/plain" );
-      oResponse.out().println( "Induction - File Upload Demo - Response" );
-      oResponse.out().println( "----------------------------------------" );
+      response.setContentType("text/plain");
+      response.out().println( "Induction - File Upload Demo - Response" );
+      response.out().println( "----------------------------------------" );
 
-      oResponse.out().println( "" );
-      oResponse.out().println( "" );
+      response.out().println( "" );
+      response.out().println( "" );
 
-      oResponse.out().println( "General info" );
-      oResponse.out().println( "------------" );
-      oResponse.out().println( "\tform parameters: " + oForm.getParamNames() );
+      response.out().println( "General info" );
+      response.out().println( "------------" );
+      response.out().println("\tform parameters: " + form.getParamNames());
 
-      oResponse.out().println( "" );
-      oResponse.out().println( "" );
+      response.out().println( "" );
+      response.out().println( "" );
 
-      oResponse.out().println( "About the string you entered" );
-      oResponse.out().println( "----------------------------" );
-      oResponse.out().println( "\tvalue: \"" + oForm.getString( "test_string" )+ "\"" );
+      response.out().println( "About the string you entered" );
+      response.out().println( "----------------------------" );
+      response.out().println( "\tvalue: \"" + form.getString( "test_string" )+ "\"" );
 
-      FileHandle oUploadedFile = oForm.getFile( "test_file" );
+      FileHandle uploadedFile = form.getFile( "test_file" );
 
-      File oDumpFile = null;
-      if ( oUploadedFile.getSize() > 0 )
+      File dumpFile = null;
+      if ( uploadedFile.getSize() > 0 )
       {
-         oDumpFile = File.createTempFile( "test-", "-" + ( new File( oUploadedFile.getOriginFilename() ) ).getName(), new File( "c:/temp" ) );
+         dumpFile = File.createTempFile( "test-", "-" + ( new File( uploadedFile.getOriginFilename() ) ).getName(), new File( "c:/temp" ) );
 
-         oUploadedFile.write( oDumpFile );
+         uploadedFile.write(dumpFile);
       }
 
-      oResponse.out().println( "" );
-      oResponse.out().println( "" );
-      oResponse.out().println( "About the file you uploaded" );
-      oResponse.out().println( "---------------------------" );
-      oResponse.out().println( "\tfile name   : " + oUploadedFile.getOriginFilename() );
-      oResponse.out().println( "\tcontent type: " + oUploadedFile.getContentType() );
-      oResponse.out().println( "\tsize        : " + oUploadedFile.getSize() );
+      response.out().println( "" );
+      response.out().println( "" );
+      response.out().println( "About the file you uploaded" );
+      response.out().println( "---------------------------" );
+      response.out().println("\tfile name   : " + uploadedFile.getOriginFilename());
+      response.out().println( "\tcontent type: " + uploadedFile.getContentType() );
+      response.out().println("\tsize        : " + uploadedFile.getSize());
 
-      if ( oDumpFile != null )
+      if ( dumpFile != null )
       {
-         oResponse.out().println( "contents of uploaded file written to: " + oDumpFile.getCanonicalPath() );
+         response.out().println( "contents of uploaded file written to: " + dumpFile.getCanonicalPath() );
       }
    }
 }

@@ -15,31 +15,31 @@ import java.net.URLClassLoader;
  */
 public class SystemInfoController implements Controller
 {
-   public void handler( Response oResponse, ClassLoader oClassLoader )
+   public void handler( Response response, ClassLoader classLoader )
       throws IOException
    {
       ClassLoader oPreviousClassLoader = null;
 
       int iCount = 0;
 
-      while ( oClassLoader != null && oClassLoader != oPreviousClassLoader )
+      while ( classLoader != null && classLoader != oPreviousClassLoader )
       {
-         oResponse.out().println( "\nclassLoader-" + iCount + " > " + oClassLoader );
+         response.out().println( "\nclassLoader-" + iCount + " > " + classLoader );
 
-         if ( oClassLoader instanceof URLClassLoader )
+         if ( classLoader instanceof URLClassLoader )
          {
-            oResponse.out().println( "classLoader-" + iCount + " > is a URL class loader" );
+            response.out().println( "classLoader-" + iCount + " > is a URL class loader" );
 
-            URL[] aoURL = ( ( URLClassLoader ) oClassLoader ).getURLs();
+            URL[] aoURL = ( ( URLClassLoader ) classLoader ).getURLs();
 
             for ( int i = 0; i < aoURL.length; i++ )
             {
-               oResponse.out().println( "\t\tclassLoader-" + iCount + " > URL: " + aoURL[ i ] );
+               response.out().println( "\t\tclassLoader-" + iCount + " > URL: " + aoURL[ i ] );
             }
          }
 
-         oPreviousClassLoader = oClassLoader;
-         oClassLoader         = oClassLoader.getParent();
+         oPreviousClassLoader = classLoader;
+         classLoader          = classLoader.getParent();
 
          iCount++;
       }

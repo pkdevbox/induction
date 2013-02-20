@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class BarModelFactory
 {
-   private  TarModel    _oTarModel;
+   private  TarModel _tarModel;
+
    /**
     * Our createModel() is very simple, but you are free make it as fanciful as your
     * model instantiation demands. We declare the HttpServletRequest, ServletConfig
@@ -23,13 +24,13 @@ public class BarModelFactory
     *
     * @return a BarModel object
     */
-   public BarModel createModel( HttpServletRequest oRequest, ServletConfig oConfig, TarModel oTarModel )
+   public BarModel createModel( HttpServletRequest request, ServletConfig servletConfig, TarModel tarModel )
    {
-      System.out.println( "request=" + oRequest  );
-      System.out.println( "config=" + oConfig  );
-      System.out.println( "tar=" + oTarModel  );
+      System.out.println( "request=" + request  );
+      System.out.println( "config=" + servletConfig  );
+      System.out.println( "tar=" + tarModel  );
 
-      _oTarModel = oTarModel;
+      _tarModel = tarModel;
 
       return new BarModel( System.currentTimeMillis() );
    }

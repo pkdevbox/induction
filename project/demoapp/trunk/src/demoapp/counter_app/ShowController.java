@@ -28,10 +28,10 @@ import java.io.IOException;
  */
 public class ShowController implements Controller
 {
-   public void handler( Response oResponse, Counter oCounter )
+   public void handler( Response response, Counter counter )
       throws IOException
    {
-      oResponse.out().println( "count is: " + oCounter.getCount() );
+      response.out().println("count is: " + counter.getCount());
    }
 }
 

@@ -23,20 +23,20 @@ package demoapp.counter_app;
  */
 public class Counter
 {
-   private int iCount = 0;
+   private int count = 0;
 
    public void increment()
    {
-      iCount+=10;
+      count += 10;
    }
 
    public void decrement()
    {
-      iCount--;
+      count--;
    }
 
    public int getCount()
    {
-      return iCount;
+      return count;
    }
 }

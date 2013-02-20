@@ -29,9 +29,9 @@ public class InitAndDestroyDemoController implements Controller
       System.out.println( "InitAndDestroyDemoController(): init() called" );
 	}
 
-	public void handler( Response oResponse ) throws IOException
-   {
-      oResponse.out().println( "InitAndDestroyDemoController: handler( Response oResponse ): called" );
+	public void handler( Response response ) throws IOException
+    {
+      response.out().println( "InitAndDestroyDemoController: handler( Response oResponse ): called" );
 	}
 
    public void destroy()

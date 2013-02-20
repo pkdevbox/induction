@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class ClassFinderController implements Controller
 {
    // URL: /classfinder.test_1.action
-   public void test_1( Response oResponse, ClassLoader oClassLoader ) throws IOException
+   public void test_1( Response response, ClassLoader classLoader ) throws IOException
    {
       // the regex should match all class names starting with the letter "C"
       //run( oResponse, oClassLoader, new String[]{ "com", "org.apache", "demoapp" }, "((\\w+\\.)+)?Cou(\\w+)" );
@@ -27,26 +27,26 @@ public class ClassFinderController implements Controller
       // the regex should match all class names ending in "Controller"
       //run( oResponse, oClassLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)Controller" );
 
-      run( oResponse, oClassLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)" );
+      run( response, classLoader, new String[]{ "demoapp" }, "((\\w+\\.)+)?(\\w+)" );
    }
 
-   private void run( Response oResponse, ClassLoader oClassLoader, String[] sPackageNames, String sPattern ) throws IOException
+   private void run( Response response, ClassLoader classLoader, String[] packageNames, String pattern ) throws IOException
    {
       long           iStartTime     = System.currentTimeMillis();
 
-      Set oClassnameSet = ClassFinder.find( oClassLoader, sPackageNames, Pattern.compile( sPattern ) );
+      Set oClassnameSet = ClassFinder.find( classLoader, packageNames, Pattern.compile( pattern ) );
 
-      oResponse.out().println( "results >> start >> package: " + Arrays.asList( sPackageNames ) + ", pattern: " + sPattern );
+      response.out().println( "results >> start >> package: " + Arrays.asList( packageNames ) + ", pattern: " + pattern );
 
       for ( Iterator oIter = oClassnameSet.iterator(); oIter.hasNext(); )
       {
          String sClassname = ( String ) oIter.next();
 
-         oResponse.out().println( sClassname );
+         response.out().println( sClassname );
       }
 
-      oResponse.out().println( "results >> end >> package: " + Arrays.asList( sPackageNames ) + ", pattern: " + sPattern );
+      response.out().println( "results >> end >> package: " + Arrays.asList( packageNames ) + ", pattern: " + pattern );
 
-      oResponse.out().println( "find took: " + ( System.currentTimeMillis() - iStartTime ) );
+      response.out().println( "find took: " + ( System.currentTimeMillis() - iStartTime ) );
    }
 }

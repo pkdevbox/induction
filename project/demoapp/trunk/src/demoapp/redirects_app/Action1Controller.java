@@ -32,27 +32,27 @@ import java.io.IOException;
  */
 public class Action1Controller implements Controller
 {
-   public void handler( Response oResponse ) throws IOException, InterruptedException
+   public void handler( Response response ) throws IOException, InterruptedException
    {
-      oResponse.out().println( "Hello! I am method handler() in " + getClass().getName() );
+      response.out().println( "Hello! I am method handler() in " + getClass().getName() );
 
       return;
    }
 
-   public void anotherHandler( Form oForm, Response oResponse ) throws IOException, InterruptedException, FormException, FileUploadException, ParserException
+   public void anotherHandler( Form form, Response response ) throws IOException, InterruptedException, FormException, FileUploadException, ParserException
    {
-      oResponse.setContentType( "text/html" );
+      response.setContentType("text/html");
 
-      oResponse.out().println( "Hello! I am method anotherHandler() in " + getClass().getName() + "<br>" );
+      response.out().println( "Hello! I am method anotherHandler() in " + getClass().getName() + "<br>" );
 
-      if ( oForm.containsParam( "name" ) )
+      if ( form.containsParam( "name" ) )
       {
-         oResponse.out().print( "<br>Form: Name    : " + oForm.getString( "name" ) );
+         response.out().print("<br>Form: Name    : " + form.getString("name"));
       }
 
-      if ( oForm.containsParam( "message" ) )
+      if ( form.containsParam( "message" ) )
       {
-         oResponse.out().print( "<br>Form: Message : " + oForm.getString( "message" ) );
+         response.out().print( "<br>Form: Message : " + form.getString( "message" ) );
       }
 
       return;

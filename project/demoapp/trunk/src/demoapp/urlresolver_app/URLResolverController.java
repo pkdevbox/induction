@@ -26,22 +26,22 @@ import java.io.IOException;
  */
 public class URLResolverController implements Controller
 {
-   public void handler( URLResolver oURLResolver, Response oResponse ) throws IOException
+   public void handler( URLResolver urlResolver, Response response ) throws IOException
    {
-      oResponse.out().println( "injected redirect resolver: "              + oURLResolver                                        );
+      response.out().println( "injected redirect resolver: "              + urlResolver                                        );
 
-      oResponse.out().println();
-      oResponse.out().println( "HelloWorld1Controller.class resolved to: " + oURLResolver.resolve( HelloWorld1Controller.class ) );
-      oResponse.out().println( "HelloWorld2Controller.class resolved to: " + oURLResolver.resolve( HelloWorld2Controller.class ) );
-      oResponse.out().println( "HelloWorld2Controller.class resolved to: " + oURLResolver.resolve( HelloWorld2Controller.class, "handler2" ) );
-      oResponse.out().println( "HelloWorld2View.class resolved to: "       + oURLResolver.resolve( HelloWorld2View.class       ) );
+      response.out().println();
+      response.out().println( "HelloWorld1Controller.class resolved to: " + urlResolver.resolve(HelloWorld1Controller.class));
+      response.out().println( "HelloWorld2Controller.class resolved to: " + urlResolver.resolve( HelloWorld2Controller.class ) );
+      response.out().println( "HelloWorld2Controller.class resolved to: " + urlResolver.resolve(HelloWorld2Controller.class, "handler2"));
+      response.out().println( "HelloWorld2View.class resolved to: "       + urlResolver.resolve( HelloWorld2View.class       ) );
    }
 
-   public void modelDemo( URLResolverModel oURLResolverModel, Response oResponse ) throws IOException
+   public void modelDemo( URLResolverModel urlResolverModel, Response response ) throws IOException
    {
-      oResponse.out().println( "model: " + oURLResolverModel );
+      response.out().println( "model: " + urlResolverModel );
 
-      oResponse.out().println();
-      oResponse.out().println( "URLResolverModel.getURLResolver(): " + oURLResolverModel.getURLResolver() );
+      response.out().println();
+      response.out().println( "URLResolverModel.getURLResolver().resolve(HelloWorld1Controller.class): " + urlResolverModel.getURLResolver().resolve(HelloWorld1Controller.class));
    }
 }

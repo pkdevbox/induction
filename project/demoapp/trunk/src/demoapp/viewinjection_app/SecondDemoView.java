@@ -13,13 +13,13 @@ import com.acciente.induction.view.Text;
  */
 public class SecondDemoView implements Text
 {
-   private FirstDemoView _oFirstDemoView;
-   private Form _oForm;
+   private FirstDemoView    _firstDemoView;
+   private Form             _form;
 
-   public SecondDemoView( FirstDemoView oFirstDemoView, Form oForm )
+   public SecondDemoView( FirstDemoView firstDemoView, Form form )
    {
-      _oFirstDemoView = oFirstDemoView;
-      _oForm = oForm;
+      _firstDemoView = firstDemoView;
+      _form          = form;
    }
 
    public String getText()
@@ -28,10 +28,9 @@ public class SecondDemoView implements Text
 
       try
       {
-         if ( _oForm.containsParam( "name" ) )
+         if ( _form.containsParam( "name" ) )
          {
-            sName = _oForm.getString( "name" );
-
+            sName = _form.getString( "name" );
          }
       }
       catch ( FormException e )
@@ -39,7 +38,7 @@ public class SecondDemoView implements Text
          throw new RuntimeException( e );
       }
 
-      return "Hello " + sName + ", I am the SECOND (2nd) demo view...and.." + _oFirstDemoView.getText();
+      return "Hello " + sName + ", I am the SECOND (2nd) demo view...and.." + _firstDemoView.getText();
    }
 
    public String getMimeType()

@@ -13,11 +13,11 @@ import com.acciente.induction.view.Text;
  */
 public class FirstDemoView implements Text
 {
-   private Form _oForm;
+   private Form _form;
 
-   public FirstDemoView( Form oForm )
+   public FirstDemoView( Form form )
    {
-      _oForm = oForm;
+      _form = form;
    }
 
    public String getText()
@@ -26,10 +26,9 @@ public class FirstDemoView implements Text
 
       try
       {
-         if ( _oForm.containsParam( "name" ) )
+         if ( _form.containsParam( "name" ) )
          {
-            sName = _oForm.getString( "name" );
-
+            sName = _form.getString( "name" );
          }
       }
       catch ( FormException e )

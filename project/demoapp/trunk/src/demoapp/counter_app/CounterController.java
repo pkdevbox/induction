@@ -30,24 +30,24 @@ import java.io.IOException;
  */
 public class CounterController implements Controller
 {
-   public void showCounter( Response oResponse, Counter oCounter )
+   public void showCounter( Response response, Counter counter )
       throws IOException
    {
-      oResponse.out().println( "count is: " + oCounter.getCount() );
+      response.out().println("count is: " + counter.getCount());
    }
 
-   public void incrementCounter( Response oResponse, Counter oCounter )
+   public void incrementCounter( Response response, Counter counter )
       throws IOException
    {
-      oCounter.increment();
-      oResponse.out().println( "count incremented to: " + oCounter.getCount() );
+      counter.increment();
+      response.out().println("count incremented to: " + counter.getCount());
    }
 
-   public void decrementCounter( Response oResponse, Counter oCounter )
+   public void decrementCounter( Response response, Counter counter )
       throws IOException
    {
-      oCounter.decrement();
-      oResponse.out().println( "count decremented to: "  + oCounter.getCount() );
+      counter.decrement();
+      response.out().println("count decremented to: " + counter.getCount());
    }
 }
 

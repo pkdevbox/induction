@@ -14,13 +14,13 @@ import java.io.IOException;
  */
 public class ShowResolutionController implements Controller
 {
-   public void handler( Response oResponse, ControllerResolver.Resolution oResolution ) throws IOException
+   public void handler( Response response, ControllerResolver.Resolution resolution ) throws IOException
    {
-      oResponse.setContentType( "text/plain" );
+      response.setContentType("text/plain");
 
-      oResponse.out().println( "resolution.className  : " + oResolution.getClassName() );
-      oResponse.out().println( "resolution.methodName : " + oResolution.getMethodName() );
-      oResponse.out().println( "resolution.options    : " + oResolution.getOptions() );
+      response.out().println("resolution.className  : " + resolution.getClassName());
+      response.out().println("resolution.methodName : " + resolution.getMethodName());
+      response.out().println( "resolution.options    : " + resolution.getOptions() );
    }
 }
 
