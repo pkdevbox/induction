@@ -13,11 +13,11 @@ import demoapp.helloworld1_app.HelloWorld1Controller;
  */
 public class URLResolverView implements Template
 {
-   private URLResolver _oURLResolver;
+   private URLResolver _urlLResolver;
 
-   public URLResolverView( URLResolver oURLResolver )
+   public URLResolverView( URLResolver urlResolver )
    {
-      _oURLResolver = oURLResolver;
+      _urlLResolver = urlResolver;
    }
 
    public String getTemplateName()
@@ -32,6 +32,6 @@ public class URLResolverView implements Template
 
    public String getHelloWorld1URL()
    {
-      return _oURLResolver.resolve( HelloWorld1Controller.class ); 
+      return _urlLResolver.resolve( HelloWorld1Controller.class );
    }
 }

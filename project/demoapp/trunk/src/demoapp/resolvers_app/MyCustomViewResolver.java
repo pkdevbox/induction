@@ -20,6 +20,7 @@ package demoapp.resolvers_app;
 import com.acciente.induction.init.config.Config;
 import com.acciente.induction.resolver.ShortURLViewResolver;
 import com.acciente.induction.resolver.ViewResolver;
+import demoapp.SiteHomePage;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -33,23 +34,23 @@ import java.io.IOException;
  */
 public class MyCustomViewResolver implements ViewResolver
 {
-   private ShortURLViewResolver  _oShortURLViewResolver;
+   private ShortURLViewResolver _shortURLViewResolver;
 
-   public MyCustomViewResolver( Config.ViewMapping oViewMapping, ClassLoader oClassLoader ) throws IOException
+   public MyCustomViewResolver( Config.ViewMapping viewMapping, ClassLoader classLoader ) throws IOException
    {
-      _oShortURLViewResolver = new ShortURLViewResolver( oViewMapping, oClassLoader );
+      _shortURLViewResolver = new ShortURLViewResolver( viewMapping, classLoader );
    }
 
-   public Resolution resolveRequest( HttpServletRequest oRequest )
+   public Resolution resolveRequest( HttpServletRequest request )
    {
       // if the request only specifies a hostname or just contains the root path, then
       // resolve to our custom home page
-      if ( oRequest.getPathInfo() == null || oRequest.getPathInfo().equals( "/" ) )
+      if ( request.getPathInfo() == null || request.getPathInfo().equals( "/" ) )
       {
-         return new Resolution( "demoapp.SiteHomePage" );
+         return new Resolution( SiteHomePage.class.getName() );
       }
 
       // otherwise just delegate to the standard short url resolver
-      return _oShortURLViewResolver.resolveRequest( oRequest );
+      return _shortURLViewResolver.resolveRequest( request );
    }
 }

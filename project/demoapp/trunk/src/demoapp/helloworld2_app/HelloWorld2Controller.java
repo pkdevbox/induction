@@ -39,8 +39,6 @@ public class HelloWorld2Controller implements Controller
 
    public Class handler2( Response oResponse ) throws IOException
    {
-      //oResponse.out().println( "handler2() called" );
-
       return HelloWorld2View.class;
    }
 }

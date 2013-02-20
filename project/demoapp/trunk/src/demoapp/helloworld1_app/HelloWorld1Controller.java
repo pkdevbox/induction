@@ -30,11 +30,11 @@ import java.io.IOException;
  */
 public class HelloWorld1Controller implements Controller
 {
-   public void handler( Response oReponse ) throws IOException
+   public void handler( Response response ) throws IOException
    {
-      oReponse.setContentType( "text/plain" );
+      response.setContentType("text/plain");
 
-      oReponse.out().println( "Hello World, using a simple println()" );
+      response.out().println( "Hello World, using a simple println()" );
    }
 }
 

@@ -28,11 +28,11 @@ import java.io.IOException;
  */
 public class IncrementController implements Controller
 {
-   public void handler( Response oResponse, Counter oCounter )
+   public void handler( Response response, Counter counter )
       throws IOException
    {
-      oCounter.increment();
-      oResponse.out().println( "count incremented to: " + oCounter.getCount() );
+      counter.increment();
+      response.out().println("count incremented to: " + counter.getCount());
    }
 }
 

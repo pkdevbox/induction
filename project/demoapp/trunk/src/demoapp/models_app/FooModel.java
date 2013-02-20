@@ -30,18 +30,18 @@ package demoapp.models_app;
  */
 public class FooModel
 {
-   private BarModel _oBarModel;
+   private BarModel _barModel;
 
-   public FooModel( BarModel oBarModel )
+   public FooModel( BarModel barModel )
    {
-      _oBarModel = oBarModel;
+      _barModel = barModel;
 
       System.out.println( "FooModel: constructor called @time: " + System.currentTimeMillis() );
    }
 
    public BarModel getBarModel()
    {
-      return _oBarModel;
+      return _barModel;
    }
 }
 

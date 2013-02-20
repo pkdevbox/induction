@@ -12,11 +12,11 @@ import com.acciente.induction.controller.Response;
  */
 public class HelloUser implements Controller
 {
-   public void handler( Form oForm, Response oResponse ) throws Exception
+   public void handler( Form form, Response response ) throws Exception
    {
-      String sUserName = oForm.getString( "userName" );
+      String sUserName = form.getString( "userName" );
 
-      oResponse.out().println( "Hello " + sUserName + "!" );
+      response.out().println( "Hello " + sUserName + "!" );
    }
 }
 

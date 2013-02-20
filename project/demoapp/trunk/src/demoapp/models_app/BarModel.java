@@ -29,9 +29,9 @@ package demoapp.models_app;
  */
 public class BarModel
 {
-   public BarModel( long iCurrentTime )
+   public BarModel( long currentTime )
    {
-      System.out.println( "BarModel: constructor called @time: " + iCurrentTime );
+      System.out.println( "BarModel: constructor called @time: " + currentTime );
    }
 }
 

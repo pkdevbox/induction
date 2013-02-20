@@ -30,25 +30,25 @@ import java.io.IOException;
  */
 public class CookieController implements Controller
 {
-   public void handler( Request oRequest, Response oResponse )
+   public void handler( Request request, Response response )
       throws IOException
    {
-      if ( oRequest.getCookies() == null )
+      if ( request.getCookies() == null )
       {
-         oResponse.out().println( "The request has no cookies!" );
+         response.out().println( "The request has no cookies!" );
       }
       else
       {
-         for ( int i = 0; i < oRequest.getCookies().length; i++ )
+         for ( int i = 0; i < request.getCookies().length; i++ )
          {
-            Cookie oCookie = oRequest.getCookies()[ i ];
+            Cookie oCookie = request.getCookies()[ i ];
 
-            oResponse.out().println( "Name=" + oCookie.getName() );
-            oResponse.out().println( "Domain=" + oCookie.getDomain() );
-            oResponse.out().println( "Path=" + oCookie.getPath() );
-            oResponse.out().println( "Secure=" + oCookie.getSecure() );
-            oResponse.out().println( "Value=" + oCookie.getValue() );
-            oResponse.out().println( "Version=" + oCookie.getVersion() );
+            response.out().println( "Name=" + oCookie.getName() );
+            response.out().println( "Domain=" + oCookie.getDomain() );
+            response.out().println( "Path=" + oCookie.getPath() );
+            response.out().println( "Secure=" + oCookie.getSecure() );
+            response.out().println( "Value=" + oCookie.getValue() );
+            response.out().println( "Version=" + oCookie.getVersion() );
          }
       }
    }

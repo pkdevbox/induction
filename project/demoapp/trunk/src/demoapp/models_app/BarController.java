@@ -14,11 +14,11 @@ import java.io.IOException;
  */
 public class BarController implements Controller
 {
-   public void handler( Response oResponse, BarModel oBarModel ) throws IOException
+   public void handler( Response response, BarModel barModel ) throws IOException
    {
-      oResponse.setContentType( "text/plain" );
+      response.setContentType("text/plain");
 
-      oResponse.out().println( "BarModel : " + oBarModel );
+      response.out().println( "BarModel : " + barModel );
    }
 }
 

@@ -10,15 +10,15 @@ import com.acciente.induction.dispatcher.resolver.URLResolver;
  */
 public class URLResolverModel
 {
-   private URLResolver _oURLResolver;
+   private URLResolver _urlResolver;
 
-   public URLResolverModel( URLResolver oURLResolver )
+   public URLResolverModel( URLResolver urlResolver )
    {
-      _oURLResolver = oURLResolver;
+      _urlResolver = urlResolver;
    }
 
    public URLResolver getURLResolver()
    {
-      return _oURLResolver;
+      return _urlResolver;
    }
 }
