@@ -49,7 +49,16 @@ public class ShortURLControllerResolver implements ControllerResolver
 
    public Resolution resolveRequest( HttpServletRequest oRequest )
    {
-      String   sURLPath = oRequest.getPathInfo();
+      String   sURLPath;
+
+      if ( oRequest.getPathInfo() == null )
+      {
+         sURLPath = oRequest.getServletPath();
+      }
+      else
+      {
+         sURLPath = oRequest.getServletPath() + oRequest.getPathInfo();
+      }
 
       if ( sURLPath != null )
       {

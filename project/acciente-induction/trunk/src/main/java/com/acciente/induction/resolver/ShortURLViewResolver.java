@@ -43,7 +43,16 @@ public class ShortURLViewResolver implements ViewResolver
 
    public ViewResolver.Resolution resolveRequest( HttpServletRequest oRequest )
    {
-      String   sURLPath = oRequest.getPathInfo();
+      String   sURLPath;
+
+      if ( oRequest.getPathInfo() == null )
+      {
+         sURLPath = oRequest.getServletPath();
+      }
+      else
+      {
+         sURLPath = oRequest.getServletPath() + oRequest.getPathInfo();
+      }
 
       if ( sURLPath != null )
       {
