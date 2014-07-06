@@ -51,7 +51,7 @@
 @set induction_distrib_req_libs_content=%induction_distrib_req_libs_content% %common_root%\lib\apache-commons-fileupload\1.2.1\commons-fileupload-1.2.1.jar
 @set induction_distrib_req_libs_content=%induction_distrib_req_libs_content% %common_root%\lib\apache-commons-io\1.4\commons-io-1.4.jar
 @set induction_distrib_req_libs_content=%induction_distrib_req_libs_content% %common_root%\lib\apache-commons-logging\1.1.1\commons-logging-1.1.1.jar
-@set induction_distrib_req_libs_content=%induction_distrib_req_libs_content% %common_root%\lib\freemarker\2.3.12\freemarker-2.3.12.jar
+@set induction_distrib_req_libs_content=%induction_distrib_req_libs_content% %common_root%\lib\freemarker\2.3.16\lib\freemarker-2.3.16.jar
 @7z a -tzip %induction_distrib_req_libs_file% %induction_distrib_req_libs_content%
 
 @rem -- create the distribution for the samples
