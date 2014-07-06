@@ -4,7 +4,7 @@
 @rem Jun 23, 2008 APR	updated
 @rem May 04, 2009 APR	updated
 
-@set path=%path%;c:\dev\jdk1.6.0_04\bin
+@set path=%path%;C:\Program Files\Java\jdk1.6.0_20\bin
 
 @rem -- check if the user specified a release-name, otherwise complain
 @if %1_==_ goto :error_usage
